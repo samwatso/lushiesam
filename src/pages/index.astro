@@ -1,0 +1,263 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import Hero from '@/components/Hero.astro';
+import SectionHeading from '@/components/SectionHeading.astro';
+import BoxCard from '@/components/BoxCard.astro';
+import CTABlock from '@/components/CTABlock.astro';
+
+const allBoxes = (await getCollection('kitchenBoxes'))
+  .filter((box) => !box.data.draft)
+  .sort((a, b) => {
+    const dateA = a.data.publishedDate?.getTime() ?? 0;
+    const dateB = b.data.publishedDate?.getTime() ?? 0;
+    return dateB - dateA;
+  });
+
+const latestBox = allBoxes[0];
+const recentBoxes = allBoxes.slice(0, 4);
+---
+
+<BaseLayout title="Home">
+  <!-- Hero -->
+  <Hero
+    title="Bath bombs, Kitchen boxes, and way too many opinions about soap."
+    tag="Lushie Sam"
+  >
+    <a href="/kitchen-boxes/" class="btn btn--primary">Browse the Archive</a>
+    <a href="https://www.tiktok.com/@lushiesam" target="_blank" rel="noopener noreferrer" class="btn btn--secondary">
+      TikTok @lushiesam
+    </a>
+  </Hero>
+
+  <!-- Intro -->
+  <section class="section">
+    <div class="container container--narrow">
+      <div class="intro-block">
+        <p>
+          I'm Sam — been a Lush Kitchen subscriber since February 2022 and a Lush fan
+          since attending Creative Showcase back in 2016. Every month I open the Kitchen box on
+          <a href="https://www.tiktok.com/@lushiesam" target="_blank" rel="noopener noreferrer">TikTok</a>
+          and share first impressions, scent notes, and the occasional nostalgia trip.
+        </p>
+        <p>
+          This site is my personal archive. Every box, every product, every "ngl this one took me back"
+          moment — documented and kept somewhere TikTok can't algorithm away.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Latest Kitchen Box -->
+  {latestBox && (
+    <section class="section section--alt">
+      <div class="container">
+        <SectionHeading
+          title="Latest Box"
+          subtitle="The most recent Kitchen box, opened and reviewed."
+        />
+        <a href={`/kitchen-boxes/${latestBox.id}/`} class="latest-box">
+          <div class="latest-box-image">
+            {latestBox.data.heroImage ? (
+              <img src={latestBox.data.heroImage} alt={latestBox.data.title} />
+            ) : (
+              <div class="latest-box-placeholder">
+                <span>{latestBox.data.month} '{String(latestBox.data.year).slice(2)}</span>
+              </div>
+            )}
+          </div>
+          <div class="latest-box-info">
+            <span class="latest-box-date">{latestBox.data.month} {latestBox.data.year}</span>
+            <h3>{latestBox.data.title}</h3>
+            <p>{latestBox.data.summary}</p>
+            {latestBox.data.products && (
+              <div class="latest-box-products">
+                {latestBox.data.products.slice(0, 3).map((p) => (
+                  <span class="product-pill">{p.name}</span>
+                ))}
+                {latestBox.data.products.length > 3 && (
+                  <span class="product-pill product-pill--more">+{latestBox.data.products.length - 3} more</span>
+                )}
+              </div>
+            )}
+            <span class="latest-box-cta">Read the full review →</span>
+          </div>
+        </a>
+      </div>
+    </section>
+  )}
+
+  <!-- Archive Grid -->
+  {recentBoxes.length > 1 && (
+    <section class="section">
+      <div class="container">
+        <SectionHeading
+          title="Archive"
+          subtitle="Every box. Every product. Every fizz."
+        />
+        <div class="grid grid--2">
+          {recentBoxes.map((box) => (
+            <BoxCard
+              title={box.data.title}
+              slug={box.id}
+              month={box.data.month}
+              year={box.data.year}
+              summary={box.data.summary}
+              heroImage={box.data.heroImage}
+              productCount={box.data.products?.length}
+            />
+          ))}
+        </div>
+        <div style="margin-top: var(--space-2xl);">
+          <a href="/kitchen-boxes/" class="btn btn--ghost">View all boxes →</a>
+        </div>
+      </div>
+    </section>
+  )}
+
+  <!-- TikTok CTA -->
+  <CTABlock
+    title="Watch on TikTok"
+    description="Unboxing vids, bath demos, scent reviews, and honest opinions. Every month, as soon as the box lands."
+    primaryLink="https://www.tiktok.com/@lushiesam"
+    primaryLabel="Follow @lushiesam"
+    secondaryLink="/kitchen-boxes/"
+    secondaryLabel="Browse the Archive"
+  />
+</BaseLayout>
+
+<style>
+  /* Intro block */
+  .intro-block {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-md);
+  }
+
+  .intro-block p {
+    color: var(--color-text-secondary);
+    font-size: 1.0625rem;
+    line-height: 1.8;
+    max-width: none;
+  }
+
+  .intro-block a {
+    color: var(--color-pink);
+  }
+
+  .intro-block a:hover {
+    color: var(--color-white);
+  }
+
+  /* Latest box feature */
+  .latest-box {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    background: var(--color-bg-card);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    text-decoration: none;
+    color: inherit;
+    transition: border-color 0.3s ease;
+  }
+
+  .latest-box:hover {
+    color: inherit;
+    border-color: var(--color-border-hover);
+  }
+
+  .latest-box-image {
+    aspect-ratio: 4 / 3;
+    overflow: hidden;
+    background: var(--color-surface);
+  }
+
+  .latest-box-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.5s ease;
+    opacity: 0.9;
+  }
+
+  .latest-box:hover .latest-box-image img {
+    transform: scale(1.04);
+    opacity: 1;
+  }
+
+  .latest-box-placeholder {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: var(--font-display);
+    font-size: 2rem;
+    color: var(--color-text-muted);
+    background: var(--gradient-warm);
+  }
+
+  .latest-box-info {
+    padding: var(--space-2xl);
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-sm);
+    justify-content: center;
+  }
+
+  .latest-box-date {
+    font-size: 0.6875rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--color-text-muted);
+    font-weight: 500;
+  }
+
+  .latest-box-info h3 {
+    font-size: 1.5rem;
+    line-height: 1.25;
+  }
+
+  .latest-box-info p {
+    color: var(--color-text-secondary);
+    font-size: 0.9375rem;
+    line-height: 1.6;
+  }
+
+  .latest-box-products {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-xs);
+    margin-top: var(--space-xs);
+  }
+
+  .product-pill {
+    padding: 0.2rem 0.5rem;
+    border-radius: var(--radius-full);
+    font-size: 0.6875rem;
+    background: var(--color-mint-dim);
+    color: var(--color-mint);
+    font-weight: 500;
+    border: 1px solid rgba(124, 196, 168, 0.15);
+  }
+
+  .product-pill--more {
+    background: var(--color-lavender-dim);
+    color: var(--color-lavender);
+    border-color: rgba(180, 159, 204, 0.15);
+  }
+
+  .latest-box-cta {
+    font-size: 0.8125rem;
+    font-weight: 500;
+    color: var(--color-pink);
+    margin-top: var(--space-sm);
+  }
+
+  @media (max-width: 768px) {
+    .latest-box {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

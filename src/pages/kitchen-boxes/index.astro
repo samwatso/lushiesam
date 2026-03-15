@@ -1,0 +1,84 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import Hero from '@/components/Hero.astro';
+import BoxCard from '@/components/BoxCard.astro';
+
+const allBoxes = (await getCollection('kitchenBoxes'))
+  .filter((box) => !box.data.draft)
+  .sort((a, b) => {
+    const dateA = a.data.publishedDate?.getTime() ?? 0;
+    const dateB = b.data.publishedDate?.getTime() ?? 0;
+    return dateB - dateA;
+  });
+
+// Group by year
+const boxesByYear = allBoxes.reduce<Record<number, typeof allBoxes>>((acc, box) => {
+  const year = box.data.year;
+  if (!acc[year]) acc[year] = [];
+  acc[year].push(box);
+  return acc;
+}, {});
+
+const years = Object.keys(boxesByYear).map(Number).sort((a, b) => b - a);
+---
+
+<BaseLayout
+  title="Kitchen Box Archive"
+  description="Every Lush Kitchen subscription box since February 2022. Opened, reviewed, archived."
+>
+  <Hero
+    title="Kitchen Box Archive"
+    subtitle="Every box since February 2022. Products, scent notes, nostalgia — all documented."
+    tag="Archive"
+    minimal
+  />
+
+  <section class="section">
+    <div class="container">
+      {years.map((year) => (
+        <div class="year-group">
+          <h2 class="year-heading">{year}</h2>
+          <div class="grid grid--2">
+            {boxesByYear[year].map((box) => (
+              <BoxCard
+                title={box.data.title}
+                slug={box.id}
+                month={box.data.month}
+                year={box.data.year}
+                summary={box.data.summary}
+                heroImage={box.data.heroImage}
+                productCount={box.data.products?.length}
+              />
+            ))}
+          </div>
+        </div>
+      ))}
+
+      {allBoxes.length === 0 && (
+        <div class="empty-state">
+          <h3>No boxes yet</h3>
+          <p class="text-muted">Kitchen box reviews will appear here as they're published.</p>
+        </div>
+      )}
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .year-group {
+    margin-bottom: var(--space-4xl);
+  }
+
+  .year-heading {
+    font-size: 1.5rem;
+    margin-bottom: var(--space-xl);
+    padding-bottom: var(--space-sm);
+    border-bottom: 1px solid var(--color-border);
+    color: var(--color-text-muted);
+  }
+
+  .empty-state {
+    padding: var(--space-4xl) 0;
+  }
+</style>

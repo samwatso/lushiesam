@@ -1,0 +1,75 @@
+---
+interface Props {
+  url?: string;
+  embedId?: string;
+}
+
+const { url, embedId } = Astro.props;
+const hasEmbed = embedId && embedId.length > 0;
+---
+
+<div class="tiktok-embed-block">
+  {hasEmbed ? (
+    <div class="tiktok-player">
+      <blockquote
+        class="tiktok-embed"
+        cite={url}
+        data-video-id={embedId}
+        style="max-width: 605px; min-width: 325px;"
+      >
+        <section>
+          <a target="_blank" rel="noopener noreferrer" href={url}>Watch on TikTok</a>
+        </section>
+      </blockquote>
+      <script async src="https://www.tiktok.com/embed.js"></script>
+    </div>
+  ) : url ? (
+    <div class="tiktok-cta">
+      <p class="tiktok-label">Watch the unboxing</p>
+      <a href={url} target="_blank" rel="noopener noreferrer" class="btn btn--secondary">
+        Watch on TikTok →
+      </a>
+    </div>
+  ) : (
+    <div class="tiktok-placeholder">
+      <p>TikTok video coming soon</p>
+    </div>
+  )}
+</div>
+
+<style>
+  .tiktok-embed-block {
+    margin: var(--space-3xl) 0;
+  }
+
+  .tiktok-player {
+    display: flex;
+    justify-content: center;
+  }
+
+  .tiktok-cta {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: var(--space-lg);
+    background: var(--color-bg-card);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-lg);
+  }
+
+  .tiktok-label {
+    font-family: var(--font-display);
+    font-size: 1.125rem;
+    color: var(--color-text-heading);
+  }
+
+  .tiktok-placeholder {
+    padding: var(--space-xl);
+    background: var(--color-bg-card);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-lg);
+    text-align: center;
+    color: var(--color-text-muted);
+    font-size: 0.875rem;
+  }
+</style>

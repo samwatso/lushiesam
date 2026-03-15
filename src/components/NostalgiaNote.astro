@@ -1,0 +1,62 @@
+---
+interface Note {
+  title?: string;
+  body: string;
+}
+
+interface Props {
+  notes: Note[];
+}
+
+const { notes } = Astro.props;
+---
+
+{notes.length > 0 && (
+  <div class="nostalgia-section">
+    <h3 class="nostalgia-heading">Nostalgia Notes</h3>
+    <div class="nostalgia-list">
+      {notes.map((note) => (
+        <div class="nostalgia-card">
+          {note.title && <h4 class="nostalgia-title">{note.title}</h4>}
+          <p class="nostalgia-body">{note.body}</p>
+        </div>
+      ))}
+    </div>
+  </div>
+)}
+
+<style>
+  .nostalgia-section {
+    margin: var(--space-3xl) 0;
+  }
+
+  .nostalgia-heading {
+    margin-bottom: var(--space-lg);
+  }
+
+  .nostalgia-list {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-sm);
+  }
+
+  .nostalgia-card {
+    background: var(--color-gold-dim);
+    border-left: 2px solid var(--color-gold);
+    border-radius: 0 var(--radius-md) var(--radius-md) 0;
+    padding: var(--space-lg) var(--space-xl);
+  }
+
+  .nostalgia-title {
+    font-family: var(--font-display);
+    font-size: 1rem;
+    margin-bottom: var(--space-sm);
+    color: var(--color-gold);
+  }
+
+  .nostalgia-body {
+    font-size: 0.875rem;
+    color: var(--color-text-secondary);
+    line-height: 1.7;
+  }
+</style>

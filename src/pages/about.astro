@@ -1,0 +1,75 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import Hero from '@/components/Hero.astro';
+import CTABlock from '@/components/CTABlock.astro';
+---
+
+<BaseLayout
+  title="About"
+  description="Lushie Sam — a Lush Kitchen subscriber since 2022, filming unboxings and archiving every box."
+>
+  <Hero
+    title="About"
+    tag="Lushie Sam"
+    minimal
+  />
+
+  <section class="section">
+    <div class="container container--narrow">
+      <div class="about-content">
+        <p>
+          I'm Sam. I'm from the UK, I've been into Lush since way back, and I've been a Kitchen
+          subscriber since February 2022.
+        </p>
+        <p>
+          I'm not a beauty influencer or anything like that — I'm just a guy who genuinely loves
+          Lush products. Got properly into the brand after attending Lush Creative Showcase in 2016
+          and Lush Showcase in 2018. Something about seeing how everything's made and meeting the
+          people behind the products just clicked.
+        </p>
+        <p>
+          These days I film every Kitchen box unboxing on
+          <a href="https://www.tiktok.com/@lushiesam" target="_blank" rel="noopener noreferrer">TikTok</a>
+          and this site is the archive — every box documented, every product noted, every nostalgia
+          moment captured somewhere that isn't going to disappear into a feed.
+        </p>
+        <p>
+          It's a personal collection, not a review site. Think of it like flipping through someone's
+          scrapbook who happens to be v v into bath bombs.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <CTABlock
+    title="Explore the archive"
+    description="Every Kitchen box since February 2022 — documented and kept."
+    primaryLink="/kitchen-boxes/"
+    primaryLabel="Kitchen Boxes"
+    secondaryLink="/my-lush-story/"
+    secondaryLabel="My Lush Story"
+  />
+</BaseLayout>
+
+<style>
+  .about-content {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-lg);
+  }
+
+  .about-content p {
+    color: var(--color-text-secondary);
+    font-size: 1.0625rem;
+    line-height: 1.85;
+    max-width: none;
+  }
+
+  .about-content a {
+    color: var(--color-pink);
+  }
+
+  .about-content a:hover {
+    color: var(--color-white);
+  }
+</style>

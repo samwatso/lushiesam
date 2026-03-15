@@ -1,0 +1,203 @@
+---
+import { getCollection, render } from 'astro:content';
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import Hero from '@/components/Hero.astro';
+import ProductList from '@/components/ProductList.astro';
+import ScreenshotGallery from '@/components/ScreenshotGallery.astro';
+import TikTokEmbed from '@/components/TikTokEmbed.astro';
+import NostalgiaNote from '@/components/NostalgiaNote.astro';
+
+export async function getStaticPaths() {
+  const boxes = await getCollection('kitchenBoxes');
+  return boxes.map((box) => ({
+    params: { slug: box.id },
+    props: { box },
+  }));
+}
+
+const { box } = Astro.props;
+const { data } = box;
+const { Content } = await render(box);
+---
+
+<BaseLayout
+  title={data.title}
+  description={data.summary}
+  ogImage={data.heroImage}
+  ogType="article"
+>
+  <Hero
+    title={data.title}
+    subtitle={data.summary}
+    tag={`${data.month} ${data.year}`}
+    minimal
+  />
+
+  <article class="section">
+    <div class="container container--narrow">
+      <!-- Group Shot -->
+      {data.groupShot && (
+        <div class="group-shot">
+          <img src={data.groupShot} alt={`${data.title} — all products`} />
+        </div>
+      )}
+
+      <!-- Main Review Content -->
+      <div class="box-content prose">
+        <Content />
+      </div>
+
+      <!-- TikTok Embed -->
+      <TikTokEmbed url={data.tiktokUrl} embedId={data.tiktokEmbedId} />
+
+      <!-- Products -->
+      {data.products && data.products.length > 0 && (
+        <section class="box-section">
+          <h3>What's in the box</h3>
+          <p class="box-section-subtitle">{data.products.length} products this month</p>
+          <ProductList products={data.products} />
+        </section>
+      )}
+
+      <!-- Screenshots -->
+      {data.screenshots && data.screenshots.length > 0 && (
+        <ScreenshotGallery screenshots={data.screenshots} title="Gallery" />
+      )}
+
+      <!-- Nostalgia Notes -->
+      {data.nostalgiaNotes && data.nostalgiaNotes.length > 0 && (
+        <NostalgiaNote notes={data.nostalgiaNotes} />
+      )}
+
+      <!-- Caption Used -->
+      {data.caption && (
+        <div class="caption-block">
+          <h3>The caption</h3>
+          <blockquote class="caption-quote">
+            {data.caption}
+          </blockquote>
+          {data.hashtags && data.hashtags.length > 0 && (
+            <div class="hashtags">
+              {data.hashtags.map((tag) => (
+                <span class="hashtag">#{tag}</span>
+              ))}
+            </div>
+          )}
+        </div>
+      )}
+
+      <!-- Navigation -->
+      <nav class="box-nav">
+        <a href="/kitchen-boxes/" class="btn btn--ghost">← Back to Archive</a>
+      </nav>
+    </div>
+  </article>
+</BaseLayout>
+
+<style>
+  .group-shot {
+    margin-bottom: var(--space-3xl);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    border: 1px solid var(--color-border);
+    background: var(--color-surface);
+    aspect-ratio: 16 / 9;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .group-shot img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  /* Prose styling for markdown content */
+  .prose {
+    font-size: 1.0625rem;
+    line-height: 1.85;
+    color: var(--color-text-secondary);
+  }
+
+  .prose :global(h2) {
+    margin-top: var(--space-3xl);
+    margin-bottom: var(--space-md);
+    color: var(--color-text-heading);
+  }
+
+  .prose :global(h3) {
+    margin-top: var(--space-2xl);
+    margin-bottom: var(--space-sm);
+    color: var(--color-text-heading);
+  }
+
+  .prose :global(p) {
+    margin-bottom: var(--space-md);
+    max-width: none;
+  }
+
+  .prose :global(strong) {
+    color: var(--color-text-heading);
+    font-weight: 600;
+  }
+
+  .prose :global(em) {
+    font-style: italic;
+  }
+
+  /* Box sections */
+  .box-section {
+    margin: var(--space-3xl) 0;
+  }
+
+  .box-section h3 {
+    margin-bottom: var(--space-sm);
+  }
+
+  .box-section-subtitle {
+    color: var(--color-text-muted);
+    font-size: 0.875rem;
+    margin-bottom: var(--space-lg);
+  }
+
+  /* Caption block */
+  .caption-block {
+    margin: var(--space-3xl) 0;
+  }
+
+  .caption-block h3 {
+    margin-bottom: var(--space-md);
+  }
+
+  .caption-quote {
+    background: var(--color-lavender-dim);
+    border-left: 2px solid var(--color-lavender);
+    border-radius: 0 var(--radius-md) var(--radius-md) 0;
+    padding: var(--space-lg) var(--space-xl);
+    font-size: 0.9375rem;
+    line-height: 1.7;
+    color: var(--color-text-secondary);
+    font-style: italic;
+  }
+
+  .hashtags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-sm);
+    margin-top: var(--space-md);
+  }
+
+  .hashtag {
+    font-size: 0.75rem;
+    color: var(--color-lavender);
+    font-weight: 500;
+  }
+
+  /* Navigation */
+  .box-nav {
+    margin-top: var(--space-3xl);
+    padding-top: var(--space-xl);
+    border-top: 1px solid var(--color-border);
+  }
+</style>

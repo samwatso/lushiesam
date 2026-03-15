@@ -1,0 +1,126 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import Hero from '@/components/Hero.astro';
+import CTABlock from '@/components/CTABlock.astro';
+---
+
+<BaseLayout
+  title="My Lush Story"
+  description="How a trip to Creative Showcase in 2016 turned into a full-blown Lush obsession, a Kitchen subscription, and a TikTok."
+>
+  <Hero
+    title="My Lush Story"
+    tag="The origin story"
+    minimal
+  />
+
+  <section class="section">
+    <div class="container container--narrow">
+      <div class="page-content">
+        <p>
+          I wasn't always this deep into Lush. Like most people in the UK, I knew the shops — you
+          walk past and the smell hits you from three doors down. I'd bought the odd bath bomb
+          as a gift, maybe grabbed a soap here and there. But I wasn't properly into it.
+        </p>
+
+        <h3>Creative Showcase, 2016</h3>
+        <p>
+          Everything changed when I went to Lush Creative Showcase in 2016. If you haven't heard
+          of it, it was basically this massive event where Lush showed off new products, let you
+          meet the people who actually make everything, and generally went all-in on the creative
+          side of the brand.
+        </p>
+        <p>
+          I went not really knowing what to expect and came back genuinely buzzing. Seeing how
+          products are developed, watching people hand-make bath bombs, understanding the
+          whole ethos behind it — it properly clicked. I went from "Lush is that shop that
+          smells nice" to actually caring about the products and the stories behind them.
+        </p>
+
+        <h3>Lush Showcase, 2018</h3>
+        <p>
+          Two years later I went to Lush Showcase 2018 and that sealed it. By this point I was
+          properly invested — I knew product names, scent families, what was discontinued when. The
+          2018 event was incredible. Meeting other fans who were equally obsessed, discovering products
+          I'd never even heard of, getting hands-on with everything.
+        </p>
+        <p>
+          That event took me from "interested fan" to "yeah this is a proper hobby now." No regrets.
+        </p>
+
+        <h3>The gap years</h3>
+        <p>
+          I'll be honest — between 2018 and 2022 I was still buying Lush but I wasn't as tuned in.
+          Life happens, you drift a bit. I'd still pick up favourites when I was in a shop, still
+          had opinions about seasonal ranges, but I wasn't keeping up with every launch.
+        </p>
+
+        <h3>February 2022 — Kitchen arrives</h3>
+        <p>
+          When the Kitchen subscription launched, something switched back on. The idea of a monthly
+          box of exclusive and returning products was basically designed for people like me. I
+          subscribed in February 2022 and haven't missed a month since.
+        </p>
+        <p>
+          The first few boxes reminded me why I fell for this stuff in the first place. Products I'd
+          never tried, scents that took me back to Showcase, things I didn't even know I wanted. It
+          reignited the whole thing.
+        </p>
+
+        <h3>Starting TikTok</h3>
+        <p>
+          I started filming unboxings on TikTok because honestly, I was already doing it in my head
+          anyway. Every month the box would arrive and I'd have this whole internal monologue —
+          first impressions, scent notes, what it reminds me of, whether the community would rate it.
+          Figured I might as well film it.
+        </p>
+        <p>
+          The TikTok isn't polished and it's not trying to be. It's just me opening a box and giving
+          honest reactions. Sometimes I'm buzzing about a product, sometimes I'm a bit "hmm okay,"
+          and both of those are fine. I'd rather be genuine than performative.
+        </p>
+
+        <h3>What Lush means to me</h3>
+        <p>
+          I'm not going to be cheesy about it, but Lush is genuinely one of those things that just
+          makes life a bit better. A good bath bomb at the end of a long day, a soap that smells
+          incredible, a product that takes you back to a specific memory — that stuff matters more
+          than people give it credit for.
+        </p>
+        <p>
+          This site exists because those moments deserve to be documented somewhere. Not as reviews,
+          not as content — just as a record of a thing I properly love.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <CTABlock
+    title="Browse the archive"
+    description="Every Kitchen box since February 2022 — products, scent notes, nostalgia, the lot."
+    primaryLink="/kitchen-boxes/"
+    primaryLabel="Kitchen Boxes"
+    secondaryLink="/what-is-kitchen/"
+    secondaryLabel="What is Kitchen?"
+  />
+</BaseLayout>
+
+<style>
+  .page-content {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-md);
+  }
+
+  .page-content h3 {
+    margin-top: var(--space-xl);
+    margin-bottom: 0;
+  }
+
+  .page-content p {
+    color: var(--color-text-secondary);
+    font-size: 1.0625rem;
+    line-height: 1.85;
+    max-width: none;
+  }
+</style>

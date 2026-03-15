@@ -1,0 +1,151 @@
+---
+const currentYear = new Date().getFullYear();
+---
+
+<footer class="site-footer">
+  <div class="container footer-inner">
+    <div class="footer-top">
+      <div class="footer-brand">
+        <a href="/" class="footer-logo">LUSHIE SAM</a>
+        <p class="footer-tagline">Bath bombs, Kitchen boxes, and way too many opinions about soap.</p>
+      </div>
+
+      <nav class="footer-nav" aria-label="Footer navigation">
+        <div class="footer-nav-group">
+          <h4>Explore</h4>
+          <ul>
+            <li><a href="/kitchen-boxes/">Kitchen Boxes</a></li>
+            <li><a href="/what-is-kitchen/">What is Kitchen?</a></li>
+            <li><a href="/my-lush-story/">My Lush Story</a></li>
+            <li><a href="/about/">About</a></li>
+          </ul>
+        </div>
+        <div class="footer-nav-group">
+          <h4>Connect</h4>
+          <ul>
+            <li><a href="https://www.tiktok.com/@lushiesam" target="_blank" rel="noopener noreferrer">TikTok</a></li>
+          </ul>
+        </div>
+      </nav>
+    </div>
+
+    <div class="footer-bottom">
+      <p class="footer-disclaimer">
+        Fan archive and creator site. Not affiliated with Lush Cosmetics.
+      </p>
+      <p class="footer-copyright">
+        &copy; {currentYear} Lushie Sam
+      </p>
+    </div>
+  </div>
+</footer>
+
+<style>
+  .site-footer {
+    background: var(--color-bg-subtle);
+    border-top: 1px solid var(--color-border);
+    padding: var(--space-3xl) 0 var(--space-xl);
+    margin-top: var(--space-5xl);
+  }
+
+  .footer-inner {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2xl);
+  }
+
+  .footer-top {
+    display: flex;
+    justify-content: space-between;
+    gap: var(--space-2xl);
+  }
+
+  .footer-logo {
+    font-family: var(--font-body);
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.15em;
+    color: var(--color-white);
+    text-decoration: none;
+    display: block;
+    margin-bottom: var(--space-sm);
+  }
+
+  .footer-logo:hover {
+    color: var(--color-white);
+  }
+
+  .footer-tagline {
+    font-size: 0.8125rem;
+    color: var(--color-text-muted);
+    max-width: 280px;
+    line-height: 1.6;
+  }
+
+  .footer-nav {
+    display: flex;
+    gap: var(--space-3xl);
+  }
+
+  .footer-nav h4 {
+    font-family: var(--font-body);
+    font-size: 0.6875rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--color-text-muted);
+    margin-bottom: var(--space-md);
+  }
+
+  .footer-nav ul {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-sm);
+  }
+
+  .footer-nav a {
+    color: var(--color-text-secondary);
+    font-size: 0.8125rem;
+    transition: color 0.2s ease;
+  }
+
+  .footer-nav a:hover {
+    color: var(--color-pink);
+  }
+
+  .footer-bottom {
+    border-top: 1px solid var(--color-border);
+    padding-top: var(--space-lg);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: var(--space-md);
+  }
+
+  .footer-disclaimer {
+    font-size: 0.75rem;
+    font-style: italic;
+    color: var(--color-text-muted);
+  }
+
+  .footer-copyright {
+    font-size: 0.75rem;
+    color: var(--color-text-muted);
+  }
+
+  @media (max-width: 768px) {
+    .footer-top {
+      flex-direction: column;
+    }
+
+    .footer-nav {
+      gap: var(--space-2xl);
+    }
+
+    .footer-bottom {
+      flex-direction: column;
+      text-align: center;
+    }
+  }
+</style>

@@ -1,0 +1,28 @@
+---
+interface Props {
+  title: string;
+  subtitle?: string;
+}
+
+const { title, subtitle } = Astro.props;
+---
+
+<div class="section-heading">
+  <h2>{title}</h2>
+  {subtitle && <p>{subtitle}</p>}
+</div>
+
+<style>
+  .section-heading {
+    margin-bottom: var(--space-2xl);
+  }
+
+  .section-heading h2 {
+    margin-bottom: var(--space-sm);
+  }
+
+  .section-heading p {
+    color: var(--color-text-secondary);
+    font-size: 0.9375rem;
+  }
+</style>

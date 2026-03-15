@@ -1,0 +1,157 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import Hero from '@/components/Hero.astro';
+import CTABlock from '@/components/CTABlock.astro';
+
+const allProducts = (await getCollection('products'))
+  .filter((p) => !p.data.draft)
+  .sort((a, b) => a.data.name.localeCompare(b.data.name));
+
+const productTypes = [...new Set(allProducts.map((p) => p.data.type))].sort();
+---
+
+<BaseLayout
+  title="Products"
+  description="A growing archive of Lush products from Kitchen boxes and beyond."
+>
+  <Hero
+    title="Product Catalogue"
+    subtitle="A growing archive of products from the Kitchen boxes. More added with every box."
+    tag="Coming soon"
+    minimal
+  />
+
+  <section class="section">
+    <div class="container">
+      {allProducts.length > 0 ? (
+        <div class="products-preview">
+          {productTypes.map((type) => (
+            <div class="product-type-group">
+              <h3 class="type-heading">{type}</h3>
+              <div class="product-grid">
+                {allProducts
+                  .filter((p) => p.data.type === type)
+                  .map((product) => (
+                    <div class="product-card">
+                      <div class="product-card-image">
+                        {product.data.image ? (
+                          <img src={product.data.image} alt={product.data.name} loading="lazy" />
+                        ) : (
+                          <div class="product-card-placeholder">
+                            <span>🧼</span>
+                          </div>
+                        )}
+                      </div>
+                      <div class="product-card-body">
+                        <h4>{product.data.name}</h4>
+                        {product.data.scent && (
+                          <p class="product-card-scent">{product.data.scent}</p>
+                        )}
+                        {product.data.kitchenExclusive && (
+                          <span class="tag">Kitchen Exclusive</span>
+                        )}
+                      </div>
+                    </div>
+                  ))}
+              </div>
+            </div>
+          ))}
+        </div>
+      ) : (
+        <div class="coming-soon">
+          <p class="text-muted">
+            Product catalogue is being built. In the meantime, find products in each Kitchen box review.
+          </p>
+        </div>
+      )}
+    </div>
+  </section>
+
+  <CTABlock
+    title="Browse by box"
+    description="Every product is featured in its original Kitchen box entry with scent notes and honest takes."
+    primaryLink="/kitchen-boxes/"
+    primaryLabel="Kitchen Box Archive"
+  />
+</BaseLayout>
+
+<style>
+  .products-preview {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-4xl);
+  }
+
+  .type-heading {
+    margin-bottom: var(--space-lg);
+    padding-bottom: var(--space-sm);
+    border-bottom: 1px solid var(--color-border);
+  }
+
+  .product-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: var(--space-lg);
+  }
+
+  .product-card {
+    background: var(--color-bg-card);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    transition: border-color 0.3s ease;
+  }
+
+  .product-card:hover {
+    border-color: var(--color-border-hover);
+  }
+
+  .product-card-image {
+    aspect-ratio: 1;
+    overflow: hidden;
+    background: var(--color-surface);
+  }
+
+  .product-card-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    opacity: 0.9;
+  }
+
+  .product-card:hover .product-card-image img {
+    opacity: 1;
+  }
+
+  .product-card-placeholder {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2rem;
+  }
+
+  .product-card-body {
+    padding: var(--space-lg);
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-xs);
+  }
+
+  .product-card-body h4 {
+    font-family: var(--font-display);
+    font-size: 1rem;
+  }
+
+  .product-card-scent {
+    font-size: 0.8125rem;
+    color: var(--color-text-muted);
+    font-style: italic;
+  }
+
+  .coming-soon {
+    padding: var(--space-4xl) 0;
+  }
+</style>

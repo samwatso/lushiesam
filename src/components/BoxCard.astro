@@ -1,0 +1,117 @@
+---
+interface Props {
+  title: string;
+  slug: string;
+  month: string;
+  year: number;
+  summary: string;
+  heroImage?: string;
+  productCount?: number;
+}
+
+const { title, slug, month, year, summary, heroImage, productCount } = Astro.props;
+---
+
+<a href={`/kitchen-boxes/${slug}/`} class="box-card card">
+  <div class="box-card-image">
+    {heroImage ? (
+      <img src={heroImage} alt={title} loading="lazy" />
+    ) : (
+      <div class="box-card-placeholder">
+        <span class="placeholder-month">{month} '{String(year).slice(2)}</span>
+      </div>
+    )}
+  </div>
+  <div class="box-card-body">
+    <span class="box-card-date">{month} {year}</span>
+    <h3 class="box-card-title">{title}</h3>
+    <p class="box-card-summary">{summary}</p>
+    {productCount && (
+      <span class="box-card-meta">{productCount} products →</span>
+    )}
+  </div>
+</a>
+
+<style>
+  .box-card {
+    display: flex;
+    flex-direction: column;
+    text-decoration: none;
+    color: inherit;
+  }
+
+  .box-card:hover {
+    color: inherit;
+  }
+
+  .box-card-image {
+    position: relative;
+    aspect-ratio: 4 / 3;
+    overflow: hidden;
+    background: var(--color-surface);
+  }
+
+  .box-card-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.5s ease, opacity 0.3s ease;
+    opacity: 0.9;
+  }
+
+  .box-card:hover .box-card-image img {
+    transform: scale(1.04);
+    opacity: 1;
+  }
+
+  .box-card-placeholder {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--gradient-warm);
+  }
+
+  .placeholder-month {
+    font-family: var(--font-display);
+    font-size: 1.75rem;
+    color: var(--color-text-muted);
+  }
+
+  .box-card-body {
+    padding: var(--space-lg) 0;
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-xs);
+    flex: 1;
+  }
+
+  .box-card-date {
+    font-size: 0.6875rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--color-text-muted);
+    font-weight: 500;
+  }
+
+  .box-card-title {
+    font-size: 1.25rem;
+    line-height: 1.3;
+  }
+
+  .box-card-summary {
+    font-size: 0.875rem;
+    color: var(--color-text-secondary);
+    line-height: 1.6;
+  }
+
+  .box-card-meta {
+    margin-top: auto;
+    padding-top: var(--space-sm);
+    font-size: 0.75rem;
+    color: var(--color-pink);
+    font-weight: 500;
+    letter-spacing: 0.02em;
+  }
+</style>

@@ -1,0 +1,95 @@
+---
+interface Screenshot {
+  src: string;
+  alt?: string;
+  caption?: string;
+}
+
+interface Props {
+  screenshots: Screenshot[];
+  title?: string;
+}
+
+const { screenshots, title = 'Gallery' } = Astro.props;
+---
+
+{screenshots.length > 0 && (
+  <div class="screenshot-gallery">
+    <h3 class="gallery-title">{title}</h3>
+    <div class="gallery-grid">
+      {screenshots.map((shot) => (
+        <figure class="gallery-item">
+          <div class="gallery-image">
+            {shot.src ? (
+              <img src={shot.src} alt={shot.alt || ''} loading="lazy" />
+            ) : (
+              <div class="gallery-placeholder">
+                <span>📸</span>
+              </div>
+            )}
+          </div>
+          {shot.caption && (
+            <figcaption class="gallery-caption">{shot.caption}</figcaption>
+          )}
+        </figure>
+      ))}
+    </div>
+  </div>
+)}
+
+<style>
+  .screenshot-gallery {
+    margin: var(--space-3xl) 0;
+  }
+
+  .gallery-title {
+    margin-bottom: var(--space-lg);
+  }
+
+  .gallery-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: var(--space-sm);
+  }
+
+  .gallery-item {
+    overflow: hidden;
+    background: var(--color-bg-card);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+  }
+
+  .gallery-image {
+    aspect-ratio: 16 / 10;
+    overflow: hidden;
+    background: var(--color-surface);
+  }
+
+  .gallery-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.4s ease;
+    opacity: 0.9;
+  }
+
+  .gallery-item:hover .gallery-image img {
+    transform: scale(1.03);
+    opacity: 1;
+  }
+
+  .gallery-placeholder {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+  }
+
+  .gallery-caption {
+    padding: var(--space-sm) var(--space-md);
+    font-size: 0.75rem;
+    color: var(--color-text-muted);
+  }
+</style>
