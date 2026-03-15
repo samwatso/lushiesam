@@ -49,7 +49,7 @@ hashtags:
   - LushAddict
 nostalgiaNotes:
   - title: "Rose Jam Forever"
-    body: "The Rose Jam scent family is one of Lush's most beloved. This bubbleroon brings back the format from the Kitchen's early days — a macaron-shaped bubble bar that creates the dreamiest rose-scented bubbles. If you're a Rose Jam person, this is your moment."
+    body: "The Rose Jam scent family is one of Lush's most beloved. This bubbleroon brings back the format from the Kitchen's early days, a macaron-shaped bubble bar that creates the dreamiest rose-scented bubbles. If you're a Rose Jam person, this is your moment."
 relatedProducts: []
 publishedDate: 2026-02-12
 draft: false
@@ -57,17 +57,17 @@ draft: false
 
 ## February 2026
 
-Love is in the air — and in the bath. February's Kitchen box goes full Valentines and honestly, it nails it.
+Love is in the air and in the bath. February's Kitchen box goes full Valentines and honestly, it nails it.
 
 ### First impressions
 
-The packaging this month has a gorgeous deep burgundy tissue wrap with gold foil hearts. Proper fancy. Inside, the Rose Jam Bubbleroon immediately steals the show — it looks like an actual macaron and the rose scent hits you the moment you open the box. That scent is unmistakable if you know Rose Jam.
+The packaging this month has a gorgeous deep burgundy tissue wrap with gold foil hearts. Proper fancy. Inside, the Rose Jam Bubbleroon immediately steals the show. It looks like an actual macaron and the rose scent hits you the moment you open the box. That scent is unmistakable if you know Rose Jam.
 
 ### The bath
 
-Tender Is The Night creates the most dramatic bathwater I've seen from a Kitchen box. Deep crimson red swirled with gold lustre. The jasmine-sandalwood scent is sophisticated and warm — this isn't a "cute" bath bomb, it's a *luxurious* one. Evening bath material for sure.
+Tender Is The Night creates the most dramatic bathwater I've seen from a Kitchen box. Deep crimson red swirled with gold lustre. The jasmine-sandalwood scent is sophisticated and warm. This isn't a "cute" bath bomb, it's a *luxurious* one. Evening bath material for sure.
 
-The Rose Jam Bubbleroon produces mountains of sweet pink bubbles. The rose is authentic — not synthetic at all — with a lovely lemon brightness that keeps it from being too heavy. Defo crumbled half in and saved the rest, that's how you get the best out of a bubbleroon.
+The Rose Jam Bubbleroon produces mountains of sweet pink bubbles. The rose is authentic, not synthetic at all, with a lovely lemon brightness that keeps it from being too heavy. Defo crumbled half in and saved the rest, that's how you get the best out of a bubbleroon.
 
 ### Body care
 
@@ -79,4 +79,4 @@ February leans into its theme and absolutely delivers. Every product feels inten
 
 ### Community vibe
 
-Rose Jam is always going to go down well — it's a fan favourite for a reason. Tender Is The Night was the surprise hit though, lots of people rating it higher than expected. A properly well-received month.
+Rose Jam is always going to go down well. It's a fan favourite for a reason. Tender Is The Night was the surprise hit though, lots of people rating it higher than expected. A properly well-received month.

@@ -38,7 +38,7 @@ const { Content } = await render(box);
       <!-- Group Shot -->
       {data.groupShot && (
         <div class="group-shot">
-          <img src={data.groupShot} alt={`${data.title} — all products`} />
+          <img src={data.groupShot} alt={`${data.title}, all products`} />
         </div>
       )}
 
@@ -171,8 +171,8 @@ const { Content } = await render(box);
   }
 
   .caption-quote {
-    background: var(--color-lavender-dim);
-    border-left: 2px solid var(--color-lavender);
+    background: var(--color-green-dim);
+    border-left: 2px solid var(--color-green);
     border-radius: 0 var(--radius-md) var(--radius-md) 0;
     padding: var(--space-lg) var(--space-xl);
     font-size: 0.9375rem;
@@ -190,7 +190,7 @@ const { Content } = await render(box);
 
   .hashtag {
     font-size: 0.75rem;
-    color: var(--color-lavender);
+    color: var(--color-green);
     font-weight: 500;
   }
 

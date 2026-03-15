@@ -14,7 +14,7 @@ products:
     image: "/images/products/sakura-bath-bomb.jpg"
     scent: "Cherry blossom, ylang ylang, sweet vanilla"
     highlight: true
-    nostalgiaNote: "OGs will remember the original Sakura from 2018 — this one's slightly sweeter but the same gorgeous pink water. Took me right back."
+    nostalgiaNote: "OGs will remember the original Sakura from 2018. This one's slightly sweeter but the same gorgeous pink water. Took me right back."
   - name: "Lime Pastille Shower Jelly"
     type: "Shower Jelly"
     description: "Proper zingy lime jelly that wobbles its way to clean skin. Retro vibes for real."
@@ -42,15 +42,15 @@ products:
     highlight: false
 screenshots:
   - src: "/images/screenshots/march-2026-unboxing-01.jpg"
-    alt: "March 2026 box unboxing — first look"
+    alt: "March 2026 box unboxing, first look"
     caption: "First peek inside"
   - src: "/images/screenshots/march-2026-bathwater-01.jpg"
-    alt: "Sakura bath bomb in water — pink swirls"
+    alt: "Sakura bath bomb in water with pink swirls"
     caption: "Sakura doing its thing"
   - src: "/images/screenshots/march-2026-flatlay-01.jpg"
     alt: "Full March 2026 flatlay"
     caption: "The full spread"
-caption: "March Kitchen Box is giving SPRING 🌸 Sakura is the star — that pink water is unreal. Honey Bee soap smells exactly like HIWTK and I am not okay about it."
+caption: "March Kitchen Box is giving SPRING 🌸 Sakura is the star, that pink water is unreal. Honey Bee soap smells exactly like HIWTK and I am not okay about it."
 hashtags:
   - LushKitchen
   - LushieSam
@@ -59,7 +59,7 @@ hashtags:
   - LushAddict
 nostalgiaNotes:
   - title: "HIWTK Lives On"
-    body: "The Honey Bee soap carries the unmistakable scent of Honey I Washed The Kids — one of Lush's most beloved discontinued soaps. If you know, you know. This one's defo a community favourite."
+    body: "The Honey Bee soap carries the unmistakable scent of Honey I Washed The Kids, one of Lush's most beloved discontinued soaps. If you know, you know. This one's defo a community favourite."
   - title: "Sakura Redux"
     body: "Original Sakura fans will recognise the cherry blossom DNA. The 2026 version is slightly sweeter with more ylang ylang but the iconic pink bathwater is back and it's just as gorgeous."
 relatedProducts: []
@@ -69,15 +69,15 @@ draft: false
 
 ## March 2026
 
-Right then. Spring has properly arrived and this month's Kitchen box is absolutely loaded. Colour, scent, nostalgia — it's got the lot.
+Right then. Spring has properly arrived and this month's Kitchen box is absolutely loaded. Colour, scent, nostalgia, it's got the lot.
 
 ### First impressions
 
-Opening this box felt like walking into a Lush shop circa 2018 ngl. The Sakura bath bomb immediately catches your eye — gorgeous dusty pink with embedded flower petals. And then the Honey Bee soap — shaped like actual honeycomb and it smells *exactly* like HIWTK. I had a proper moment.
+Opening this box felt like walking into a Lush shop circa 2018 ngl. The Sakura bath bomb immediately catches your eye, gorgeous dusty pink with embedded flower petals. And then the Honey Bee soap, shaped like actual honeycomb and it smells *exactly* like HIWTK. I had a proper moment.
 
 ### The bath
 
-Sakura is the star here and it's not even close. Drop it in and watch ribbons of soft pink unfurl while tiny petals float on the surface. The scent is delicate — cherry blossom forward with a warm vanilla base. V v peaceful. The kind of bath where you just... exist for a bit.
+Sakura is the star here and it's not even close. Drop it in and watch ribbons of soft pink unfurl while tiny petals float on the surface. The scent is delicate, cherry blossom forward with a warm vanilla base. V v peaceful. The kind of bath where you just... exist for a bit.
 
 Avobath bubble bar makes the most vivid emerald green water with proper fluffy bubbles. The lemongrass is energising without being too much.
 

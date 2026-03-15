@@ -1,46 +1,51 @@
-/* ===== Lushie Sam — Dark Editorial Theme ===== */
-/* Inspired by Kith Vitality Green — dark, minimal, editorial */
+/* ===== Lushie Sam / Dark Editorial Theme ===== */
+/* Vitality Green: dark, minimal, editorial */
 
 /* --- Custom Properties / Design Tokens --- */
 :root {
   /* Core dark palette */
-  --color-bg: #111111;
-  --color-bg-raised: #1a1a1a;
-  --color-bg-card: #1e1e1e;
-  --color-bg-hover: #252525;
-  --color-bg-subtle: #141414;
-  --color-surface: #222222;
+  --color-bg: #0e110f;
+  --color-bg-raised: #151a16;
+  --color-bg-card: #1a201b;
+  --color-bg-hover: #222922;
+  --color-bg-subtle: #111411;
+  --color-surface: #1c221d;
 
-  /* Jewel-toned Lush accents */
-  --color-pink: #e88ca5;
-  --color-pink-dim: rgba(232, 140, 165, 0.12);
-  --color-peach: #e8a87c;
-  --color-peach-dim: rgba(232, 168, 124, 0.12);
-  --color-lavender: #b49fcc;
-  --color-lavender-dim: rgba(180, 159, 204, 0.12);
-  --color-mint: #7cc4a8;
-  --color-mint-dim: rgba(124, 196, 168, 0.12);
-  --color-gold: #d4a96a;
-  --color-gold-dim: rgba(212, 169, 106, 0.15);
+  /* Vitality Green accent palette */
+  --color-green: #5a8a6a;
+  --color-green-bright: #6faa80;
+  --color-green-deep: #3d6b4f;
+  --color-green-dim: rgba(90, 138, 106, 0.12);
+  --color-green-glow: rgba(90, 138, 106, 0.06);
+
+  /* Supporting accents */
+  --color-sage: #8aab8e;
+  --color-sage-dim: rgba(138, 171, 142, 0.1);
+  --color-moss: #4a6b4a;
+  --color-forest: #2d5a3d;
+  --color-gold: #c4a265;
+  --color-gold-dim: rgba(196, 162, 101, 0.12);
+  --color-cream: #d4c9a8;
+  --color-cream-dim: rgba(212, 201, 168, 0.08);
 
   /* Text hierarchy */
   --color-text: rgba(255, 255, 255, 0.88);
   --color-text-secondary: rgba(255, 255, 255, 0.6);
-  --color-text-muted: rgba(255, 255, 255, 0.35);
-  --color-text-heading: #ffffff;
-  --color-text-accent: var(--color-pink);
-  --color-white: #ffffff;
+  --color-text-muted: rgba(255, 255, 255, 0.3);
+  --color-text-heading: #f0f0ec;
+  --color-text-accent: var(--color-green-bright);
+  --color-white: #f0f0ec;
 
   /* Borders */
-  --color-border: rgba(255, 255, 255, 0.08);
-  --color-border-hover: rgba(255, 255, 255, 0.15);
+  --color-border: rgba(90, 138, 106, 0.1);
+  --color-border-hover: rgba(90, 138, 106, 0.22);
 
-  /* Gradients — subtle, moody */
-  --gradient-hero: linear-gradient(180deg, #1a1a1a 0%, #111111 100%);
-  --gradient-warm: linear-gradient(135deg, rgba(232, 140, 165, 0.08) 0%, rgba(212, 169, 106, 0.06) 100%);
-  --gradient-cool: linear-gradient(135deg, rgba(180, 159, 204, 0.08) 0%, rgba(124, 196, 168, 0.06) 100%);
-  --gradient-card: linear-gradient(160deg, #1e1e1e 0%, #1a1a1a 100%);
-  --gradient-accent: linear-gradient(135deg, var(--color-pink) 0%, var(--color-lavender) 100%);
+  /* Gradients */
+  --gradient-hero: linear-gradient(180deg, #151a16 0%, #0e110f 100%);
+  --gradient-warm: linear-gradient(135deg, rgba(90, 138, 106, 0.08) 0%, rgba(196, 162, 101, 0.05) 100%);
+  --gradient-cool: linear-gradient(135deg, rgba(74, 107, 74, 0.1) 0%, rgba(90, 138, 106, 0.06) 100%);
+  --gradient-card: linear-gradient(160deg, #1a201b 0%, #151a16 100%);
+  --gradient-accent: linear-gradient(135deg, var(--color-green-deep) 0%, var(--color-green) 100%);
 
   /* Typography */
   --font-display: 'DM Serif Display', 'Georgia', serif;
@@ -64,12 +69,11 @@
   --radius-xl: 1rem;
   --radius-full: 9999px;
 
-  /* Shadows — dark mode: glow rather than drop shadow */
+  /* Shadows */
   --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.3);
   --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.4);
   --shadow-lg: 0 8px 32px rgba(0, 0, 0, 0.5);
-  --shadow-glow-pink: 0 0 40px rgba(232, 140, 165, 0.08);
-  --shadow-glow-lavender: 0 0 40px rgba(180, 159, 204, 0.08);
+  --shadow-glow: 0 0 40px rgba(90, 138, 106, 0.08);
 
   /* Layout */
   --max-width: 1200px;
@@ -112,7 +116,7 @@ a {
 }
 
 a:hover {
-  color: var(--color-pink);
+  color: var(--color-green-bright);
 }
 
 h1, h2, h3, h4 {
@@ -204,14 +208,15 @@ p {
 }
 
 .btn--primary {
-  background: var(--color-white);
-  color: var(--color-bg);
+  background: var(--color-green);
+  color: var(--color-white);
 }
 
 .btn--primary:hover {
-  background: var(--color-pink);
+  background: var(--color-green-bright);
   color: var(--color-bg);
   transform: translateY(-1px);
+  box-shadow: var(--shadow-glow);
 }
 
 .btn--secondary {
@@ -221,8 +226,8 @@ p {
 }
 
 .btn--secondary:hover {
-  border-color: var(--color-pink);
-  color: var(--color-pink);
+  border-color: var(--color-green);
+  color: var(--color-green-bright);
   transform: translateY(-1px);
 }
 
@@ -234,7 +239,7 @@ p {
 .btn--accent:hover {
   color: var(--color-white);
   transform: translateY(-1px);
-  box-shadow: var(--shadow-glow-pink);
+  box-shadow: var(--shadow-glow);
 }
 
 .btn--ghost {
@@ -246,8 +251,8 @@ p {
 }
 
 .btn--ghost:hover {
-  color: var(--color-pink);
-  border-bottom-color: var(--color-pink);
+  color: var(--color-green-bright);
+  border-bottom-color: var(--color-green);
 }
 
 /* --- Tag / Badge --- */
@@ -259,9 +264,9 @@ p {
   font-weight: 500;
   text-transform: uppercase;
   letter-spacing: 0.06em;
-  background: var(--color-lavender-dim);
-  color: var(--color-lavender);
-  border: 1px solid rgba(180, 159, 204, 0.2);
+  background: var(--color-green-dim);
+  color: var(--color-green-bright);
+  border: 1px solid rgba(90, 138, 106, 0.2);
 }
 
 /* --- Grid Helpers --- */
