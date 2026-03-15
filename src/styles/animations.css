@@ -134,24 +134,43 @@
   will-change: transform, opacity, filter;
 }
 
-/* --- Section Depth Blur --- */
-.js-enabled .section--depth-exit {
-  will-change: filter, opacity;
-}
+/* =============================================
+   Scene 2: Latest Box Reveal — Initial States
+   Desktop only (scene requires pinning)
+   ============================================= */
+@media (min-width: 769px) {
+  .js-enabled .latest-scene-overlay {
+    opacity: 0;
+    transform: translateY(20px);
+    will-change: opacity, transform;
+  }
 
-/* --- Latest Box Split-Rate Layers --- */
-.js-enabled .latest-box-image {
-  will-change: transform;
-}
-.js-enabled .latest-box-info {
-  will-change: transform;
-}
+  .js-enabled .latest-scene-summary {
+    opacity: 0;
+    transform: translateY(15px);
+    will-change: opacity, transform;
+  }
 
-/* --- Product Pill Scroll Reveal --- */
-.js-enabled .product-pill--scroll-reveal {
-  opacity: 0;
-  transform: translateY(10px) scale(0.9);
-  will-change: opacity, transform;
+  .js-enabled .scene-product {
+    opacity: 0;
+    transform: translateY(12px);
+    will-change: opacity, transform;
+  }
+
+  .js-enabled .scene-product-scent {
+    opacity: 0;
+    will-change: opacity;
+  }
+
+  .js-enabled .latest-scene-cta {
+    opacity: 0;
+    transform: translateY(10px);
+    will-change: opacity, transform;
+  }
+
+  .js-enabled .latest-scene-image img {
+    will-change: transform;
+  }
 }
 
 /* =============================================
@@ -169,9 +188,12 @@
   .js-enabled [data-animate="hero-entrance"] .hero-word,
   .js-enabled [data-animate="hero-entrance"] .hero-subtitle,
   .js-enabled [data-animate="hero-entrance"] .hero-actions > *,
-  .js-enabled .product-pill--scroll-reveal,
   .js-enabled .hero--pinned,
-  .js-enabled .section--depth-exit {
+  .js-enabled .latest-scene-overlay,
+  .js-enabled .latest-scene-summary,
+  .js-enabled .scene-product,
+  .js-enabled .scene-product-scent,
+  .js-enabled .latest-scene-cta {
     opacity: 1 !important;
     transform: none !important;
     filter: none !important;

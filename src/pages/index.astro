@@ -23,6 +23,7 @@ const recentBoxes = allBoxes.slice(0, 4);
   <Hero
     title="The Lush Kitchen Archive"
     tag="Unboxed. Documented. Archived."
+    subtitle="A fan archive of Lush Kitchen boxes since 2022."
   >
     <a href="/kitchen-boxes/" class="btn btn--primary">Browse the Archive</a>
     <a href="https://www.tiktok.com/@lushiesam" target="_blank" rel="noopener noreferrer" class="btn btn--secondary">
@@ -35,9 +36,7 @@ const recentBoxes = allBoxes.slice(0, 4);
     <div class="container container--narrow">
       <div class="intro-block" data-animate="stagger-children">
         <p>
-          A fan-maintained archive of Lush Kitchen subscription boxes, documented since 2022.
-          Each box includes its full product list, scent notes, nostalgia context, and
-          TikTok unboxing.
+          Documented boxes include product lists, scent notes, nostalgia context, and TikTok unboxings.
         </p>
         <p>
           Maintained by Sam
@@ -48,48 +47,50 @@ const recentBoxes = allBoxes.slice(0, 4);
     </div>
   </section>
 
-  <!-- Latest Kitchen Box -->
+  <!-- Latest Kitchen Box — Scroll Scene -->
   {latestBox && (
-    <section class="section section--alt" data-glow="green">
+    <section class="latest-box-scene section--alt" data-glow="green">
       <div class="container">
-        <SectionHeading
-          title="Latest Box"
-          subtitle="The most recent Kitchen box, documented."
-        />
-        <a href={`/kitchen-boxes/${latestBox.id}/`} class="latest-box" data-animate="scrub-up">
-          <div class="latest-box-image" data-animate="parallax-image">
+        <div class="latest-scene-stage">
+          <div class="latest-scene-image">
             {latestBox.data.heroImage ? (
               <img src={latestBox.data.heroImage} alt={latestBox.data.title} />
             ) : (
-              <div class="latest-box-placeholder">
+              <div class="latest-scene-placeholder">
                 <span>{latestBox.data.month} '{String(latestBox.data.year).slice(2)}</span>
               </div>
             )}
+            <div class="latest-scene-overlay">
+              <span class="latest-scene-label">Latest Box</span>
+              <h3>{latestBox.data.title}</h3>
+              <span class="latest-scene-date">{latestBox.data.month} {latestBox.data.year}</span>
+            </div>
           </div>
-          <div class="latest-box-info" data-animate="stagger-from-right" data-stagger="0.1">
-            <span class="latest-box-date">{latestBox.data.month} {latestBox.data.year}</span>
-            <h3>{latestBox.data.title}</h3>
-            <p>{latestBox.data.summary}</p>
-            {latestBox.data.products && (
-              <div class="latest-box-products">
-                {latestBox.data.products.slice(0, 3).map((p) => (
-                  <span class="product-pill product-pill--scroll-reveal">{p.name}</span>
-                ))}
-                {latestBox.data.products.length > 3 && (
-                  <span class="product-pill product-pill--more product-pill--scroll-reveal">+{latestBox.data.products.length - 3} more</span>
-                )}
-              </div>
-            )}
-            <span class="latest-box-cta">View box details →</span>
-          </div>
-        </a>
+
+          <p class="latest-scene-summary">{latestBox.data.summary}</p>
+
+          {latestBox.data.products && latestBox.data.products.length > 0 && (
+            <div class="latest-scene-products">
+              {latestBox.data.products.slice(0, 5).map((p) => (
+                <div class="scene-product">
+                  <span class="scene-product-name">{p.name}</span>
+                  {p.scent && <span class="scene-product-scent">{p.scent}</span>}
+                </div>
+              ))}
+            </div>
+          )}
+
+          <a href={`/kitchen-boxes/${latestBox.id}/`} class="btn btn--primary latest-scene-cta">
+            View full box details →
+          </a>
+        </div>
       </div>
     </section>
   )}
 
   <!-- Archive Grid -->
   {recentBoxes.length > 1 && (
-    <section class="section">
+    <section class="section archive-section">
       <div class="container">
         <SectionHeading
           title="Archive"
@@ -149,48 +150,111 @@ const recentBoxes = allBoxes.slice(0, 4);
     color: var(--color-white);
   }
 
-  /* Latest box feature */
-  .latest-box {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    background: var(--glass-bg);
-    backdrop-filter: blur(var(--glass-blur));
-    -webkit-backdrop-filter: blur(var(--glass-blur));
-    border: 1px solid var(--glass-border);
+  /* ========================================
+     Latest Box Scene
+     ======================================== */
+  .latest-box-scene {
+    position: relative;
+    overflow: visible;
+    padding: var(--space-3xl) 0;
+  }
+
+  .latest-scene-stage {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-xl);
+  }
+
+  .latest-scene-image {
+    position: relative;
     border-radius: var(--radius-lg);
     overflow: hidden;
-    text-decoration: none;
-    color: inherit;
-    box-shadow: var(--glass-shadow);
-    transition: border-color 0.3s ease, box-shadow 0.3s ease;
-  }
-
-  .latest-box:hover {
-    color: inherit;
-    border-color: var(--glass-border-hover);
-    box-shadow: var(--glass-shadow), 0 0 24px rgba(90, 138, 106, 0.06);
-  }
-
-  .latest-box-image {
-    aspect-ratio: 4 / 3;
-    overflow: hidden;
+    aspect-ratio: 16 / 9;
     background: var(--color-surface);
+    box-shadow: var(--glass-shadow);
   }
 
-  .latest-box-image img {
+  .latest-scene-image img {
     width: 100%;
     height: 100%;
     object-fit: cover;
-    transition: transform 0.5s ease;
-    opacity: 0.9;
   }
 
-  .latest-box:hover .latest-box-image img {
-    transform: scale(1.04);
-    opacity: 1;
+  .latest-scene-overlay {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    padding: var(--space-2xl);
+    background: linear-gradient(transparent 0%, rgba(14, 17, 15, 0.85) 100%);
   }
 
-  .latest-box-placeholder {
+  .latest-scene-label {
+    font-size: 0.6875rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: var(--color-green-bright);
+    display: block;
+    margin-bottom: var(--space-xs);
+  }
+
+  .latest-scene-overlay h3 {
+    font-size: clamp(1.5rem, 3vw, 2rem);
+    color: var(--color-white);
+    margin-bottom: var(--space-xs);
+  }
+
+  .latest-scene-date {
+    font-size: 0.75rem;
+    color: var(--color-text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+  }
+
+  .latest-scene-summary {
+    color: var(--color-text-secondary);
+    font-size: 1rem;
+    line-height: 1.7;
+    max-width: 600px;
+  }
+
+  .latest-scene-products {
+    display: flex;
+    flex-direction: column;
+    gap: 1px;
+    background: var(--glass-border);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+  }
+
+  .scene-product {
+    display: flex;
+    align-items: baseline;
+    gap: var(--space-md);
+    padding: var(--space-md) var(--space-lg);
+    background: var(--glass-bg);
+    backdrop-filter: blur(var(--glass-blur));
+    -webkit-backdrop-filter: blur(var(--glass-blur));
+  }
+
+  .scene-product-name {
+    font-family: var(--font-display);
+    font-size: 1rem;
+    color: var(--color-text-heading);
+  }
+
+  .scene-product-scent {
+    font-size: 0.8125rem;
+    color: var(--color-text-muted);
+    font-style: italic;
+  }
+
+  .latest-scene-cta {
+    align-self: flex-start;
+  }
+
+  .latest-scene-placeholder {
     width: 100%;
     height: 100%;
     display: flex;
@@ -202,68 +266,18 @@ const recentBoxes = allBoxes.slice(0, 4);
     background: var(--gradient-warm);
   }
 
-  .latest-box-info {
-    padding: var(--space-2xl);
-    display: flex;
-    flex-direction: column;
-    gap: var(--space-sm);
-    justify-content: center;
-    background: var(--glass-bg);
-    position: relative;
-  }
-
-  .latest-box-date {
-    font-size: 0.6875rem;
-    text-transform: uppercase;
-    letter-spacing: 0.08em;
-    color: var(--color-text-muted);
-    font-weight: 500;
-  }
-
-  .latest-box-info h3 {
-    font-size: 1.5rem;
-    line-height: 1.25;
-  }
-
-  .latest-box-info p {
-    color: var(--color-text-secondary);
-    font-size: 0.9375rem;
-    line-height: 1.6;
-  }
-
-  .latest-box-products {
-    display: flex;
-    flex-wrap: wrap;
-    gap: var(--space-xs);
-    margin-top: var(--space-xs);
-  }
-
-  .product-pill {
-    padding: 0.2rem 0.5rem;
-    border-radius: var(--radius-full);
-    font-size: 0.6875rem;
-    background: var(--color-green-dim);
-    color: var(--color-green-bright);
-    font-weight: 500;
-    border: 1px solid var(--glass-border);
-  }
-
-  .product-pill--more {
-    background: var(--color-sage-dim);
-    color: var(--color-sage);
-    border-color: rgba(138, 171, 142, 0.15);
-  }
-
-  .latest-box-cta {
-    font-size: 0.8125rem;
-    font-weight: 500;
-    color: var(--color-green-bright);
-    margin-top: var(--space-sm);
-  }
-
   @media (max-width: 768px) {
-    .latest-box {
-      grid-template-columns: 1fr;
+    .latest-box-scene {
+      padding: var(--space-2xl) 0;
+    }
+
+    .latest-scene-image {
+      aspect-ratio: 4 / 3;
+    }
+
+    .scene-product {
+      flex-direction: column;
+      gap: var(--space-xs);
     }
   }
 </style>
