@@ -12,12 +12,37 @@ const {
   tag,
   minimal = false,
 } = Astro.props;
+
+// Server-side splitting for cinematic entrance (full hero only)
+const tagPhrases = !minimal && tag ? tag.split('. ').map((p: string, i: number, arr: string[]) => i < arr.length - 1 ? p + '.' : p) : [];
+const titleWords = !minimal ? title.split(' ') : [];
 ---
 
 <section class:list={['hero', { 'hero--minimal': minimal }]} data-animate={minimal ? 'fade-up' : 'hero-entrance'}>
   <div class="container hero-content">
-    {tag && <span class="hero-tag">{tag}</span>}
-    <h1 class="hero-title">{title}</h1>
+    {minimal ? (
+      <>
+        {tag && <span class="hero-tag">{tag}</span>}
+        <h1 class="hero-title">{title}</h1>
+      </>
+    ) : (
+      <>
+        {tag && (
+          <span class="hero-tag">
+            {tagPhrases.map((phrase: string) => (
+              <span class="hero-tag-mask"><span class="hero-tag-phrase">{phrase}&nbsp;</span></span>
+            ))}
+          </span>
+        )}
+        <div class="hero-accent-line"></div>
+        <h1 class="hero-title">
+          {titleWords.map((word: string) => (
+            <span class="hero-word-mask"><span class="hero-word">{word}&nbsp;</span></span>
+          ))}
+        </h1>
+        <div class="hero-glow"></div>
+      </>
+    )}
     {subtitle && <p class="hero-subtitle">{subtitle}</p>}
     <div class="hero-actions">
       <slot />
@@ -37,22 +62,64 @@ const {
 
   .hero-content {
     max-width: var(--max-width-narrow);
+    position: relative;
   }
 
   .hero-tag {
-    display: inline-block;
+    display: block;
     font-family: var(--font-body);
     font-size: 0.6875rem;
     font-weight: 600;
     text-transform: uppercase;
     letter-spacing: 0.12em;
     color: var(--color-text-muted);
+    margin-bottom: var(--space-sm);
+  }
+
+  .hero-tag-mask {
+    display: inline-block;
+    overflow: hidden;
+    vertical-align: bottom;
+  }
+
+  .hero-tag-phrase {
+    display: inline-block;
+  }
+
+  .hero-accent-line {
+    width: 60px;
+    height: 1px;
+    background: var(--color-accent, #5a8a6a);
     margin-bottom: var(--space-lg);
   }
 
   .hero-title {
     margin-bottom: var(--space-lg);
     line-height: 1.15;
+  }
+
+  .hero-word-mask {
+    display: inline-block;
+    overflow: hidden;
+    vertical-align: bottom;
+  }
+
+  .hero-word {
+    display: inline-block;
+  }
+
+  .hero-glow {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 600px;
+    height: 400px;
+    background: radial-gradient(ellipse at center, rgba(90, 138, 106, 0.07) 0%, transparent 70%);
+    pointer-events: none;
+    z-index: 0;
+    opacity: 0;
+    filter: blur(40px);
   }
 
   .hero-subtitle {

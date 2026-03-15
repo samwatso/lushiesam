@@ -19,20 +19,54 @@ if (prefersReducedMotion) {
 } else {
   const isMobile = window.innerWidth < 768;
 
-  // --- Hero Entrance (above-the-fold timeline, not scroll-triggered) ---
+  // --- Hero Entrance (cinematic sequenced reveal) ---
   document.querySelectorAll('[data-animate="hero-entrance"]').forEach((hero) => {
     const tl = gsap.timeline({ defaults: { ease: 'power3.out' } });
 
-    const tag = hero.querySelector('.hero-tag');
-    const title = hero.querySelector('.hero-title');
+    const accentLine = hero.querySelector('.hero-accent-line');
+    const tagPhrases = hero.querySelectorAll('.hero-tag-phrase');
+    const titleWords = hero.querySelectorAll('.hero-word');
     const subtitle = hero.querySelector('.hero-subtitle');
     const actions = hero.querySelectorAll('.hero-actions > *');
+    const glow = hero.querySelector('.hero-glow');
 
-    if (tag) tl.to(tag, { opacity: 1, y: 0, duration: 0.8 }, 0.2);
-    if (title) tl.to(title, { opacity: 1, y: 0, duration: 1.0 }, tag ? 0.35 : 0.2);
-    if (subtitle) tl.to(subtitle, { opacity: 1, y: 0, duration: 0.8 }, tag ? 0.5 : 0.35);
+    // 1. Accent line draws in (0.0s)
+    if (accentLine) {
+      tl.to(accentLine, { scaleX: 1, duration: 0.6, ease: 'power2.inOut' }, 0.0);
+    }
+
+    // 2. Tag phrases — masked reveal with stagger (0.2s)
+    if (tagPhrases.length) {
+      tl.to(tagPhrases, { y: 0, duration: 0.5, stagger: 0.3, ease: 'power3.out' }, 0.2);
+    }
+
+    // 3. Title words — masked reveal with stagger (0.7s)
+    if (titleWords.length) {
+      tl.to(titleWords, { y: 0, duration: 0.6, stagger: 0.08, ease: 'power3.out' }, 0.7);
+    }
+
+    // 4. Buttons — scale + fade (1.1s)
     if (actions.length) {
-      tl.to(actions, { opacity: 1, y: 0, duration: 0.7, stagger: 0.1 }, tag ? 0.6 : 0.45);
+      tl.to(actions, { opacity: 1, y: 0, scale: 1, duration: 0.6, stagger: 0.1, ease: 'power3.out' }, 1.1);
+    }
+
+    // 5. Subtitle if present
+    if (subtitle) {
+      tl.to(subtitle, { opacity: 1, y: 0, duration: 0.7 }, 1.0);
+    }
+
+    // 6. Ambient hero glow — fade in then pulse (1.5s)
+    if (glow) {
+      tl.to(glow, { opacity: 0.05, duration: 1.0, ease: 'power2.out' }, 1.5);
+      tl.add(() => {
+        gsap.to(glow, {
+          opacity: 0.07,
+          duration: 3,
+          ease: 'sine.inOut',
+          yoyo: true,
+          repeat: -1,
+        });
+      });
     }
 
     // Scroll exit: parallax + fade as user scrolls past hero

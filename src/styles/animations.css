@@ -31,16 +31,20 @@
 }
 
 /* --- Hero Entrance (full hero, not minimal) --- */
-.js-enabled [data-animate="hero-entrance"] .hero-tag {
-  opacity: 0;
-  transform: translateY(20px);
-  will-change: opacity, transform;
+.js-enabled [data-animate="hero-entrance"] .hero-tag-phrase {
+  transform: translateY(110%);
+  will-change: transform;
 }
 
-.js-enabled [data-animate="hero-entrance"] .hero-title {
-  opacity: 0;
-  transform: translateY(30px);
-  will-change: opacity, transform;
+.js-enabled [data-animate="hero-entrance"] .hero-accent-line {
+  transform: scaleX(0);
+  transform-origin: left;
+  will-change: transform;
+}
+
+.js-enabled [data-animate="hero-entrance"] .hero-word {
+  transform: translateY(110%);
+  will-change: transform;
 }
 
 .js-enabled [data-animate="hero-entrance"] .hero-subtitle {
@@ -51,7 +55,7 @@
 
 .js-enabled [data-animate="hero-entrance"] .hero-actions > * {
   opacity: 0;
-  transform: translateY(20px);
+  transform: translateY(15px) scale(0.9);
   will-change: opacity, transform;
 }
 
@@ -135,8 +139,9 @@
   .js-enabled [data-animate="scrub-up"],
   .js-enabled [data-animate="stagger-children"] > *,
   .js-enabled [data-animate="stagger-from-right"] > *,
-  .js-enabled [data-animate="hero-entrance"] .hero-tag,
-  .js-enabled [data-animate="hero-entrance"] .hero-title,
+  .js-enabled [data-animate="hero-entrance"] .hero-tag-phrase,
+  .js-enabled [data-animate="hero-entrance"] .hero-accent-line,
+  .js-enabled [data-animate="hero-entrance"] .hero-word,
   .js-enabled [data-animate="hero-entrance"] .hero-subtitle,
   .js-enabled [data-animate="hero-entrance"] .hero-actions > * {
     opacity: 1 !important;
