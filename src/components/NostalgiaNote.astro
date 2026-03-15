@@ -41,10 +41,19 @@ const { notes } = Astro.props;
   }
 
   .nostalgia-card {
-    background: var(--color-gold-dim);
+    background: rgba(196, 162, 101, 0.06);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid var(--glass-border);
     border-left: 2px solid var(--color-gold);
     border-radius: 0 var(--radius-md) var(--radius-md) 0;
     padding: var(--space-lg) var(--space-xl);
+    box-shadow: inset 0 1px 0 var(--glass-highlight);
+    transition: border-color 0.3s ease;
+  }
+
+  .nostalgia-card:hover {
+    border-left-color: rgba(196, 162, 101, 0.8);
   }
 
   .nostalgia-title {

@@ -75,9 +75,34 @@
   --shadow-lg: 0 8px 32px rgba(0, 0, 0, 0.5);
   --shadow-glow: 0 0 40px rgba(90, 138, 106, 0.08);
 
+  /* Glass surfaces */
+  --glass-bg: rgba(26, 32, 27, 0.6);
+  --glass-bg-hover: rgba(26, 32, 27, 0.75);
+  --glass-border: rgba(255, 255, 255, 0.06);
+  --glass-border-hover: rgba(255, 255, 255, 0.12);
+  --glass-highlight: rgba(255, 255, 255, 0.03);
+  --glass-blur: 16px;
+  --glass-shadow: 0 8px 32px rgba(0, 0, 0, 0.4), inset 0 1px 0 var(--glass-highlight);
+
+  /* Metallic warm accent */
+  --color-metallic: rgba(212, 201, 168, 0.15);
+
   /* Layout */
   --max-width: 1200px;
   --max-width-narrow: 720px;
+}
+
+/* --- Glass Utility --- */
+.glass {
+  background: var(--glass-bg);
+  backdrop-filter: blur(var(--glass-blur));
+  -webkit-backdrop-filter: blur(var(--glass-blur));
+  border: 1px solid var(--glass-border);
+  box-shadow: var(--glass-shadow);
+}
+.glass:hover {
+  background: var(--glass-bg-hover);
+  border-color: var(--glass-border-hover);
 }
 
 /* --- Reset & Base --- */

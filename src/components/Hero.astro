@@ -18,7 +18,7 @@ const tagPhrases = !minimal && tag ? tag.split('. ').map((p: string, i: number, 
 const titleWords = !minimal ? title.split(' ') : [];
 ---
 
-<section class:list={['hero', { 'hero--minimal': minimal }]} data-animate={minimal ? 'fade-up' : 'hero-entrance'}>
+<section class:list={['hero', { 'hero--minimal': minimal, 'hero--pinned': !minimal }]} data-animate={minimal ? 'fade-up' : 'hero-entrance'}>
   <div class="container hero-content">
     {minimal ? (
       <>

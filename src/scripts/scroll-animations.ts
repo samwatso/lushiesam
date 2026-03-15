@@ -69,23 +69,67 @@ if (prefersReducedMotion) {
       });
     }
 
-    // Scroll exit: parallax + fade as user scrolls past hero
-    ScrollTrigger.create({
-      trigger: hero,
-      start: 'top top',
-      end: 'bottom top',
-      scrub: true,
-      onUpdate: (self) => {
-        const progress = self.progress;
-        const content = hero.querySelector('.hero-content') as HTMLElement;
-        if (content) {
-          gsap.set(content, {
-            y: progress * -50,
-            opacity: 1 - progress * 0.3,
-          });
-        }
-      },
-    });
+    // 4a. Sticky Hero: pin hero, content fades/scales, next section rises over
+    if (!isMobile && hero.classList.contains('hero--pinned')) {
+      const nextSection = hero.nextElementSibling;
+
+      ScrollTrigger.create({
+        trigger: hero,
+        start: 'top top',
+        end: '+=80%',
+        pin: true,
+        pinSpacing: true,
+        scrub: true,
+        onUpdate: (self) => {
+          const progress = self.progress;
+          const content = hero.querySelector('.hero-content') as HTMLElement;
+          if (content) {
+            gsap.set(content, {
+              y: progress * -60,
+              scale: 1 - progress * 0.05,
+              opacity: 1 - progress * 0.6,
+              filter: `blur(${progress * 3}px)`,
+            });
+          }
+        },
+      });
+
+      // Next section rises over with shadow
+      if (nextSection) {
+        gsap.set(nextSection, { position: 'relative', zIndex: 2 });
+        gsap.fromTo(nextSection,
+          { boxShadow: '0 -20px 60px rgba(0, 0, 0, 0)' },
+          {
+            boxShadow: '0 -20px 60px rgba(0, 0, 0, 0.5)',
+            ease: 'none',
+            scrollTrigger: {
+              trigger: hero,
+              start: 'top top',
+              end: '+=80%',
+              scrub: true,
+            },
+          }
+        );
+      }
+    } else {
+      // Mobile / minimal: simple parallax exit
+      ScrollTrigger.create({
+        trigger: hero,
+        start: 'top top',
+        end: 'bottom top',
+        scrub: true,
+        onUpdate: (self) => {
+          const progress = self.progress;
+          const content = hero.querySelector('.hero-content') as HTMLElement;
+          if (content) {
+            gsap.set(content, {
+              y: progress * -50,
+              opacity: 1 - progress * 0.3,
+            });
+          }
+        },
+      });
+    }
   });
 
   // --- Fade Up ---
@@ -386,6 +430,123 @@ if (prefersReducedMotion) {
             trigger: el,
             start: 'top bottom',
             end: 'center center',
+            scrub: true,
+          },
+        }
+      );
+    });
+
+    // --- 9. Split-Rate Parallax on Latest Box (4b) ---
+    document.querySelectorAll('.latest-box').forEach((el) => {
+      const imageContainer = el.querySelector('.latest-box-image') as HTMLElement;
+      const infoPanel = el.querySelector('.latest-box-info') as HTMLElement;
+      const pills = el.querySelectorAll('.product-pill');
+
+      if (imageContainer) {
+        gsap.to(imageContainer, {
+          y: -40,
+          ease: 'none',
+          scrollTrigger: {
+            trigger: el,
+            start: 'top bottom',
+            end: 'bottom top',
+            scrub: true,
+          },
+        });
+      }
+
+      if (infoPanel) {
+        gsap.to(infoPanel, {
+          y: 20,
+          ease: 'none',
+          scrollTrigger: {
+            trigger: el,
+            start: 'top bottom',
+            end: 'bottom top',
+            scrub: true,
+          },
+        });
+      }
+
+      if (pills.length) {
+        gsap.to(pills, {
+          y: 10,
+          ease: 'none',
+          scrollTrigger: {
+            trigger: el,
+            start: 'top bottom',
+            end: 'bottom top',
+            scrub: true,
+          },
+        });
+      }
+    });
+
+    // --- 10. Product Pill Scroll Reveal (4c) ---
+    document.querySelectorAll('.latest-box-products').forEach((container) => {
+      const pills = container.querySelectorAll('.product-pill--scroll-reveal');
+      if (!pills.length) return;
+
+      gsap.to(pills, {
+        opacity: 1,
+        y: 0,
+        scale: 1,
+        stagger: 0.15,
+        ease: 'none',
+        scrollTrigger: {
+          trigger: container,
+          start: 'top 80%',
+          end: 'top 55%',
+          scrub: 1,
+        },
+      });
+    });
+
+    // --- 11. Section Depth Transitions (4d) ---
+    document.querySelectorAll('.section').forEach((section) => {
+      // Skip hero sections
+      if (section.querySelector('[data-animate="hero-entrance"]')) return;
+
+      // Exit: blur as section scrolls up
+      gsap.to(section, {
+        filter: 'blur(2px)',
+        opacity: 0.7,
+        ease: 'none',
+        scrollTrigger: {
+          trigger: section,
+          start: 'top top',
+          end: 'bottom top',
+          scrub: true,
+        },
+      });
+
+      // Enter: slight scale-up
+      gsap.fromTo(section,
+        { scale: 0.98 },
+        {
+          scale: 1,
+          ease: 'none',
+          scrollTrigger: {
+            trigger: section,
+            start: 'top bottom',
+            end: 'top 60%',
+            scrub: true,
+          },
+        }
+      );
+    });
+
+    // --- 12. Enhanced Archive Card 3D Entrance (4e) ---
+    document.querySelectorAll('.box-card').forEach((el) => {
+      gsap.fromTo(el,
+        { rotateX: 2, transformPerspective: 800 },
+        {
+          rotateX: 0,
+          ease: 'none',
+          scrollTrigger: {
+            trigger: el,
+            start: 'top bottom',
+            end: 'top 60%',
             scrub: true,
           },
         }

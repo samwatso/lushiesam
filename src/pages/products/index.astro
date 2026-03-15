@@ -18,7 +18,7 @@ const productTypes = [...new Set(allProducts.map((p) => p.data.type))].sort();
 >
   <Hero
     title="Product Catalogue"
-    subtitle="A growing archive of products from the Kitchen boxes. More added with every box."
+    subtitle="A growing archive of products from the Kitchen boxes. More added as new boxes arrive."
     tag="Coming soon"
     minimal
   />
@@ -71,7 +71,7 @@ const productTypes = [...new Set(allProducts.map((p) => p.data.type))].sort();
 
   <CTABlock
     title="Browse by box"
-    description="Every product is featured in its original Kitchen box entry with scent notes and full details."
+    description="Products are featured in their original Kitchen box entry with scent notes and full details."
     primaryLink="/kitchen-boxes/"
     primaryLabel="Kitchen Box Archive"
   />
@@ -97,15 +97,19 @@ const productTypes = [...new Set(allProducts.map((p) => p.data.type))].sort();
   }
 
   .product-card {
-    background: var(--color-bg-card);
-    border: 1px solid var(--color-border);
+    background: var(--glass-bg);
+    backdrop-filter: blur(var(--glass-blur));
+    -webkit-backdrop-filter: blur(var(--glass-blur));
+    border: 1px solid var(--glass-border);
     border-radius: var(--radius-lg);
     overflow: hidden;
-    transition: border-color 0.3s ease;
+    box-shadow: var(--glass-shadow);
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
   }
 
   .product-card:hover {
-    border-color: var(--color-border-hover);
+    border-color: var(--glass-border-hover);
+    box-shadow: var(--glass-shadow), 0 0 16px rgba(90, 138, 106, 0.06);
   }
 
   .product-card-image {

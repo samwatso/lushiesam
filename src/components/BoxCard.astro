@@ -44,6 +44,21 @@ const { title, slug, month, year, summary, heroImage, productCount } = Astro.pro
     color: inherit;
   }
 
+  .box-card {
+    background: var(--glass-bg);
+    backdrop-filter: blur(var(--glass-blur));
+    -webkit-backdrop-filter: blur(var(--glass-blur));
+    border: 1px solid var(--glass-border);
+    border-top: 1px solid var(--glass-highlight);
+    box-shadow: var(--glass-shadow);
+    transition: border-color 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease;
+  }
+
+  .box-card:hover {
+    border-color: var(--glass-border-hover);
+    box-shadow: var(--glass-shadow), 0 0 20px rgba(90, 138, 106, 0.06);
+  }
+
   .box-card-image {
     position: relative;
     aspect-ratio: 4 / 3;

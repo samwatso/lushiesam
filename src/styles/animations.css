@@ -129,6 +129,31 @@
   z-index: 1;
 }
 
+/* --- Sticky Hero Pinning --- */
+.js-enabled .hero--pinned {
+  will-change: transform, opacity, filter;
+}
+
+/* --- Section Depth Blur --- */
+.js-enabled .section--depth-exit {
+  will-change: filter, opacity;
+}
+
+/* --- Latest Box Split-Rate Layers --- */
+.js-enabled .latest-box-image {
+  will-change: transform;
+}
+.js-enabled .latest-box-info {
+  will-change: transform;
+}
+
+/* --- Product Pill Scroll Reveal --- */
+.js-enabled .product-pill--scroll-reveal {
+  opacity: 0;
+  transform: translateY(10px) scale(0.9);
+  will-change: opacity, transform;
+}
+
 /* =============================================
    Reduced Motion — disable all animations
    ============================================= */
@@ -143,9 +168,13 @@
   .js-enabled [data-animate="hero-entrance"] .hero-accent-line,
   .js-enabled [data-animate="hero-entrance"] .hero-word,
   .js-enabled [data-animate="hero-entrance"] .hero-subtitle,
-  .js-enabled [data-animate="hero-entrance"] .hero-actions > * {
+  .js-enabled [data-animate="hero-entrance"] .hero-actions > *,
+  .js-enabled .product-pill--scroll-reveal,
+  .js-enabled .hero--pinned,
+  .js-enabled .section--depth-exit {
     opacity: 1 !important;
     transform: none !important;
+    filter: none !important;
     will-change: auto !important;
   }
 }
