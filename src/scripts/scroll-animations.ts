@@ -190,6 +190,175 @@ if (prefersReducedMotion) {
     });
   }
 
+  // =============================================
+  //  Phase 2 — Continuous Scroll-Linked Motion
+  //  All effects desktop-only, scrub: true
+  // =============================================
+
+  if (!isMobile) {
+    // --- 1. Heading Parallax Drift ---
+    document.querySelectorAll('.section-heading h2, .year-heading, .box-section h3').forEach((el) => {
+      gsap.to(el, {
+        y: -30,
+        ease: 'none',
+        scrollTrigger: {
+          trigger: el,
+          start: 'top bottom',
+          end: 'bottom top',
+          scrub: true,
+        },
+      });
+    });
+
+    // --- 2. Card Viewport Spotlight ---
+    document.querySelectorAll('.box-card').forEach((el) => {
+      const tl = gsap.timeline({
+        scrollTrigger: {
+          trigger: el,
+          start: 'top bottom',
+          end: 'bottom top',
+          scrub: true,
+        },
+      });
+      tl.fromTo(el,
+        { scale: 0.96, opacity: 0.7 },
+        { scale: 1.0, opacity: 1.0, ease: 'none', duration: 0.5 }
+      );
+      tl.to(el,
+        { scale: 0.98, opacity: 0.85, ease: 'none', duration: 0.5 }
+      );
+    });
+
+    // --- 3. Continuous Image Ken Burns ---
+    document.querySelectorAll('.box-card-image img, .gallery-image img, .group-shot img').forEach((img) => {
+      gsap.fromTo(img,
+        { scale: 1.08 },
+        {
+          scale: 1.0,
+          ease: 'none',
+          scrollTrigger: {
+            trigger: img,
+            start: 'top bottom',
+            end: 'bottom top',
+            scrub: true,
+          },
+        }
+      );
+    });
+
+    // --- 4. Floating Glow Orbs ---
+    document.querySelectorAll('[data-glow]').forEach((section) => {
+      const glowType = section.getAttribute('data-glow');
+      const orb = document.createElement('div');
+      orb.className = `glow-orb glow-orb--${glowType}`;
+      section.appendChild(orb);
+
+      gsap.to(orb, {
+        y: -100,
+        ease: 'none',
+        scrollTrigger: {
+          trigger: section,
+          start: 'top bottom',
+          end: 'bottom top',
+          scrub: true,
+        },
+      });
+    });
+
+    // --- 5. Section Crossfade Exit ---
+    document.querySelectorAll('.section .container, .cta-block .cta-inner').forEach((el) => {
+      const section = el.closest('.section, .cta-block');
+      if (!section) return;
+      // Skip hero section
+      if (section.querySelector('[data-animate="hero-entrance"]')) return;
+
+      gsap.to(el, {
+        opacity: 0.6,
+        y: -20,
+        ease: 'none',
+        scrollTrigger: {
+          trigger: section,
+          start: 'top top',
+          end: 'bottom top',
+          scrub: true,
+        },
+      });
+    });
+
+    // --- 6. Grid Horizontal Convergence ---
+    document.querySelectorAll('.grid--2').forEach((grid) => {
+      const children = Array.from(grid.children) as HTMLElement[];
+      children.forEach((child, i) => {
+        const fromX = i % 2 === 0 ? -15 : 15;
+        gsap.fromTo(child,
+          { x: fromX },
+          {
+            x: 0,
+            ease: 'none',
+            scrollTrigger: {
+              trigger: child,
+              start: 'top bottom',
+              end: 'center center',
+              scrub: true,
+            },
+          }
+        );
+      });
+    });
+
+    // --- 7. Border Draw-In ---
+    document.querySelectorAll('.divider, .box-nav').forEach((el) => {
+      el.classList.add('border-draw-in');
+      gsap.to(el, {
+        scaleX: 1,
+        ease: 'none',
+        scrollTrigger: {
+          trigger: el,
+          start: 'top 90%',
+          end: 'top 70%',
+          scrub: true,
+        },
+      });
+    });
+
+    // CTA border-top draw-in
+    document.querySelectorAll('.cta-block').forEach((el) => {
+      const htmlEl = el as HTMLElement;
+      htmlEl.style.borderTopColor = 'transparent';
+      const borderLine = document.createElement('div');
+      borderLine.style.cssText = 'position:absolute;top:0;left:0;right:0;height:1px;background:var(--color-border);transform-origin:left;transform:scaleX(0);';
+      htmlEl.appendChild(borderLine);
+
+      gsap.to(borderLine, {
+        scaleX: 1,
+        ease: 'none',
+        scrollTrigger: {
+          trigger: el,
+          start: 'top 90%',
+          end: 'top 70%',
+          scrub: true,
+        },
+      });
+    });
+
+    // --- 8. CTA Glow Intensify ---
+    document.querySelectorAll('.cta-block').forEach((el) => {
+      gsap.fromTo(el,
+        { '--cta-glow': 0 },
+        {
+          '--cta-glow': 0.06,
+          ease: 'none',
+          scrollTrigger: {
+            trigger: el,
+            start: 'top bottom',
+            end: 'center center',
+            scrub: true,
+          },
+        }
+      );
+    });
+  }
+
   // Refresh ScrollTrigger after images load
   window.addEventListener('load', () => {
     ScrollTrigger.refresh();

@@ -74,6 +74,57 @@
   will-change: opacity, transform;
 }
 
+/* --- Floating Glow Orbs (injected by JS) --- */
+.glow-orb {
+  position: absolute;
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 0;
+  will-change: transform;
+}
+
+.glow-orb--green {
+  width: 600px;
+  height: 600px;
+  background: radial-gradient(circle, rgba(90, 138, 106, 0.06) 0%, transparent 70%);
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  filter: blur(40px);
+}
+
+.glow-orb--gold {
+  width: 500px;
+  height: 500px;
+  background: radial-gradient(circle, rgba(196, 162, 101, 0.05) 0%, transparent 70%);
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  filter: blur(40px);
+}
+
+/* --- Border Draw-In --- */
+.js-enabled .border-draw-in {
+  transform: scaleX(0);
+  transform-origin: left;
+  will-change: transform;
+}
+
+/* --- CTA Glow Intensify --- */
+.cta-block::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse at center, rgba(90, 138, 106, var(--cta-glow, 0)) 0%, transparent 70%);
+  pointer-events: none;
+  z-index: 0;
+}
+
+.cta-block .cta-inner {
+  position: relative;
+  z-index: 1;
+}
+
 /* =============================================
    Reduced Motion — disable all animations
    ============================================= */

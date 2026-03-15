@@ -18,7 +18,7 @@ const {
 } = Astro.props;
 ---
 
-<section class="cta-block">
+<section class="cta-block" data-glow="gold">
   <div class="container cta-inner">
     <h2 class="cta-title" data-animate="fade-up">{title}</h2>
     {description && <p class="cta-description" data-animate="fade-up">{description}</p>}
@@ -44,6 +44,8 @@ const {
   .cta-block {
     padding: var(--space-5xl) 0;
     border-top: 1px solid var(--color-border);
+    position: relative;
+    overflow: hidden;
   }
 
   .cta-inner {

@@ -149,6 +149,8 @@ p {
 
 .section {
   padding: var(--space-5xl) 0;
+  position: relative;
+  overflow: hidden;
 }
 
 .section--alt {
@@ -292,6 +294,7 @@ p {
   border: none;
   border-top: 1px solid var(--color-border);
   margin: var(--space-3xl) 0;
+  transform-origin: left;
 }
 
 /* --- Media Queries --- */
