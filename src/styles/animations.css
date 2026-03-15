@@ -134,6 +134,41 @@
   will-change: transform, opacity, filter;
 }
 
+/* --- Home Hero Entrance --- */
+.js-enabled .home-hero-tag {
+  opacity: 0;
+  transform: translateY(10px);
+  will-change: opacity, transform;
+}
+
+.js-enabled .hw {
+  transform: translateY(110%);
+  will-change: transform;
+}
+
+.js-enabled .home-hero-subtitle {
+  opacity: 0;
+  transform: translateY(20px);
+  will-change: opacity, transform;
+}
+
+.js-enabled .home-hero-actions > * {
+  opacity: 0;
+  transform: translateY(12px);
+  will-change: opacity, transform;
+}
+
+.js-enabled .float-pill {
+  opacity: 0;
+  transform: translateY(20px) scale(0.9);
+  will-change: opacity, transform;
+}
+
+/* --- Home Hero Scroll Pinning --- */
+.js-enabled .home-hero {
+  will-change: transform;
+}
+
 /* =============================================
    Scene 2: Latest Box Reveal — Initial States
    Desktop only (scene requires pinning)
@@ -189,6 +224,11 @@
   .js-enabled [data-animate="hero-entrance"] .hero-subtitle,
   .js-enabled [data-animate="hero-entrance"] .hero-actions > *,
   .js-enabled .hero--pinned,
+  .js-enabled .home-hero-tag,
+  .js-enabled .hw,
+  .js-enabled .home-hero-subtitle,
+  .js-enabled .home-hero-actions > *,
+  .js-enabled .float-pill,
   .js-enabled .latest-scene-overlay,
   .js-enabled .latest-scene-summary,
   .js-enabled .scene-product,

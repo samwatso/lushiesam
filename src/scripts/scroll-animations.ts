@@ -23,6 +23,13 @@ if (prefersReducedMotion) {
     (el as HTMLElement).style.opacity = '';
     (el as HTMLElement).style.transform = '';
   });
+  // Clear home hero elements
+  document.querySelectorAll(
+    '.home-hero-tag, .hw, .home-hero-subtitle, .home-hero-actions > *, .float-pill'
+  ).forEach((el) => {
+    (el as HTMLElement).style.opacity = '';
+    (el as HTMLElement).style.transform = '';
+  });
 } else {
   const isMobile = window.innerWidth < 768;
 
@@ -167,6 +174,137 @@ if (prefersReducedMotion) {
           if (content) {
             gsap.set(content, {
               y: self.progress * -50,
+              opacity: 1 - self.progress * 0.3,
+            });
+          }
+        },
+      });
+    }
+  });
+
+  // --- Home Hero Entrance (image-driven, playful) ---
+  document.querySelectorAll('.home-hero').forEach((hero) => {
+    const tl = gsap.timeline({ defaults: { ease: 'power3.out' } });
+
+    const tag = hero.querySelector('.home-hero-tag');
+    const titleWords = hero.querySelectorAll('.hw');
+    const subtitle = hero.querySelector('.home-hero-subtitle');
+    const actions = hero.querySelectorAll('.home-hero-actions > *');
+    const pills = hero.querySelectorAll('.float-pill');
+    const bgImage = hero.querySelector('.home-hero-image') as HTMLElement;
+
+    // 1. Tag fades in
+    if (tag) {
+      tl.to(tag, { opacity: 1, y: 0, duration: 0.5 }, 0.2);
+    }
+
+    // 2. Title words masked reveal
+    if (titleWords.length) {
+      tl.to(titleWords, { y: 0, duration: 0.6, stagger: 0.08, ease: 'power3.out' }, 0.4);
+    }
+
+    // 3. Subtitle
+    if (subtitle) {
+      tl.to(subtitle, { opacity: 1, y: 0, duration: 0.7 }, 0.9);
+    }
+
+    // 4. CTAs
+    if (actions.length) {
+      tl.to(actions, { opacity: 1, y: 0, duration: 0.5, stagger: 0.1 }, 1.1);
+    }
+
+    // 5. Floating product pills stagger in with playful ease
+    if (pills.length) {
+      tl.to(pills, {
+        opacity: 1, y: 0, scale: 1,
+        duration: 0.6, stagger: 0.12, ease: 'back.out(1.4)',
+      }, 1.0);
+    }
+
+    // --- Home Hero Scroll Scene ---
+    // Pin hero, bg zooms subtly, content fades up, pills drift apart,
+    // next section rises over
+    if (!isMobile) {
+      const content = hero.querySelector('.home-hero-content') as HTMLElement;
+      const floats = hero.querySelector('.home-hero-floats') as HTMLElement;
+
+      ScrollTrigger.create({
+        trigger: hero,
+        start: 'top top',
+        end: '+=80%',
+        pin: true,
+        pinSpacing: true,
+        scrub: 0.6,
+        onUpdate: (self) => {
+          const p = self.progress;
+
+          // Background image zooms in subtly (parallax depth)
+          if (bgImage) {
+            gsap.set(bgImage, {
+              scale: 1 + p * 0.08,
+              y: p * -30,
+            });
+          }
+
+          // Content fades and drifts up
+          if (content) {
+            const fadeP = gsap.utils.clamp(0, 1, p / 0.7);
+            gsap.set(content, {
+              opacity: 1 - fadeP * 0.9,
+              y: fadeP * -40,
+              filter: `blur(${fadeP * 3}px)`,
+            });
+          }
+
+          // Floating pills spread outward and fade
+          if (floats) {
+            const pillP = gsap.utils.clamp(0, 1, p / 0.8);
+            gsap.set(floats, {
+              opacity: 1 - pillP,
+            });
+            pills.forEach((pill, i) => {
+              // Each pill drifts in a slightly different direction
+              const angle = (i / pills.length) * Math.PI * 0.6 - 0.3;
+              const drift = pillP * 60;
+              gsap.set(pill, {
+                x: Math.cos(angle) * drift,
+                y: Math.sin(angle) * drift - pillP * 20,
+              });
+            });
+          }
+        },
+      });
+
+      // Next section rises over hero with depth shadow
+      const nextSection = hero.nextElementSibling;
+      if (nextSection) {
+        gsap.set(nextSection, { position: 'relative', zIndex: 2 });
+        gsap.fromTo(nextSection,
+          { boxShadow: '0 -20px 60px rgba(0, 0, 0, 0)' },
+          {
+            boxShadow: '0 -20px 60px rgba(0, 0, 0, 0.5)',
+            ease: 'none',
+            scrollTrigger: {
+              trigger: hero,
+              start: 'top top',
+              end: '+=80%',
+              scrub: true,
+            },
+          }
+        );
+      }
+    } else {
+      // Mobile: simple parallax exit
+      ScrollTrigger.create({
+        trigger: hero,
+        start: 'top top',
+        end: 'bottom top',
+        scrub: true,
+        onUpdate: (self) => {
+          const content = hero.querySelector('.home-hero-content') as HTMLElement;
+          if (content) {
+            gsap.set(content, {
+              y: self.progress * -40,
               opacity: 1 - self.progress * 0.3,
             });
           }
