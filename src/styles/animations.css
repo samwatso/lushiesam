@@ -1,0 +1,95 @@
+/* =============================================
+   Scroll-Driven Animations — Initial States
+   Only applied when JS is available (.js-enabled)
+   ============================================= */
+
+/* --- Fade Up --- */
+.js-enabled [data-animate="fade-up"] {
+  opacity: 0;
+  transform: translateY(30px);
+  will-change: opacity, transform;
+}
+
+/* --- Fade In (opacity only, no translate) --- */
+.js-enabled [data-animate="fade-in"] {
+  opacity: 0;
+  will-change: opacity;
+}
+
+/* --- Scale Up --- */
+.js-enabled [data-animate="scale-up"] {
+  opacity: 0;
+  transform: scale(0.92);
+  will-change: opacity, transform;
+}
+
+/* --- Stagger Children --- */
+.js-enabled [data-animate="stagger-children"] > * {
+  opacity: 0;
+  transform: translateY(20px);
+  will-change: opacity, transform;
+}
+
+/* --- Hero Entrance (full hero, not minimal) --- */
+.js-enabled [data-animate="hero-entrance"] .hero-tag {
+  opacity: 0;
+  transform: translateY(20px);
+  will-change: opacity, transform;
+}
+
+.js-enabled [data-animate="hero-entrance"] .hero-title {
+  opacity: 0;
+  transform: translateY(30px);
+  will-change: opacity, transform;
+}
+
+.js-enabled [data-animate="hero-entrance"] .hero-subtitle {
+  opacity: 0;
+  transform: translateY(20px);
+  will-change: opacity, transform;
+}
+
+.js-enabled [data-animate="hero-entrance"] .hero-actions > * {
+  opacity: 0;
+  transform: translateY(20px);
+  will-change: opacity, transform;
+}
+
+/* --- Latest Box (scrub reveal) --- */
+.js-enabled [data-animate="scrub-up"] {
+  opacity: 0;
+  transform: translateY(60px);
+  will-change: opacity, transform;
+}
+
+/* --- Parallax Image Container --- */
+.js-enabled [data-animate="parallax-image"] img {
+  will-change: transform;
+}
+
+/* --- Latest Box Info — stagger from right --- */
+.js-enabled [data-animate="stagger-from-right"] > * {
+  opacity: 0;
+  transform: translateX(30px);
+  will-change: opacity, transform;
+}
+
+/* =============================================
+   Reduced Motion — disable all animations
+   ============================================= */
+@media (prefers-reduced-motion: reduce) {
+  .js-enabled [data-animate="fade-up"],
+  .js-enabled [data-animate="fade-in"],
+  .js-enabled [data-animate="scale-up"],
+  .js-enabled [data-animate="scrub-up"],
+  .js-enabled [data-animate="stagger-children"] > *,
+  .js-enabled [data-animate="stagger-from-right"] > *,
+  .js-enabled [data-animate="hero-entrance"] .hero-tag,
+  .js-enabled [data-animate="hero-entrance"] .hero-title,
+  .js-enabled [data-animate="hero-entrance"] .hero-subtitle,
+  .js-enabled [data-animate="hero-entrance"] .hero-actions > * {
+    opacity: 1 !important;
+    transform: none !important;
+    will-change: auto !important;
+  }
+}

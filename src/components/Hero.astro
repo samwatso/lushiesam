@@ -14,7 +14,7 @@ const {
 } = Astro.props;
 ---
 
-<section class:list={['hero', { 'hero--minimal': minimal }]}>
+<section class:list={['hero', { 'hero--minimal': minimal }]} data-animate={minimal ? 'fade-up' : 'hero-entrance'}>
   <div class="container hero-content">
     {tag && <span class="hero-tag">{tag}</span>}
     <h1 class="hero-title">{title}</h1>

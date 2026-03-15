@@ -1,4 +1,6 @@
 ---
+import { Camera } from '@lucide/astro';
+
 interface Screenshot {
   src: string;
   alt?: string;
@@ -16,7 +18,7 @@ const { screenshots, title = 'Gallery' } = Astro.props;
 {screenshots.length > 0 && (
   <div class="screenshot-gallery">
     <h3 class="gallery-title">{title}</h3>
-    <div class="gallery-grid">
+    <div class="gallery-grid" data-animate="stagger-children" data-stagger="0.1">
       {screenshots.map((shot) => (
         <figure class="gallery-item">
           <div class="gallery-image">
@@ -24,7 +26,7 @@ const { screenshots, title = 'Gallery' } = Astro.props;
               <img src={shot.src} alt={shot.alt || ''} loading="lazy" />
             ) : (
               <div class="gallery-placeholder">
-                <span>📸</span>
+                <Camera size={24} />
               </div>
             )}
           </div>

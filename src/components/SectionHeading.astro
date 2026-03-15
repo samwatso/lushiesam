@@ -7,7 +7,7 @@ interface Props {
 const { title, subtitle } = Astro.props;
 ---
 
-<div class="section-heading">
+<div class="section-heading" data-animate="fade-up">
   <h2>{title}</h2>
   {subtitle && <p>{subtitle}</p>}
 </div>

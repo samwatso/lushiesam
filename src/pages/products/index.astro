@@ -1,5 +1,6 @@
 ---
 import { getCollection } from 'astro:content';
+import { Droplets } from '@lucide/astro';
 import BaseLayout from '@/layouts/BaseLayout.astro';
 import Hero from '@/components/Hero.astro';
 import CTABlock from '@/components/CTABlock.astro';
@@ -39,7 +40,7 @@ const productTypes = [...new Set(allProducts.map((p) => p.data.type))].sort();
                           <img src={product.data.image} alt={product.data.name} loading="lazy" />
                         ) : (
                           <div class="product-card-placeholder">
-                            <span>🧼</span>
+                            <Droplets size={32} />
                           </div>
                         )}
                       </div>
@@ -70,7 +71,7 @@ const productTypes = [...new Set(allProducts.map((p) => p.data.type))].sort();
 
   <CTABlock
     title="Browse by box"
-    description="Every product is featured in its original Kitchen box entry with scent notes and honest takes."
+    description="Every product is featured in its original Kitchen box entry with scent notes and full details."
     primaryLink="/kitchen-boxes/"
     primaryLabel="Kitchen Box Archive"
   />

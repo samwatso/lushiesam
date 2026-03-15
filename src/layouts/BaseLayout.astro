@@ -2,6 +2,7 @@
 import Header from '@/components/Header.astro';
 import Footer from '@/components/Footer.astro';
 import '@/styles/global.css';
+import '@/styles/animations.css';
 
 interface Props {
   title: string;
@@ -13,13 +14,13 @@ interface Props {
 
 const {
   title,
-  description = 'Lushie Sam | A Lush fan archive and creator site. Kitchen box reviews, product lore, and bath time content.',
+  description = 'Lush Kitchen Archive | A fan-maintained catalogue of every Kitchen subscription box since 2022.',
   ogImage = '/images/og-default.jpg',
   ogType = 'website',
   canonicalUrl,
 } = Astro.props;
 
-const siteTitle = title === 'Home' ? 'Lushie Sam' : `${title} | Lushie Sam`;
+const siteTitle = title === 'Home' ? 'Lush Kitchen Archive | Lushie Sam' : `${title} | Lushie Sam`;
 const resolvedCanonical = canonicalUrl || Astro.url.href;
 ---
 
@@ -60,6 +61,8 @@ const resolvedCanonical = canonicalUrl || Astro.url.href;
     <meta name="twitter:description" content={description} />
     <meta name="twitter:image" content={ogImage} />
 
+    <script is:inline>document.documentElement.classList.add('js-enabled');</script>
+
     <slot name="head" />
   </head>
   <body>
@@ -68,5 +71,8 @@ const resolvedCanonical = canonicalUrl || Astro.url.href;
       <slot />
     </main>
     <Footer />
+    <script>
+      import '@/scripts/scroll-animations';
+    </script>
   </body>
 </html>

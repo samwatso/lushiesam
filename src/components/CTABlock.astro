@@ -20,9 +20,9 @@ const {
 
 <section class="cta-block">
   <div class="container cta-inner">
-    <h2 class="cta-title">{title}</h2>
-    {description && <p class="cta-description">{description}</p>}
-    <div class="cta-actions">
+    <h2 class="cta-title" data-animate="fade-up">{title}</h2>
+    {description && <p class="cta-description" data-animate="fade-up">{description}</p>}
+    <div class="cta-actions" data-animate="fade-up">
       {primaryLink && (
         <a
           href={primaryLink}

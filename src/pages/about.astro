@@ -5,37 +5,39 @@ import CTABlock from '@/components/CTABlock.astro';
 ---
 
 <BaseLayout
-  title="About"
-  description="Lushie Sam: a Lush Kitchen subscriber since 2022, filming unboxings and archiving every box."
+  title="About This Archive"
+  description="The Lush Kitchen Archive is a fan-maintained catalogue of every Kitchen subscription box since February 2022. Maintained by Sam (@lushiesam on TikTok)."
 >
   <Hero
-    title="About"
-    tag="Lushie Sam"
+    title="About This Archive"
+    tag="What this site is"
     minimal
   />
 
   <section class="section">
     <div class="container container--narrow">
-      <div class="about-content">
+      <div class="about-content" data-animate="stagger-children">
+        <h3>The archive</h3>
         <p>
-          I'm Sam. I'm from the UK, I've been into Lush since way back, and I've been a Kitchen
-          subscriber since February 2022.
+          The Lush Kitchen Archive is a fan-maintained catalogue of every Lush Kitchen subscription
+          box since February 2022. Each box is documented with its full product list, scent notes,
+          nostalgia context, and TikTok unboxing video.
         </p>
         <p>
-          I'm not a beauty influencer or anything like that. I'm just a guy who genuinely loves
-          Lush products. Got properly into the brand after attending Lush Creative Showcase in 2016
-          and Lush Showcase in 2018. Something about seeing how everything's made and meeting the
-          people behind the products just clicked.
+          The goal is simple: create a searchable, lasting record of what arrived in each box, so
+          subscribers past and present can look up any month and find exactly what was in it. TikTok
+          videos disappear into feeds. This site doesn't.
+        </p>
+
+        <h3>About Sam</h3>
+        <p>
+          Sam (<a href="https://www.tiktok.com/@lushiesam" target="_blank" rel="noopener noreferrer">@lushiesam on TikTok</a>)
+          has been a Lush fan since attending Creative Showcase in 2016 and a Kitchen subscriber
+          since February 2022. Every month, Sam films an unboxing and documents the box here.
         </p>
         <p>
-          These days I film every Kitchen box unboxing on
-          <a href="https://www.tiktok.com/@lushiesam" target="_blank" rel="noopener noreferrer">TikTok</a>
-          and this site is the archive. Every box documented, every product noted, every nostalgia
-          moment captured somewhere that isn't going to disappear into a feed.
-        </p>
-        <p>
-          It's a personal collection, not a review site. Think of it like flipping through someone's
-          scrapbook who happens to be v v into bath bombs.
+          This isn't a review site or a brand partnership. It's one fan's effort to keep a thorough
+          record of something worth documenting.
         </p>
       </div>
     </div>
@@ -43,11 +45,11 @@ import CTABlock from '@/components/CTABlock.astro';
 
   <CTABlock
     title="Explore the archive"
-    description="Every Kitchen box since February 2022, documented and kept."
+    description="Every Kitchen box since February 2022, documented and catalogued."
     primaryLink="/kitchen-boxes/"
     primaryLabel="Kitchen Boxes"
-    secondaryLink="/my-lush-story/"
-    secondaryLabel="My Lush Story"
+    secondaryLink="/what-is-kitchen/"
+    secondaryLabel="What is Kitchen?"
   />
 </BaseLayout>
 
@@ -56,6 +58,11 @@ import CTABlock from '@/components/CTABlock.astro';
     display: flex;
     flex-direction: column;
     gap: var(--space-lg);
+  }
+
+  .about-content h3 {
+    margin-top: var(--space-xl);
+    margin-bottom: 0;
   }
 
   .about-content p {

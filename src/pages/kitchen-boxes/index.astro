@@ -29,7 +29,7 @@ const years = Object.keys(boxesByYear).map(Number).sort((a, b) => b - a);
 >
   <Hero
     title="Kitchen Box Archive"
-    subtitle="Every box since February 2022. Products, scent notes, nostalgia, all documented."
+    subtitle="Every box since February 2022. Products, scent notes, and nostalgia, all catalogued."
     tag="Archive"
     minimal
   />
@@ -38,8 +38,8 @@ const years = Object.keys(boxesByYear).map(Number).sort((a, b) => b - a);
     <div class="container">
       {years.map((year) => (
         <div class="year-group">
-          <h2 class="year-heading">{year}</h2>
-          <div class="grid grid--2">
+          <h2 class="year-heading" data-animate="fade-in">{year}</h2>
+          <div class="grid grid--2" data-animate="stagger-children" data-stagger="0.12">
             {boxesByYear[year].map((box) => (
               <BoxCard
                 title={box.data.title}

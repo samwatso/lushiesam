@@ -14,7 +14,7 @@ const { notes } = Astro.props;
 {notes.length > 0 && (
   <div class="nostalgia-section">
     <h3 class="nostalgia-heading">Nostalgia Notes</h3>
-    <div class="nostalgia-list">
+    <div class="nostalgia-list" data-animate="stagger-children">
       {notes.map((note) => (
         <div class="nostalgia-card">
           {note.title && <h4 class="nostalgia-title">{note.title}</h4>}

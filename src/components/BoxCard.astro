@@ -13,7 +13,7 @@ const { title, slug, month, year, summary, heroImage, productCount } = Astro.pro
 ---
 
 <a href={`/kitchen-boxes/${slug}/`} class="box-card card">
-  <div class="box-card-image">
+  <div class="box-card-image" data-animate-parallax>
     {heroImage ? (
       <img src={heroImage} alt={title} loading="lazy" />
     ) : (

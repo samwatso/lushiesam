@@ -35,33 +35,28 @@ const { Content } = await render(box);
 
   <article class="section">
     <div class="container container--narrow">
+      <!-- TikTok Embed -->
+      <TikTokEmbed url={data.tiktokUrl} embedId={data.tiktokEmbedId} />
+
+      <!-- Editorial Summary -->
+      <div class="box-content prose" data-animate="fade-in">
+        <Content />
+      </div>
+
       <!-- Group Shot -->
       {data.groupShot && (
-        <div class="group-shot">
+        <div class="group-shot" data-animate="scale-up">
           <img src={data.groupShot} alt={`${data.title}, all products`} />
         </div>
       )}
 
-      <!-- Main Review Content -->
-      <div class="box-content prose">
-        <Content />
-      </div>
-
-      <!-- TikTok Embed -->
-      <TikTokEmbed url={data.tiktokUrl} embedId={data.tiktokEmbedId} />
-
       <!-- Products -->
       {data.products && data.products.length > 0 && (
-        <section class="box-section">
-          <h3>What's in the box</h3>
+        <section class="box-section" data-animate="fade-up">
+          <h3>Products in this box</h3>
           <p class="box-section-subtitle">{data.products.length} products this month</p>
           <ProductList products={data.products} />
         </section>
-      )}
-
-      <!-- Screenshots -->
-      {data.screenshots && data.screenshots.length > 0 && (
-        <ScreenshotGallery screenshots={data.screenshots} title="Gallery" />
       )}
 
       <!-- Nostalgia Notes -->
@@ -69,9 +64,14 @@ const { Content } = await render(box);
         <NostalgiaNote notes={data.nostalgiaNotes} />
       )}
 
+      <!-- Screenshots -->
+      {data.screenshots && data.screenshots.length > 0 && (
+        <ScreenshotGallery screenshots={data.screenshots} title="Gallery" />
+      )}
+
       <!-- Caption Used -->
       {data.caption && (
-        <div class="caption-block">
+        <div class="caption-block" data-animate="fade-up">
           <h3>The caption</h3>
           <blockquote class="caption-quote">
             {data.caption}
@@ -96,7 +96,7 @@ const { Content } = await render(box);
 
 <style>
   .group-shot {
-    margin-bottom: var(--space-3xl);
+    margin: var(--space-3xl) 0;
     border-radius: var(--radius-lg);
     overflow: hidden;
     border: 1px solid var(--color-border);

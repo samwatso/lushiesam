@@ -21,28 +21,28 @@ const recentBoxes = allBoxes.slice(0, 4);
 <BaseLayout title="Home">
   <!-- Hero -->
   <Hero
-    title="Bath bombs, Kitchen boxes, and way too many opinions about soap."
-    tag="Lushie Sam"
+    title="The Lush Kitchen Archive"
+    tag="Every box. Every product. Every fizz."
   >
     <a href="/kitchen-boxes/" class="btn btn--primary">Browse the Archive</a>
     <a href="https://www.tiktok.com/@lushiesam" target="_blank" rel="noopener noreferrer" class="btn btn--secondary">
-      TikTok @lushiesam
+      Watch on TikTok
     </a>
   </Hero>
 
   <!-- Intro -->
   <section class="section">
     <div class="container container--narrow">
-      <div class="intro-block">
+      <div class="intro-block" data-animate="stagger-children">
         <p>
-          I'm Sam. I've been a Lush Kitchen subscriber since February 2022 and a Lush fan
-          since attending Creative Showcase back in 2016. Every month I open the Kitchen box on
-          <a href="https://www.tiktok.com/@lushiesam" target="_blank" rel="noopener noreferrer">TikTok</a>
-          and share first impressions, scent notes, and the occasional nostalgia trip.
+          A fan-maintained catalogue of every Lush Kitchen subscription box since February 2022.
+          Each box is documented with its full product list, scent notes, nostalgia context, and
+          TikTok unboxing.
         </p>
         <p>
-          This site is my personal archive. Every box, every product, every "ngl this one took me back"
-          moment, documented and kept somewhere TikTok can't algorithm away.
+          Maintained by Sam
+          (<a href="https://www.tiktok.com/@lushiesam" target="_blank" rel="noopener noreferrer">@lushiesam on TikTok</a>),
+          a Kitchen subscriber since day one.
         </p>
       </div>
     </div>
@@ -54,10 +54,10 @@ const recentBoxes = allBoxes.slice(0, 4);
       <div class="container">
         <SectionHeading
           title="Latest Box"
-          subtitle="The most recent Kitchen box, opened and reviewed."
+          subtitle="The most recent Kitchen box, documented."
         />
-        <a href={`/kitchen-boxes/${latestBox.id}/`} class="latest-box">
-          <div class="latest-box-image">
+        <a href={`/kitchen-boxes/${latestBox.id}/`} class="latest-box" data-animate="scrub-up">
+          <div class="latest-box-image" data-animate="parallax-image">
             {latestBox.data.heroImage ? (
               <img src={latestBox.data.heroImage} alt={latestBox.data.title} />
             ) : (
@@ -66,7 +66,7 @@ const recentBoxes = allBoxes.slice(0, 4);
               </div>
             )}
           </div>
-          <div class="latest-box-info">
+          <div class="latest-box-info" data-animate="stagger-from-right" data-stagger="0.1">
             <span class="latest-box-date">{latestBox.data.month} {latestBox.data.year}</span>
             <h3>{latestBox.data.title}</h3>
             <p>{latestBox.data.summary}</p>
@@ -80,7 +80,7 @@ const recentBoxes = allBoxes.slice(0, 4);
                 )}
               </div>
             )}
-            <span class="latest-box-cta">Read the full review →</span>
+            <span class="latest-box-cta">View box details →</span>
           </div>
         </a>
       </div>
@@ -95,7 +95,7 @@ const recentBoxes = allBoxes.slice(0, 4);
           title="Archive"
           subtitle="Every box. Every product. Every fizz."
         />
-        <div class="grid grid--2">
+        <div class="grid grid--2" data-animate="stagger-children" data-stagger="0.12">
           {recentBoxes.map((box) => (
             <BoxCard
               title={box.data.title}
@@ -118,7 +118,7 @@ const recentBoxes = allBoxes.slice(0, 4);
   <!-- TikTok CTA -->
   <CTABlock
     title="Watch on TikTok"
-    description="Unboxing vids, bath demos, scent reviews, and honest opinions. Every month, as soon as the box lands."
+    description="Monthly unboxings, bath demos, and first impressions from @lushiesam."
     primaryLink="https://www.tiktok.com/@lushiesam"
     primaryLabel="Follow @lushiesam"
     secondaryLink="/kitchen-boxes/"
