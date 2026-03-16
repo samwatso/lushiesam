@@ -1,5 +1,5 @@
 ---
-import { getCollection, render } from 'astro:content';
+import { getAllBoxes, renderBoxContent } from '@/lib/content';
 import BaseLayout from '@/layouts/BaseLayout.astro';
 import Hero from '@/components/Hero.astro';
 import ProductList from '@/components/ProductList.astro';
@@ -8,7 +8,7 @@ import TikTokEmbed from '@/components/TikTokEmbed.astro';
 import NostalgiaNote from '@/components/NostalgiaNote.astro';
 
 export async function getStaticPaths() {
-  const boxes = await getCollection('kitchenBoxes');
+  const boxes = await getAllBoxes();
   return boxes.map((box) => ({
     params: { slug: box.id },
     props: { box },
@@ -17,7 +17,8 @@ export async function getStaticPaths() {
 
 const { box } = Astro.props;
 const { data } = box;
-const { Content } = await render(box);
+const rendered = await renderBoxContent(box);
+const Content = rendered.Content;
 ---
 
 <BaseLayout
@@ -39,9 +40,13 @@ const { Content } = await render(box);
       <TikTokEmbed url={data.tiktokUrl} embedId={data.tiktokEmbedId} />
 
       <!-- Editorial Summary -->
-      <div class="box-content prose" data-animate="fade-in">
-        <Content />
-      </div>
+      {Content ? (
+        <div class="box-content prose" data-animate="fade-in">
+          <Content />
+        </div>
+      ) : rendered.html ? (
+        <div class="box-content prose" data-animate="fade-in" set:html={rendered.html} />
+      ) : null}
 
       <!-- Group Shot -->
       {data.groupShot && (

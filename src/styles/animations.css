@@ -169,6 +169,23 @@
   will-change: transform;
 }
 
+/* --- Scent Profile Reveal --- */
+.js-enabled .scent-center {
+  opacity: 0;
+  transform: translate(-50%, -50%) scale(0.8);
+  will-change: opacity, transform;
+}
+
+.js-enabled .scent-product-label {
+  opacity: 0;
+  will-change: opacity;
+}
+
+.js-enabled .scent-note {
+  opacity: 0;
+  will-change: opacity;
+}
+
 /* =============================================
    Scene 2: Latest Box Reveal — Initial States
    Desktop only (scene requires pinning)
@@ -233,10 +250,17 @@
   .js-enabled .latest-scene-summary,
   .js-enabled .scene-product,
   .js-enabled .scene-product-scent,
-  .js-enabled .latest-scene-cta {
+  .js-enabled .latest-scene-cta,
+  .js-enabled .scent-center,
+  .js-enabled .scent-product-label,
+  .js-enabled .scent-note {
     opacity: 1 !important;
     transform: none !important;
     filter: none !important;
     will-change: auto !important;
+  }
+
+  .js-enabled .scent-center {
+    transform: translate(-50%, -50%) !important;
   }
 }

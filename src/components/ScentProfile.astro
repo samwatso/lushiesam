@@ -1,0 +1,366 @@
+---
+interface Product {
+  name: string;
+  type?: string;
+  scent?: string;
+  highlight?: boolean;
+}
+
+interface Props {
+  products: Product[];
+  month: string;
+  year: number;
+}
+
+const { products, month, year } = Astro.props;
+
+// Parse scent notes from all products and classify by family
+const scentFamilies: Record<string, { color: string; notes: string[] }> = {
+  floral: { color: '#e8a0bf', notes: [] },
+  citrus: { color: 'var(--color-green-bright)', notes: [] },
+  warm: { color: 'var(--color-gold)', notes: [] },
+  fresh: { color: '#7ec8b8', notes: [] },
+};
+
+const floralKeywords = ['cherry blossom', 'ylang ylang', 'rose', 'jasmine', 'geranium', 'iris', 'violet'];
+const citrusKeywords = ['lime', 'lemongrass', 'bergamot', 'grapefruit', 'lemon', 'orange', 'citrus', 'mandarin'];
+const warmKeywords = ['honey', 'vanilla', 'tonka', 'cocoa', 'benzoin', 'sandalwood', 'cinnamon', 'argan', 'cocoa butter', 'cream'];
+const freshKeywords = ['neroli', 'lavender', 'oat milk', 'mint', 'eucalyptus', 'tea tree', 'olive'];
+
+function classifyNote(note: string): string {
+  const lower = note.toLowerCase().trim();
+  if (floralKeywords.some((k) => lower.includes(k))) return 'floral';
+  if (citrusKeywords.some((k) => lower.includes(k))) return 'citrus';
+  if (warmKeywords.some((k) => lower.includes(k))) return 'warm';
+  if (freshKeywords.some((k) => lower.includes(k))) return 'fresh';
+  return 'warm'; // default
+}
+
+// Extract unique scent notes
+const seenNotes = new Set<string>();
+products.forEach((p) => {
+  if (!p.scent) return;
+  p.scent.split(',').forEach((note) => {
+    const trimmed = note.trim();
+    const lower = trimmed.toLowerCase();
+    if (!seenNotes.has(lower) && trimmed.length > 0) {
+      seenNotes.add(lower);
+      const family = classifyNote(trimmed);
+      scentFamilies[family].notes.push(trimmed);
+    }
+  });
+});
+
+// Collect all notes with their colors for the outer ring
+const allNotes = Object.entries(scentFamilies).flatMap(([, family]) =>
+  family.notes.map((note) => ({ name: note, color: family.color }))
+);
+
+// Position products radially in the inner ring
+const productCount = products.length;
+const noteCount = allNotes.length;
+
+const shortYear = String(year).slice(2);
+---
+
+<section class="scent-profile-section section">
+  <div class="container scent-profile-layout">
+    <div class="scent-profile-text" data-animate="fade-up">
+      <span class="scent-tag">Scent Profile</span>
+      <h2 class="scent-heading">What's inside</h2>
+      <p class="scent-subtitle">
+        {products.length} products spanning floral, citrus, warm, and fresh scent families — from cherry blossom to tonka bean.
+      </p>
+      <div class="scent-legend">
+        <span class="legend-item" style="--legend-color: #e8a0bf;">Floral</span>
+        <span class="legend-item" style="--legend-color: var(--color-green-bright);">Citrus</span>
+        <span class="legend-item" style="--legend-color: var(--color-gold);">Warm</span>
+        <span class="legend-item" style="--legend-color: #7ec8b8;">Fresh</span>
+      </div>
+    </div>
+
+    <div class="scent-graphic" aria-label={`Scent profile for ${month} ${year} box`}>
+      <!-- Center label -->
+      <div class="scent-center">
+        <span class="scent-center-month">{month}</span>
+        <span class="scent-center-year">'{shortYear}</span>
+      </div>
+
+      <!-- Inner ring: product names -->
+      <div class="scent-inner-ring">
+        {products.map((p, i) => {
+          const angle = (i / productCount) * 360 - 90;
+          return (
+            <span
+              class="scent-product-label"
+              style={`--angle: ${angle}deg; --radius: 110px;`}
+            >
+              {p.name}
+            </span>
+          );
+        })}
+      </div>
+
+      <!-- Outer orbit: scent note pills -->
+      <div class="scent-outer-ring">
+        {allNotes.map((note, i) => {
+          const angle = (i / noteCount) * 360 - 90;
+          return (
+            <span
+              class="scent-note"
+              style={`--angle: ${angle}deg; --radius: 200px; --note-color: ${note.color};`}
+            >
+              {note.name}
+            </span>
+          );
+        })}
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .scent-profile-section {
+    padding: var(--space-4xl) 0;
+    overflow: hidden;
+  }
+
+  .scent-profile-layout {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--space-3xl);
+    align-items: center;
+  }
+
+  /* Text side */
+  .scent-profile-text {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-md);
+  }
+
+  .scent-tag {
+    font-family: var(--font-body);
+    font-size: 0.6875rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: var(--color-gold);
+    align-self: flex-start;
+  }
+
+  .scent-heading {
+    font-family: var(--font-display);
+    font-size: clamp(2rem, 4vw, 3rem);
+    font-weight: 400;
+    line-height: 1.15;
+    color: var(--color-text-heading);
+  }
+
+  .scent-subtitle {
+    color: var(--color-text-secondary);
+    font-size: 0.9375rem;
+    line-height: 1.7;
+    max-width: 400px;
+  }
+
+  .scent-legend {
+    display: flex;
+    gap: var(--space-lg);
+    flex-wrap: wrap;
+    margin-top: var(--space-sm);
+  }
+
+  .legend-item {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 0.75rem;
+    color: var(--color-text-secondary);
+  }
+
+  .legend-item::before {
+    content: '';
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--legend-color);
+  }
+
+  /* Graphic */
+  .scent-graphic {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 1;
+    max-width: 480px;
+    margin: 0 auto;
+  }
+
+  /* Center */
+  .scent-center {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+    z-index: 2;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+
+  .scent-center-month {
+    font-family: var(--font-display);
+    font-size: clamp(1.25rem, 2.5vw, 1.75rem);
+    color: var(--color-text-heading);
+    line-height: 1;
+  }
+
+  .scent-center-year {
+    font-family: var(--font-body);
+    font-size: 0.8125rem;
+    color: var(--color-text-muted);
+    letter-spacing: 0.08em;
+  }
+
+  /* Inner ring: products */
+  .scent-inner-ring {
+    position: absolute;
+    inset: 0;
+  }
+
+  .scent-product-label {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: rotate(var(--angle)) translateX(var(--radius)) rotate(calc(-1 * var(--angle)));
+    transform-origin: center center;
+    font-family: var(--font-body);
+    font-size: 0.6875rem;
+    font-weight: 500;
+    color: var(--color-text-secondary);
+    white-space: nowrap;
+    letter-spacing: 0.02em;
+  }
+
+  /* Outer ring: scent notes */
+  .scent-outer-ring {
+    position: absolute;
+    inset: 0;
+    animation: scent-orbit 90s linear infinite;
+  }
+
+  .scent-note {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: rotate(var(--angle)) translateX(var(--radius)) rotate(calc(-1 * var(--angle)));
+    transform-origin: center center;
+    padding: 0.2rem 0.6rem;
+    border-radius: var(--radius-full);
+    font-family: var(--font-body);
+    font-size: 0.625rem;
+    font-weight: 500;
+    color: var(--color-bg);
+    background: var(--note-color);
+    white-space: nowrap;
+    /* Counter-rotate to keep text readable */
+    animation: scent-counter-orbit 90s linear infinite;
+  }
+
+  @keyframes scent-orbit {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+  }
+
+  @keyframes scent-counter-orbit {
+    from {
+      transform: rotate(var(--angle)) translateX(var(--radius)) rotate(calc(-1 * var(--angle)));
+    }
+    to {
+      transform: rotate(calc(var(--angle) - 360deg)) translateX(var(--radius)) rotate(calc(-1 * (var(--angle) - 360deg)));
+    }
+  }
+
+  /* Decorative ring */
+  .scent-graphic::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 220px;
+    height: 220px;
+    transform: translate(-50%, -50%);
+    border-radius: 50%;
+    border: 1px solid var(--color-border);
+  }
+
+  .scent-graphic::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 400px;
+    height: 400px;
+    transform: translate(-50%, -50%);
+    border-radius: 50%;
+    border: 1px dashed rgba(255, 255, 255, 0.04);
+  }
+
+  /* Mobile */
+  @media (max-width: 768px) {
+    .scent-profile-layout {
+      grid-template-columns: 1fr;
+      gap: var(--space-xl);
+    }
+
+    .scent-profile-text {
+      text-align: center;
+      align-items: center;
+    }
+
+    .scent-subtitle {
+      max-width: none;
+    }
+
+    .scent-graphic {
+      max-width: 340px;
+    }
+
+    .scent-product-label {
+      --radius: 80px;
+      font-size: 0.6rem;
+    }
+
+    .scent-note {
+      --radius: 145px;
+      font-size: 0.5625rem;
+    }
+
+    .scent-graphic::before {
+      width: 160px;
+      height: 160px;
+    }
+
+    .scent-graphic::after {
+      width: 290px;
+      height: 290px;
+    }
+
+    /* Disable rotation on mobile for readability */
+    .scent-outer-ring {
+      animation: none;
+    }
+
+    .scent-note {
+      animation: none;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .scent-outer-ring,
+    .scent-note {
+      animation: none;
+    }
+  }
+</style>

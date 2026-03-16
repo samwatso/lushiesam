@@ -1,0 +1,1346 @@
+---
+import { getAllBoxes } from '@/lib/content';
+import BaseLayout from '@/layouts/BaseLayout.astro';
+
+const allBoxes = (await getAllBoxes())
+  .filter((box) => !box.data.draft)
+  .sort((a, b) => {
+    const dateA = a.data.publishedDate?.getTime() ?? 0;
+    const dateB = b.data.publishedDate?.getTime() ?? 0;
+    return dateB - dateA;
+  });
+
+// Scent classification keywords (shared with ScentProfile)
+const scentKeywords: Record<string, string[]> = {
+  floral: ['cherry blossom', 'ylang ylang', 'rose', 'jasmine', 'geranium', 'iris', 'violet'],
+  citrus: ['lime', 'lemongrass', 'bergamot', 'grapefruit', 'lemon', 'orange', 'citrus', 'mandarin'],
+  warm: ['honey', 'vanilla', 'tonka', 'cocoa', 'benzoin', 'sandalwood', 'cinnamon', 'cream', 'argan', 'strawberry', 'chocolate'],
+  fresh: ['neroli', 'lavender', 'oat milk', 'mint', 'eucalyptus', 'tea tree', 'olive'],
+};
+
+const familyColors: Record<string, string> = {
+  floral: '#e8a0bf',
+  citrus: '#6faa80',
+  warm: '#c4a265',
+  fresh: '#7ec8b8',
+};
+
+// Priority order for tie-breaking: warm > floral > fresh > citrus
+const familyPriority: Record<string, number> = { warm: 4, floral: 3, fresh: 2, citrus: 1 };
+
+function classifyScent(scent?: string): string {
+  if (!scent) return 'warm';
+  const lower = scent.toLowerCase();
+  const scores: Record<string, number> = { floral: 0, citrus: 0, warm: 0, fresh: 0 };
+  for (const [family, keywords] of Object.entries(scentKeywords)) {
+    keywords.forEach((k) => { if (lower.includes(k)) scores[family]++; });
+  }
+  // First note in the scent string gets a small boost (it's the dominant note)
+  const firstNote = scent.split(',')[0].trim().toLowerCase();
+  for (const [family, keywords] of Object.entries(scentKeywords)) {
+    if (keywords.some((k) => firstNote.includes(k))) { scores[family] += 0.5; break; }
+  }
+  return Object.entries(scores)
+    .sort((a, b) => b[1] - a[1] || (familyPriority[b[0]] ?? 0) - (familyPriority[a[0]] ?? 0))[0][0];
+}
+
+// Build graph data
+interface GNode {
+  id: string;
+  type: string;
+  label: string;
+  month?: string;
+  year?: number;
+  summary?: string;
+  slug?: string;
+  boxProducts?: { name: string; type: string; family: string; familyColor: string }[];
+  productType?: string;
+  scent?: string;
+  family?: string;
+  familyColor?: string;
+  highlight?: boolean;
+  nostalgiaNote?: string;
+  productBoxes?: { label: string; slug: string; month: string; year: number }[];
+}
+
+interface GEdge {
+  source: string;
+  target: string;
+  type: string;
+}
+
+const nodes: GNode[] = [];
+const edges: GEdge[] = [];
+const productMap = new Map<string, GNode>();
+const usedFamilies = new Set<string>();
+
+// Box and product nodes (build first to discover which families are used)
+for (const box of allBoxes) {
+  const boxId = `box-${box.id}`;
+  const boxProducts: GNode['boxProducts'] = [];
+
+  for (const p of box.data.products ?? []) {
+    const pid = `product-${p.name.toLowerCase().replace(/[^a-z0-9]+/g, '-')}`;
+    const family = classifyScent(p.scent);
+    const fc = familyColors[family];
+
+    boxProducts.push({ name: p.name, type: p.type || '', family, familyColor: fc });
+
+    if (!productMap.has(pid)) {
+      const node: GNode = {
+        id: pid,
+        type: 'product',
+        label: p.name,
+        productType: p.type,
+        scent: p.scent,
+        family,
+        familyColor: fc,
+        highlight: p.highlight,
+        nostalgiaNote: p.nostalgiaNote,
+        productBoxes: [{ label: box.data.title, slug: box.id, month: box.data.month, year: box.data.year }],
+      };
+      nodes.push(node);
+      productMap.set(pid, node);
+      usedFamilies.add(family);
+      edges.push({ source: pid, target: `family-${family}`, type: 'scent-family' });
+    } else {
+      productMap.get(pid)!.productBoxes?.push({
+        label: box.data.title, slug: box.id, month: box.data.month, year: box.data.year,
+      });
+    }
+
+    edges.push({ source: boxId, target: pid, type: 'contains' });
+  }
+
+  nodes.push({
+    id: boxId,
+    type: 'box',
+    label: box.data.title,
+    month: box.data.month,
+    year: box.data.year,
+    summary: box.data.summary,
+    slug: box.id,
+    boxProducts,
+  });
+}
+
+// Create scent family nodes only for families that have products
+for (const [family, color] of Object.entries(familyColors)) {
+  if (!usedFamilies.has(family)) continue;
+  nodes.push({
+    id: `family-${family}`,
+    type: 'scent-family',
+    label: family.charAt(0).toUpperCase() + family.slice(1),
+    familyColor: color,
+  });
+}
+
+const graphDataJSON = JSON.stringify({ nodes, edges });
+---
+
+<BaseLayout title="Explore" description="A visual map of products, throwbacks, and scent links across Lush Kitchen boxes since 2022.">
+  <div class="explore-page">
+    <!-- Header -->
+    <div class="explore-hero">
+      <div class="container">
+        <span class="explore-tag">Visual Archive</span>
+        <h1 class="explore-title">Explore the Archive</h1>
+        <p class="explore-subtitle">
+          See how kitchen boxes, products, and scent families connect — a visual map of the Lush Kitchen world since 2022.
+        </p>
+      </div>
+    </div>
+
+    <!-- Controls -->
+    <div class="explore-controls">
+      <div class="container explore-controls-inner">
+        <div class="filter-group" role="group" aria-label="Filter node types">
+          <button class="filter-btn active" data-filter="all">All</button>
+          <button class="filter-btn" data-filter="box">Boxes</button>
+          <button class="filter-btn" data-filter="product">Products</button>
+          <button class="filter-btn" data-filter="scent-family">Scents</button>
+        </div>
+        <div class="search-wrapper">
+          <input
+            type="text"
+            class="search-input"
+            id="graph-search"
+            placeholder="Find a product, box, or scent…"
+            autocomplete="off"
+          />
+          <div class="search-results" id="search-results"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Graph -->
+    <div class="explore-graph" id="graph-container">
+      <svg id="graph-svg" role="img" aria-label="Interactive network graph of kitchen boxes, products, and scent families"></svg>
+
+      <!-- Legend -->
+      <div class="graph-legend">
+        <div class="legend-item"><span class="legend-swatch legend-swatch--box"></span>Kitchen Box</div>
+        <div class="legend-item"><span class="legend-swatch legend-swatch--product"></span>Product</div>
+        {Object.entries(familyColors).map(([family, color]) => (
+          usedFamilies.has(family) && (
+            <div class="legend-item"><span class="legend-swatch" style={`background:${color}`}></span>{family.charAt(0).toUpperCase() + family.slice(1)}</div>
+          )
+        ))}
+      </div>
+
+      <!-- Zoom controls -->
+      <div class="zoom-controls">
+        <button id="zoom-in" aria-label="Zoom in">+</button>
+        <button id="zoom-out" aria-label="Zoom out">&minus;</button>
+        <button id="zoom-reset" aria-label="Reset view">↻</button>
+      </div>
+    </div>
+
+    <!-- Detail panel -->
+    <aside class="detail-panel" id="detail-panel" aria-label="Node details">
+      <button class="panel-close" id="panel-close" aria-label="Close panel">&times;</button>
+      <div class="panel-content" id="panel-content"></div>
+    </aside>
+  </div>
+</BaseLayout>
+
+<!-- Data handoff to client -->
+<script define:vars={{ graphDataJSON }}>
+  window.__GRAPH_DATA = JSON.parse(graphDataJSON);
+</script>
+
+<!-- Client-side graph -->
+<script>
+  import { forceSimulation, forceLink, forceManyBody, forceCenter, forceCollide, forceX, forceY } from 'd3-force';
+  import { select } from 'd3-selection';
+  import { zoom, zoomIdentity } from 'd3-zoom';
+  import { drag } from 'd3-drag';
+  import 'd3-transition';
+
+  // ── Types ──────────────────────────────────────────────
+  interface N {
+    id: string; type: string; label: string;
+    month?: string; year?: number; summary?: string; slug?: string;
+    boxProducts?: { name: string; type: string; family: string; familyColor: string }[];
+    productType?: string; scent?: string; family?: string; familyColor?: string;
+    highlight?: boolean; nostalgiaNote?: string;
+    productBoxes?: { label: string; slug: string; month: string; year: number }[];
+    x?: number; y?: number; fx?: number | null; fy?: number | null;
+    vx?: number; vy?: number;
+  }
+  interface E { source: any; target: any; type: string; }
+  interface GraphData { nodes: N[]; edges: E[]; }
+
+  // ── Data ───────────────────────────────────────────────
+  const data: GraphData = (window as any).__GRAPH_DATA;
+  const { nodes, edges } = data;
+
+  // ── Adjacency map for highlights ──────────────────────
+  const neighbors = new Map<string, Set<string>>();
+  nodes.forEach((n) => neighbors.set(n.id, new Set()));
+  edges.forEach((e) => {
+    const sid = typeof e.source === 'object' ? e.source.id : e.source;
+    const tid = typeof e.target === 'object' ? e.target.id : e.target;
+    neighbors.get(sid)?.add(tid);
+    neighbors.get(tid)?.add(sid);
+  });
+
+  // ── Setup SVG ─────────────────────────────────────────
+  const container = document.getElementById('graph-container')!;
+  const svg = select('#graph-svg');
+  let width = container.clientWidth;
+  let height = container.clientHeight;
+  svg.attr('width', width).attr('height', height);
+
+  // Defs: glow filter
+  const defs = svg.append('defs');
+  const glowFilter = defs.append('filter').attr('id', 'glow');
+  glowFilter.append('feGaussianBlur').attr('stdDeviation', '4').attr('result', 'blur');
+  const glowMerge = glowFilter.append('feMerge');
+  glowMerge.append('feMergeNode').attr('in', 'blur');
+  glowMerge.append('feMergeNode').attr('in', 'SourceGraphic');
+
+  // Zoom behavior
+  const zoomBehavior = zoom<SVGSVGElement, unknown>()
+    .scaleExtent([0.25, 4])
+    .on('zoom', (event) => {
+      mainGroup.attr('transform', event.transform.toString());
+    });
+  svg.call(zoomBehavior as any);
+
+  // Main group (receives zoom transform)
+  const mainGroup = svg.append('g').attr('class', 'graph-layer');
+
+  // Edge layer (behind nodes)
+  const edgeLayer = mainGroup.append('g').attr('class', 'edge-layer');
+  // Node layer
+  const nodeLayer = mainGroup.append('g').attr('class', 'node-layer');
+
+  // ── Helpers ───────────────────────────────────────────
+  function getRadius(n: N): number {
+    if (n.type === 'box') return 26;
+    if (n.type === 'scent-family') return 20;
+    return 13;
+  }
+
+  function getNodeFill(n: N): string {
+    if (n.type === 'box') return 'rgba(90, 138, 106, 0.25)';
+    if (n.type === 'scent-family') return n.familyColor || '#c4a265';
+    return 'rgba(26, 32, 27, 0.85)';
+  }
+
+  function getNodeStroke(n: N): string {
+    if (n.type === 'box') return '#6faa80';
+    if (n.type === 'scent-family') return n.familyColor || '#c4a265';
+    return n.familyColor || 'rgba(255, 255, 255, 0.15)';
+  }
+
+  function getStrokeWidth(n: N): number {
+    if (n.type === 'box') return 2;
+    if (n.type === 'scent-family') return 2;
+    return 1.5;
+  }
+
+  // ── Force simulation ──────────────────────────────────
+  const simulation = forceSimulation<N>(nodes)
+    .force('link', forceLink<N, E>(edges)
+      .id((d: any) => d.id)
+      .distance((d: any) => d.type === 'contains' ? 90 : 140)
+      .strength((d: any) => d.type === 'contains' ? 0.7 : 0.3)
+    )
+    .force('charge', forceManyBody<N>().strength(-350))
+    .force('center', forceCenter(width / 2, height / 2))
+    .force('collide', forceCollide<N>().radius((d: any) => getRadius(d) + 12))
+    .force('y', forceY<N>().y((d: any) => {
+      if (d.type === 'box') return height * 0.38;
+      if (d.type === 'scent-family') return height * 0.62;
+      return height * 0.5;
+    }).strength(0.06))
+    .alphaDecay(0.02);
+
+  // ── Render edges ──────────────────────────────────────
+  const edgeElements = edgeLayer.selectAll<SVGLineElement, E>('line')
+    .data(edges)
+    .join('line')
+    .attr('class', (d: E) => `edge edge--${d.type}`)
+    .attr('stroke', (d: E) => {
+      if (d.type === 'contains') return 'rgba(111, 170, 128, 0.12)';
+      return 'rgba(255, 255, 255, 0.06)';
+    })
+    .attr('stroke-width', (d: E) => d.type === 'contains' ? 1.2 : 0.8)
+    .attr('stroke-dasharray', (d: E) => d.type === 'scent-family' ? '4,3' : 'none');
+
+  // ── Render nodes ──────────────────────────────────────
+  const dragBehavior = drag<SVGGElement, N>()
+    .on('start', (event: any, d: N) => {
+      if (!event.active) simulation.alphaTarget(0.3).restart();
+      d.fx = d.x;
+      d.fy = d.y;
+    })
+    .on('drag', (event: any, d: N) => {
+      d.fx = event.x;
+      d.fy = event.y;
+    })
+    .on('end', (event: any, d: N) => {
+      if (!event.active) simulation.alphaTarget(0);
+      d.fx = null;
+      d.fy = null;
+    });
+
+  const nodeGroups = nodeLayer.selectAll<SVGGElement, N>('g')
+    .data(nodes)
+    .join('g')
+    .attr('class', (d: N) => `node node--${d.type}`)
+    .attr('data-id', (d: N) => d.id)
+    .call(dragBehavior as any);
+
+  // Circle
+  nodeGroups.append('circle')
+    .attr('r', (d: N) => getRadius(d))
+    .attr('fill', (d: N) => getNodeFill(d))
+    .attr('stroke', (d: N) => getNodeStroke(d))
+    .attr('stroke-width', (d: N) => getStrokeWidth(d));
+
+  // Nostalgia indicator ring (gold inner glow)
+  nodeGroups.filter((d: N) => !!d.nostalgiaNote)
+    .append('circle')
+    .attr('r', (d: N) => getRadius(d) + 5)
+    .attr('fill', 'none')
+    .attr('stroke', '#c4a265')
+    .attr('stroke-width', 1)
+    .attr('stroke-dasharray', '2,2')
+    .attr('opacity', 0.5)
+    .attr('class', 'nostalgia-ring');
+
+  // Labels
+  nodeGroups.append('text')
+    .text((d: N) => d.label)
+    .attr('dy', (d: N) => getRadius(d) + 14)
+    .attr('text-anchor', 'middle')
+    .attr('class', (d: N) => `node-label node-label--${d.type}`);
+
+  // Subtitle labels for boxes (month/year)
+  nodeGroups.filter((d: N) => d.type === 'box')
+    .append('text')
+    .text((d: N) => `${d.month} '${String(d.year).slice(2)}`)
+    .attr('dy', (d: N) => getRadius(d) + 26)
+    .attr('text-anchor', 'middle')
+    .attr('class', 'node-sublabel');
+
+  // ── Tick ───────────────────────────────────────────────
+  simulation.on('tick', () => {
+    edgeElements
+      .attr('x1', (d: any) => d.source.x)
+      .attr('y1', (d: any) => d.source.y)
+      .attr('x2', (d: any) => d.target.x)
+      .attr('y2', (d: any) => d.target.y);
+
+    nodeGroups.attr('transform', (d: N) => `translate(${d.x ?? 0},${d.y ?? 0})`);
+  });
+
+  // ── Hover interactions ────────────────────────────────
+  let hoveredId: string | null = null;
+  let selectedId: string | null = null;
+
+  function highlightNode(id: string | null) {
+    if (!id) {
+      // Reset
+      nodeGroups.classed('dimmed', false).classed('highlighted', false);
+      edgeElements.classed('dimmed', false).classed('highlighted', false);
+      svg.classed('graph-has-focus', false);
+      return;
+    }
+
+    svg.classed('graph-has-focus', true);
+    const connected = neighbors.get(id) || new Set();
+
+    nodeGroups
+      .classed('highlighted', (d: N) => d.id === id || connected.has(d.id))
+      .classed('dimmed', (d: N) => d.id !== id && !connected.has(d.id));
+
+    edgeElements
+      .classed('highlighted', (d: any) => {
+        const sid = typeof d.source === 'object' ? d.source.id : d.source;
+        const tid = typeof d.target === 'object' ? d.target.id : d.target;
+        return sid === id || tid === id;
+      })
+      .classed('dimmed', (d: any) => {
+        const sid = typeof d.source === 'object' ? d.source.id : d.source;
+        const tid = typeof d.target === 'object' ? d.target.id : d.target;
+        return sid !== id && tid !== id;
+      });
+  }
+
+  nodeGroups
+    .on('mouseenter', (event: any, d: N) => {
+      if (!selectedId) highlightNode(d.id);
+      hoveredId = d.id;
+    })
+    .on('mouseleave', () => {
+      hoveredId = null;
+      if (!selectedId) highlightNode(null);
+    });
+
+  // ── Click → Detail panel ──────────────────────────────
+  const panel = document.getElementById('detail-panel')!;
+  const panelContent = document.getElementById('panel-content')!;
+  const panelClose = document.getElementById('panel-close')!;
+
+  function escapeHtml(str: string): string {
+    return str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+  }
+
+  function showPanel(node: N) {
+    selectedId = node.id;
+    highlightNode(node.id);
+    let html = '';
+
+    if (node.type === 'box') {
+      html = `
+        <span class="panel-tag panel-tag--box">Kitchen Box</span>
+        <h3 class="panel-title">${escapeHtml(node.label)}</h3>
+        <p class="panel-date">${escapeHtml(node.month || '')} ${node.year}</p>
+        ${node.summary ? `<p class="panel-summary">${escapeHtml(node.summary)}</p>` : ''}
+        <div class="panel-section">
+          <h4>Products (${node.boxProducts?.length || 0})</h4>
+          <ul class="panel-list">
+            ${(node.boxProducts || []).map((p) => `
+              <li>
+                <span class="panel-product-dot" style="background:${p.familyColor}"></span>
+                <span>${escapeHtml(p.name)}</span>
+                ${p.type ? `<span class="panel-type-tag">${escapeHtml(p.type)}</span>` : ''}
+              </li>
+            `).join('')}
+          </ul>
+        </div>
+        <a href="/kitchen-boxes/${node.slug}/" class="btn btn--primary panel-cta">View box details →</a>
+      `;
+    } else if (node.type === 'product') {
+      html = `
+        ${node.productType ? `<span class="panel-tag panel-tag--product">${escapeHtml(node.productType)}</span>` : ''}
+        <h3 class="panel-title">${escapeHtml(node.label)}</h3>
+        ${node.scent ? `<p class="panel-scent">${escapeHtml(node.scent)}</p>` : ''}
+        <div class="panel-family-badge">
+          <span class="panel-product-dot" style="background:${node.familyColor}"></span>
+          <span>${node.family ? node.family.charAt(0).toUpperCase() + node.family.slice(1) : ''} family</span>
+        </div>
+        ${node.nostalgiaNote ? `
+          <div class="panel-nostalgia">
+            <h4>Nostalgia Note</h4>
+            <p>${escapeHtml(node.nostalgiaNote)}</p>
+          </div>
+        ` : ''}
+        <div class="panel-section">
+          <h4>Appears in</h4>
+          <ul class="panel-list">
+            ${(node.productBoxes || []).map((b) => `
+              <li><a href="/kitchen-boxes/${b.slug}/">${escapeHtml(b.label)} — ${escapeHtml(b.month)} ${b.year}</a></li>
+            `).join('')}
+          </ul>
+        </div>
+      `;
+    } else if (node.type === 'scent-family') {
+      // Find all products in this family
+      const familyProducts = nodes.filter((n) => n.type === 'product' && n.family === node.label.toLowerCase());
+      const familyBoxSlugs = new Set<string>();
+      familyProducts.forEach((p) => p.productBoxes?.forEach((b) => familyBoxSlugs.add(b.slug)));
+      const familyBoxes = nodes.filter((n) => n.type === 'box' && familyBoxSlugs.has(n.slug || ''));
+
+      html = `
+        <span class="panel-tag" style="color:${node.familyColor}">Scent Family</span>
+        <h3 class="panel-title">${escapeHtml(node.label)}</h3>
+        <div class="panel-section">
+          <h4>Products (${familyProducts.length})</h4>
+          <ul class="panel-list">
+            ${familyProducts.map((p) => `
+              <li>
+                <span>${escapeHtml(p.label)}</span>
+                ${p.productType ? `<span class="panel-type-tag">${escapeHtml(p.productType)}</span>` : ''}
+              </li>
+            `).join('')}
+          </ul>
+        </div>
+        <div class="panel-section">
+          <h4>Found in (${familyBoxes.length} ${familyBoxes.length === 1 ? 'box' : 'boxes'})</h4>
+          <ul class="panel-list">
+            ${familyBoxes.map((b) => `
+              <li><a href="/kitchen-boxes/${b.slug}/">${escapeHtml(b.label)}</a></li>
+            `).join('')}
+          </ul>
+        </div>
+      `;
+    }
+
+    panelContent.innerHTML = html;
+    panel.classList.add('open');
+  }
+
+  function hidePanel() {
+    selectedId = null;
+    panel.classList.remove('open');
+    highlightNode(hoveredId);
+  }
+
+  nodeGroups.on('click', (event: any, d: N) => {
+    event.stopPropagation();
+    if (selectedId === d.id) {
+      hidePanel();
+    } else {
+      showPanel(d);
+    }
+  });
+
+  svg.on('click', () => {
+    if (selectedId) hidePanel();
+  });
+
+  panelClose.addEventListener('click', hidePanel);
+
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && selectedId) hidePanel();
+  });
+
+  // ── Filters ───────────────────────────────────────────
+  const filterBtns = document.querySelectorAll('.filter-btn');
+  let activeFilter = 'all';
+
+  function applyFilter(filter: string) {
+    activeFilter = filter;
+    filterBtns.forEach((btn) => {
+      btn.classList.toggle('active', (btn as HTMLElement).dataset.filter === filter);
+    });
+
+    if (filter === 'all') {
+      nodeGroups.classed('filtered-out', false);
+      edgeElements.classed('filtered-out', false);
+    } else {
+      nodeGroups.classed('filtered-out', (d: N) => d.type !== filter);
+      edgeElements.classed('filtered-out', (d: any) => {
+        const sType = typeof d.source === 'object' ? d.source.type : '';
+        const tType = typeof d.target === 'object' ? d.target.type : '';
+        return sType !== filter && tType !== filter;
+      });
+    }
+
+    // Close panel if the selected node is now filtered out
+    if (selectedId) {
+      const selectedNode = nodes.find((n) => n.id === selectedId);
+      if (selectedNode && filter !== 'all' && selectedNode.type !== filter) {
+        hidePanel();
+      }
+    }
+  }
+
+  filterBtns.forEach((btn) => {
+    btn.addEventListener('click', () => {
+      applyFilter((btn as HTMLElement).dataset.filter || 'all');
+    });
+  });
+
+  // ── Search ────────────────────────────────────────────
+  const searchInput = document.getElementById('graph-search') as HTMLInputElement;
+  const searchResults = document.getElementById('search-results')!;
+
+  function renderSearchResults(query: string) {
+    if (!query.trim()) {
+      searchResults.innerHTML = '';
+      searchResults.classList.remove('open');
+      return;
+    }
+
+    const lower = query.toLowerCase();
+    const matches = nodes.filter((n) => n.label.toLowerCase().includes(lower)).slice(0, 8);
+
+    if (matches.length === 0) {
+      searchResults.innerHTML = '<div class="search-empty">No matches</div>';
+      searchResults.classList.add('open');
+      return;
+    }
+
+    searchResults.innerHTML = matches.map((n) => `
+      <button class="search-result" data-id="${n.id}">
+        <span class="search-result-dot search-result-dot--${n.type}" ${n.familyColor ? `style="background:${n.familyColor}"` : ''}></span>
+        <span class="search-result-label">${escapeHtml(n.label)}</span>
+        <span class="search-result-type">${n.type === 'scent-family' ? 'Scent' : n.type.charAt(0).toUpperCase() + n.type.slice(1)}</span>
+      </button>
+    `).join('');
+    searchResults.classList.add('open');
+
+    // Attach click handlers
+    searchResults.querySelectorAll('.search-result').forEach((el) => {
+      el.addEventListener('click', () => {
+        const id = (el as HTMLElement).dataset.id!;
+        const node = nodes.find((n) => n.id === id);
+        if (node) focusOnNode(node);
+        searchResults.innerHTML = '';
+        searchResults.classList.remove('open');
+        searchInput.value = '';
+      });
+    });
+  }
+
+  function focusOnNode(node: N) {
+    // Reset filter to show all
+    if (activeFilter !== 'all' && node.type !== activeFilter) {
+      applyFilter('all');
+    }
+
+    // Zoom and pan to center on the node
+    const scale = 1.5;
+    const transform = zoomIdentity
+      .translate(width / 2, height / 2)
+      .scale(scale)
+      .translate(-(node.x ?? width / 2), -(node.y ?? height / 2));
+
+    svg.transition().duration(750).call(zoomBehavior.transform as any, transform);
+
+    // Select the node
+    showPanel(node);
+  }
+
+  searchInput.addEventListener('input', () => {
+    renderSearchResults(searchInput.value);
+  });
+
+  searchInput.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') {
+      searchInput.value = '';
+      searchResults.innerHTML = '';
+      searchResults.classList.remove('open');
+      searchInput.blur();
+    }
+  });
+
+  // Close search when clicking outside
+  document.addEventListener('click', (e) => {
+    if (!(e.target as HTMLElement).closest('.search-wrapper')) {
+      searchResults.classList.remove('open');
+    }
+  });
+
+  // ── Zoom controls ─────────────────────────────────────
+  document.getElementById('zoom-in')?.addEventListener('click', () => {
+    svg.transition().duration(300).call(zoomBehavior.scaleBy as any, 1.4);
+  });
+
+  document.getElementById('zoom-out')?.addEventListener('click', () => {
+    svg.transition().duration(300).call(zoomBehavior.scaleBy as any, 0.7);
+  });
+
+  document.getElementById('zoom-reset')?.addEventListener('click', () => {
+    svg.transition().duration(500).call(zoomBehavior.transform as any, zoomIdentity);
+  });
+
+  // ── Resize handling ───────────────────────────────────
+  function handleResize() {
+    width = container.clientWidth;
+    height = container.clientHeight;
+    svg.attr('width', width).attr('height', height);
+    simulation.force('center', forceCenter(width / 2, height / 2));
+    simulation.force('y', forceY<N>().y((d: any) => {
+      if (d.type === 'box') return height * 0.38;
+      if (d.type === 'scent-family') return height * 0.62;
+      return height * 0.5;
+    }).strength(0.06));
+    simulation.alpha(0.3).restart();
+  }
+
+  let resizeTimer: ReturnType<typeof setTimeout>;
+  window.addEventListener('resize', () => {
+    clearTimeout(resizeTimer);
+    resizeTimer = setTimeout(handleResize, 200);
+  });
+</script>
+
+<style>
+  /* ═══════════════════════════════════════════════
+     Explore Page Layout
+     ═══════════════════════════════════════════════ */
+  .explore-page {
+    display: flex;
+    flex-direction: column;
+    min-height: calc(100vh - 3.5rem);
+    position: relative;
+  }
+
+  .explore-hero {
+    padding: var(--space-2xl) 0 var(--space-lg);
+  }
+
+  .explore-tag {
+    display: inline-block;
+    font-family: var(--font-body);
+    font-size: 0.6875rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: var(--color-green-bright);
+    margin-bottom: var(--space-sm);
+  }
+
+  .explore-title {
+    font-family: var(--font-display);
+    font-size: clamp(1.75rem, 4vw, 2.5rem);
+    font-weight: 400;
+    color: var(--color-text-heading);
+    margin-bottom: var(--space-xs);
+  }
+
+  .explore-subtitle {
+    color: var(--color-text-secondary);
+    font-size: 0.9375rem;
+    line-height: 1.6;
+    max-width: 540px;
+  }
+
+  /* ═══════════════════════════════════════════════
+     Controls Bar
+     ═══════════════════════════════════════════════ */
+  .explore-controls {
+    border-bottom: 1px solid var(--color-border);
+    padding: var(--space-sm) 0;
+    position: sticky;
+    top: 3.5rem;
+    z-index: 10;
+    background: var(--color-bg);
+  }
+
+  .explore-controls-inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-md);
+  }
+
+  .filter-group {
+    display: flex;
+    gap: 4px;
+  }
+
+  .filter-btn {
+    padding: 0.35rem 0.75rem;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-full);
+    background: transparent;
+    color: var(--color-text-secondary);
+    font-family: var(--font-body);
+    font-size: 0.6875rem;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+
+  .filter-btn:hover {
+    border-color: var(--color-border-hover);
+    color: var(--color-text);
+  }
+
+  .filter-btn.active {
+    background: rgba(90, 138, 106, 0.15);
+    border-color: rgba(90, 138, 106, 0.3);
+    color: var(--color-green-bright);
+  }
+
+  .search-wrapper {
+    position: relative;
+    width: 220px;
+  }
+
+  .search-input {
+    width: 100%;
+    padding: 0.4rem 0.75rem;
+    background: var(--glass-bg);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-full);
+    color: var(--color-text);
+    font-family: var(--font-body);
+    font-size: 0.75rem;
+    outline: none;
+    transition: border-color 0.2s ease;
+  }
+
+  .search-input::placeholder {
+    color: var(--color-text-muted);
+  }
+
+  .search-input:focus {
+    border-color: var(--color-border-hover);
+  }
+
+  .search-results {
+    position: absolute;
+    top: calc(100% + 4px);
+    left: 0;
+    right: 0;
+    background: var(--color-bg-raised);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    overflow: hidden;
+    display: none;
+    z-index: 20;
+    box-shadow: var(--shadow-lg);
+  }
+
+  .search-results.open {
+    display: block;
+  }
+
+  .search-result {
+    display: flex;
+    align-items: center;
+    gap: var(--space-sm);
+    width: 100%;
+    padding: 0.5rem 0.75rem;
+    background: none;
+    border: none;
+    color: var(--color-text);
+    font-family: var(--font-body);
+    font-size: 0.75rem;
+    cursor: pointer;
+    text-align: left;
+    transition: background 0.15s ease;
+  }
+
+  .search-result:hover {
+    background: var(--color-bg-hover);
+  }
+
+  .search-result-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+
+  .search-result-dot--box {
+    background: #6faa80;
+  }
+
+  .search-result-dot--product {
+    background: var(--color-text-secondary);
+  }
+
+  .search-result-label {
+    flex: 1;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .search-result-type {
+    color: var(--color-text-muted);
+    font-size: 0.625rem;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    flex-shrink: 0;
+  }
+
+  .search-empty {
+    padding: 0.75rem;
+    color: var(--color-text-muted);
+    font-size: 0.75rem;
+    text-align: center;
+  }
+
+  /* ═══════════════════════════════════════════════
+     Graph Container
+     ═══════════════════════════════════════════════ */
+  .explore-graph {
+    flex: 1;
+    position: relative;
+    min-height: 500px;
+    background: radial-gradient(ellipse at center, rgba(90, 138, 106, 0.03) 0%, transparent 60%);
+  }
+
+  #graph-svg {
+    display: block;
+    width: 100%;
+    height: 100%;
+    cursor: grab;
+  }
+
+  #graph-svg:active {
+    cursor: grabbing;
+  }
+
+  /* ── SVG Node + Edge Styling ─────────────────── */
+
+  /* Labels */
+  :global(.node-label) {
+    font-family: 'DM Sans', sans-serif;
+    fill: rgba(240, 240, 236, 0.85);
+    paint-order: stroke;
+    stroke: #0e110f;
+    stroke-width: 3px;
+    stroke-linejoin: round;
+    pointer-events: none;
+    user-select: none;
+  }
+
+  :global(.node-label--box) {
+    font-size: 11px;
+    font-weight: 600;
+  }
+
+  :global(.node-label--product) {
+    font-size: 10px;
+    font-weight: 400;
+  }
+
+  :global(.node-label--scent-family) {
+    font-size: 10px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+  }
+
+  :global(.node-sublabel) {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 9px;
+    fill: rgba(255, 255, 255, 0.35);
+    paint-order: stroke;
+    stroke: #0e110f;
+    stroke-width: 3px;
+    stroke-linejoin: round;
+    pointer-events: none;
+    user-select: none;
+  }
+
+  /* Node interactivity */
+  :global(.node) {
+    cursor: pointer;
+    transition: opacity 0.3s ease;
+  }
+
+  :global(.node circle) {
+    transition: filter 0.3s ease, stroke-width 0.2s ease;
+  }
+
+  :global(.node.highlighted circle) {
+    filter: url(#glow);
+  }
+
+  :global(.node.dimmed) {
+    opacity: 0.1;
+  }
+
+  :global(.node.filtered-out) {
+    opacity: 0.06;
+    pointer-events: none;
+  }
+
+  /* Edge interactivity */
+  :global(.edge) {
+    transition: opacity 0.3s ease;
+  }
+
+  :global(.edge.highlighted) {
+    stroke-opacity: 0.5 !important;
+    stroke-width: 2 !important;
+  }
+
+  :global(.edge.dimmed) {
+    opacity: 0.03;
+  }
+
+  :global(.edge.filtered-out) {
+    opacity: 0.02;
+    pointer-events: none;
+  }
+
+  /* ── Legend ─────────────────────────────────── */
+  .graph-legend {
+    position: absolute;
+    bottom: var(--space-lg);
+    left: var(--space-lg);
+    display: flex;
+    gap: var(--space-md);
+    flex-wrap: wrap;
+    padding: 0.5rem 0.75rem;
+    background: rgba(14, 17, 15, 0.8);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid var(--glass-border);
+    border-radius: var(--radius-md);
+    pointer-events: none;
+  }
+
+  .legend-item {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    font-family: var(--font-body);
+    font-size: 0.625rem;
+    color: var(--color-text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+  }
+
+  .legend-swatch {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+  }
+
+  .legend-swatch--box {
+    background: rgba(90, 138, 106, 0.3);
+    border: 1.5px solid #6faa80;
+  }
+
+  .legend-swatch--product {
+    background: rgba(26, 32, 27, 0.85);
+    border: 1.5px solid rgba(255, 255, 255, 0.3);
+  }
+
+  /* ── Zoom Controls ─────────────────────────── */
+  .zoom-controls {
+    position: absolute;
+    bottom: var(--space-lg);
+    right: var(--space-lg);
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+
+  .zoom-controls button {
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(14, 17, 15, 0.8);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid var(--glass-border);
+    color: var(--color-text-secondary);
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background 0.2s ease, color 0.2s ease;
+  }
+
+  .zoom-controls button:first-child {
+    border-radius: var(--radius-sm) var(--radius-sm) 0 0;
+  }
+
+  .zoom-controls button:last-child {
+    border-radius: 0 0 var(--radius-sm) var(--radius-sm);
+  }
+
+  .zoom-controls button:hover {
+    background: var(--color-bg-hover);
+    color: var(--color-text);
+  }
+
+  /* ═══════════════════════════════════════════════
+     Detail Panel
+     ═══════════════════════════════════════════════ */
+  .detail-panel {
+    position: fixed;
+    top: 3.5rem;
+    right: 0;
+    bottom: 0;
+    width: 340px;
+    max-width: 90vw;
+    background: rgba(21, 26, 22, 0.92);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border-left: 1px solid var(--glass-border);
+    box-shadow: -8px 0 32px rgba(0, 0, 0, 0.5);
+    z-index: 50;
+    overflow-y: auto;
+    transform: translateX(100%);
+    transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  .detail-panel.open {
+    transform: translateX(0);
+  }
+
+  .panel-close {
+    position: sticky;
+    top: 0;
+    float: right;
+    margin: var(--space-md);
+    width: 28px;
+    height: 28px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(255, 255, 255, 0.06);
+    border: 1px solid var(--glass-border);
+    border-radius: var(--radius-sm);
+    color: var(--color-text-secondary);
+    font-size: 1.125rem;
+    cursor: pointer;
+    z-index: 1;
+    transition: background 0.2s ease;
+  }
+
+  .panel-close:hover {
+    background: rgba(255, 255, 255, 0.1);
+  }
+
+  .panel-content {
+    padding: var(--space-xl);
+    padding-top: var(--space-md);
+  }
+
+  /* Panel inner styles */
+  :global(.panel-tag) {
+    display: inline-block;
+    font-family: var(--font-body);
+    font-size: 0.625rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    margin-bottom: var(--space-xs);
+  }
+
+  :global(.panel-tag--box) {
+    color: var(--color-green-bright);
+  }
+
+  :global(.panel-tag--product) {
+    color: var(--color-gold);
+  }
+
+  :global(.panel-title) {
+    font-family: var(--font-display);
+    font-size: 1.375rem;
+    font-weight: 400;
+    color: var(--color-text-heading);
+    line-height: 1.25;
+    margin-bottom: var(--space-sm);
+  }
+
+  :global(.panel-date) {
+    font-size: 0.75rem;
+    color: var(--color-text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    margin-bottom: var(--space-md);
+  }
+
+  :global(.panel-summary) {
+    font-size: 0.8125rem;
+    color: var(--color-text-secondary);
+    line-height: 1.6;
+    margin-bottom: var(--space-lg);
+  }
+
+  :global(.panel-scent) {
+    font-size: 0.8125rem;
+    color: var(--color-text-secondary);
+    font-style: italic;
+    line-height: 1.5;
+    margin-bottom: var(--space-md);
+  }
+
+  :global(.panel-family-badge) {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 0.75rem;
+    color: var(--color-text-secondary);
+    margin-bottom: var(--space-lg);
+  }
+
+  :global(.panel-product-dot) {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    flex-shrink: 0;
+    display: inline-block;
+  }
+
+  :global(.panel-section) {
+    margin-bottom: var(--space-lg);
+  }
+
+  :global(.panel-section h4) {
+    font-family: var(--font-body);
+    font-size: 0.6875rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--color-text-muted);
+    margin-bottom: var(--space-sm);
+  }
+
+  :global(.panel-list) {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  :global(.panel-list li) {
+    display: flex;
+    align-items: center;
+    gap: var(--space-sm);
+    font-size: 0.8125rem;
+    color: var(--color-text-secondary);
+  }
+
+  :global(.panel-list a) {
+    color: var(--color-text-secondary);
+    transition: color 0.2s ease;
+  }
+
+  :global(.panel-list a:hover) {
+    color: var(--color-green-bright);
+  }
+
+  :global(.panel-type-tag) {
+    font-size: 0.625rem;
+    color: var(--color-text-muted);
+    padding: 1px 6px;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-full);
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    margin-left: auto;
+    flex-shrink: 0;
+  }
+
+  :global(.panel-nostalgia) {
+    background: rgba(196, 162, 101, 0.06);
+    border-left: 2px solid var(--color-gold);
+    padding: var(--space-md);
+    border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+    margin-bottom: var(--space-lg);
+  }
+
+  :global(.panel-nostalgia h4) {
+    font-family: var(--font-body);
+    font-size: 0.6875rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--color-gold);
+    margin-bottom: var(--space-xs);
+  }
+
+  :global(.panel-nostalgia p) {
+    font-size: 0.8125rem;
+    color: var(--color-text-secondary);
+    line-height: 1.6;
+  }
+
+  :global(.panel-cta) {
+    display: inline-block;
+    margin-top: var(--space-sm);
+  }
+
+  /* ═══════════════════════════════════════════════
+     Responsive
+     ═══════════════════════════════════════════════ */
+  @media (max-width: 768px) {
+    .explore-controls-inner {
+      flex-direction: column;
+      gap: var(--space-sm);
+      align-items: stretch;
+    }
+
+    .filter-group {
+      justify-content: center;
+    }
+
+    .search-wrapper {
+      width: 100%;
+    }
+
+    .graph-legend {
+      left: var(--space-sm);
+      bottom: var(--space-sm);
+      gap: var(--space-sm);
+      font-size: 0.5625rem;
+    }
+
+    .zoom-controls {
+      right: var(--space-sm);
+      bottom: var(--space-sm);
+    }
+
+    .detail-panel {
+      top: auto;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      width: 100%;
+      max-width: 100%;
+      max-height: 60vh;
+      border-left: none;
+      border-top: 1px solid var(--glass-border);
+      box-shadow: 0 -8px 32px rgba(0, 0, 0, 0.5);
+      transform: translateY(100%);
+      border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+    }
+
+    .detail-panel.open {
+      transform: translateY(0);
+    }
+  }
+</style>

@@ -1,10 +1,10 @@
 ---
-import { getCollection } from 'astro:content';
+import { getAllBoxes } from '@/lib/content';
 import BaseLayout from '@/layouts/BaseLayout.astro';
 import Hero from '@/components/Hero.astro';
 import BoxCard from '@/components/BoxCard.astro';
 
-const allBoxes = (await getCollection('kitchenBoxes'))
+const allBoxes = (await getAllBoxes())
   .filter((box) => !box.data.draft)
   .sort((a, b) => {
     const dateA = a.data.publishedDate?.getTime() ?? 0;

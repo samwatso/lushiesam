@@ -1,11 +1,11 @@
 ---
-import { getCollection } from 'astro:content';
+import { getAllProducts } from '@/lib/content';
 import { Droplets } from '@lucide/astro';
 import BaseLayout from '@/layouts/BaseLayout.astro';
 import Hero from '@/components/Hero.astro';
 import CTABlock from '@/components/CTABlock.astro';
 
-const allProducts = (await getCollection('products'))
+const allProducts = (await getAllProducts())
   .filter((p) => !p.data.draft)
   .sort((a, b) => a.data.name.localeCompare(b.data.name));
 

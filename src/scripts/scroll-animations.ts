@@ -469,23 +469,43 @@ if (prefersReducedMotion) {
     });
 
     // ============================================
-    //  SCENE 3: Archive Gentle Entrance
-    //  Cards rise calmly with subtle opacity shift.
-    //  No heavy spotlight or 3D effects — readable.
+    //  SCENE 3: Scent Profile Radial Reveal
+    //  Center fades in, products stagger radially,
+    //  scent pills float in with back.out ease.
     // ============================================
-    document.querySelectorAll('.archive-section .box-card').forEach((el) => {
-      gsap.fromTo(el,
-        { opacity: 0.4, y: 30 },
-        {
-          opacity: 1, y: 0, ease: 'power2.out',
-          scrollTrigger: {
-            trigger: el,
-            start: 'top 92%',
-            end: 'top 65%',
-            scrub: 1,
-          },
-        }
-      );
+    document.querySelectorAll('.scent-profile-section').forEach((section) => {
+      const center = section.querySelector('.scent-center');
+      const productLabels = section.querySelectorAll('.scent-product-label');
+      const scentNotes = section.querySelectorAll('.scent-note');
+
+      if (!center) return;
+
+      const scentTl = gsap.timeline({
+        scrollTrigger: {
+          trigger: section,
+          start: 'top 70%',
+          toggleActions: 'play none none none',
+        },
+      });
+
+      // Center label fades in
+      scentTl.to(center, {
+        opacity: 1, scale: 1, duration: 0.6, ease: 'power3.out',
+      }, 0);
+
+      // Product names stagger in
+      if (productLabels.length) {
+        scentTl.to(productLabels, {
+          opacity: 1, duration: 0.5, stagger: 0.1, ease: 'power2.out',
+        }, 0.3);
+      }
+
+      // Scent pills float in
+      if (scentNotes.length) {
+        scentTl.to(scentNotes, {
+          opacity: 1, duration: 0.6, stagger: 0.06, ease: 'back.out(1.4)',
+        }, 0.6);
+      }
     });
 
     // ============================================

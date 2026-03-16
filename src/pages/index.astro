@@ -1,11 +1,11 @@
 ---
-import { getCollection } from 'astro:content';
+import { getAllBoxes } from '@/lib/content';
 import BaseLayout from '@/layouts/BaseLayout.astro';
-import SectionHeading from '@/components/SectionHeading.astro';
-import BoxCard from '@/components/BoxCard.astro';
+import BoxCarousel from '@/components/BoxCarousel.astro';
+import ScentProfile from '@/components/ScentProfile.astro';
 import CTABlock from '@/components/CTABlock.astro';
 
-const allBoxes = (await getCollection('kitchenBoxes'))
+const allBoxes = (await getAllBoxes())
   .filter((box) => !box.data.draft)
   .sort((a, b) => {
     const dateA = a.data.publishedDate?.getTime() ?? 0;
@@ -14,7 +14,6 @@ const allBoxes = (await getCollection('kitchenBoxes'))
   });
 
 const latestBox = allBoxes[0];
-const recentBoxes = allBoxes.slice(0, 4);
 
 // Grab up to 5 products from the latest box for floating pills
 const heroProducts = latestBox?.data.products?.slice(0, 5) ?? [];
@@ -110,32 +109,28 @@ const heroWords = heroTitle.split(' ');
     </section>
   )}
 
-  <!-- Archive Grid -->
-  {recentBoxes.length > 1 && (
-    <section class="section archive-section">
-      <div class="container">
-        <SectionHeading
-          title="Archive"
-          subtitle="Monthly unboxings, product notes, and nostalgic returns."
-        />
-        <div class="grid grid--2" data-animate="stagger-children" data-stagger="0.12">
-          {recentBoxes.map((box) => (
-            <BoxCard
-              title={box.data.title}
-              slug={box.id}
-              month={box.data.month}
-              year={box.data.year}
-              summary={box.data.summary}
-              heroImage={box.data.heroImage}
-              productCount={box.data.products?.length}
-            />
-          ))}
-        </div>
-        <div style="margin-top: var(--space-2xl);">
-          <a href="/kitchen-boxes/" class="btn btn--ghost">View all boxes →</a>
-        </div>
-      </div>
-    </section>
+  <!-- Scent Profile -->
+  {latestBox?.data.products && latestBox.data.products.length > 0 && (
+    <ScentProfile
+      products={latestBox.data.products}
+      month={latestBox.data.month}
+      year={latestBox.data.year}
+    />
+  )}
+
+  <!-- Box Carousel -->
+  {allBoxes.length > 0 && (
+    <BoxCarousel
+      boxes={allBoxes.map((box) => ({
+        title: box.data.title,
+        slug: box.id,
+        month: box.data.month,
+        year: box.data.year,
+        summary: box.data.summary,
+        heroImage: box.data.heroImage,
+        productCount: box.data.products?.length,
+      }))}
+    />
   )}
 
   <!-- TikTok CTA -->

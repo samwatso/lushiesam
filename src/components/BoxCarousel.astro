@@ -1,0 +1,342 @@
+---
+interface Props {
+  boxes: {
+    title: string;
+    slug: string;
+    month: string;
+    year: number;
+    summary: string;
+    heroImage?: string;
+    productCount?: number;
+  }[];
+}
+
+const { boxes } = Astro.props;
+---
+
+<section class="box-carousel-section section" data-animate="fade-up">
+  <div class="container box-carousel-layout">
+    <div class="box-carousel-text">
+      <span class="box-carousel-tag">The Archive</span>
+      <h2 class="box-carousel-heading">Every box,<br />unboxed.</h2>
+      <p class="box-carousel-subtitle">
+        Monthly Kitchen exclusives — bath bombs, soaps, jellies, and limited-run favourites — documented since 2022.
+      </p>
+      <a href="/kitchen-boxes/" class="btn btn--ghost">View all boxes →</a>
+    </div>
+
+    <div class="box-carousel-track-wrapper">
+      <div class="box-carousel-track" role="list">
+        {boxes.map((box) => (
+          <a href={`/kitchen-boxes/${box.slug}/`} class="carousel-card" role="listitem">
+            <div class="carousel-card-image">
+              {box.heroImage ? (
+                <img src={box.heroImage} alt={box.title} loading="lazy" />
+              ) : (
+                <div class="carousel-card-placeholder">
+                  <span>{box.month} '{String(box.year).slice(2)}</span>
+                </div>
+              )}
+            </div>
+            <div class="carousel-card-body">
+              <span class="carousel-card-date">{box.month} {box.year}</span>
+              <h3 class="carousel-card-title">{box.title}</h3>
+              {box.productCount && (
+                <span class="carousel-card-meta">{box.productCount} products</span>
+              )}
+            </div>
+          </a>
+        ))}
+      </div>
+
+      <div class="carousel-dots" role="tablist" aria-label="Carousel position">
+        {boxes.map((_, i) => (
+          <button
+            class={`carousel-dot ${i === 0 ? 'active' : ''}`}
+            role="tab"
+            aria-selected={i === 0 ? 'true' : 'false'}
+            aria-label={`Go to slide ${i + 1}`}
+            data-index={i}
+          />
+        ))}
+      </div>
+    </div>
+  </div>
+</section>
+
+<script>
+  document.querySelectorAll('.box-carousel-track-wrapper').forEach((wrapper) => {
+    const track = wrapper.querySelector('.box-carousel-track') as HTMLElement;
+    const dots = wrapper.querySelectorAll('.carousel-dot');
+    if (!track || dots.length === 0) return;
+
+    let autoTimer: ReturnType<typeof setInterval> | null = null;
+    let paused = false;
+
+    function getCardWidth() {
+      const card = track.querySelector('.carousel-card') as HTMLElement;
+      if (!card) return 280;
+      const style = getComputedStyle(track);
+      const gap = parseFloat(style.gap) || 16;
+      return card.offsetWidth + gap;
+    }
+
+    function getCurrentIndex() {
+      const cardWidth = getCardWidth();
+      return Math.round(track.scrollLeft / cardWidth);
+    }
+
+    function scrollToIndex(index: number) {
+      const cardWidth = getCardWidth();
+      const maxIndex = dots.length - 1;
+      const clamped = Math.max(0, Math.min(index, maxIndex));
+      track.scrollTo({ left: clamped * cardWidth, behavior: 'smooth' });
+    }
+
+    function updateDots() {
+      const idx = getCurrentIndex();
+      dots.forEach((dot, i) => {
+        dot.classList.toggle('active', i === idx);
+        dot.setAttribute('aria-selected', i === idx ? 'true' : 'false');
+      });
+    }
+
+    function advance() {
+      const idx = getCurrentIndex();
+      const next = idx + 1 >= dots.length ? 0 : idx + 1;
+      scrollToIndex(next);
+    }
+
+    function startAuto() {
+      stopAuto();
+      autoTimer = setInterval(() => {
+        if (!paused) advance();
+      }, 4000);
+    }
+
+    function stopAuto() {
+      if (autoTimer) { clearInterval(autoTimer); autoTimer = null; }
+    }
+
+    // Dot clicks
+    dots.forEach((dot) => {
+      dot.addEventListener('click', () => {
+        const index = parseInt((dot as HTMLElement).dataset.index || '0');
+        scrollToIndex(index);
+      });
+    });
+
+    // Update dots on scroll
+    track.addEventListener('scroll', updateDots, { passive: true });
+
+    // Pause on hover/touch
+    wrapper.addEventListener('mouseenter', () => { paused = true; });
+    wrapper.addEventListener('mouseleave', () => { paused = false; });
+    wrapper.addEventListener('touchstart', () => { paused = true; }, { passive: true });
+    wrapper.addEventListener('touchend', () => {
+      setTimeout(() => { paused = false; }, 3000);
+    });
+
+    startAuto();
+  });
+</script>
+
+<style>
+  .box-carousel-section {
+    padding: var(--space-4xl) 0;
+  }
+
+  .box-carousel-layout {
+    display: grid;
+    grid-template-columns: 1fr 1.5fr;
+    gap: var(--space-3xl);
+    align-items: start;
+  }
+
+  .box-carousel-text {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-md);
+    padding-top: var(--space-lg);
+    position: sticky;
+    top: calc(50vh - 120px);
+  }
+
+  .box-carousel-tag {
+    display: inline-block;
+    font-family: var(--font-body);
+    font-size: 0.6875rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: var(--color-green-bright);
+    align-self: flex-start;
+  }
+
+  .box-carousel-heading {
+    font-family: var(--font-display);
+    font-size: clamp(2rem, 4vw, 3rem);
+    font-weight: 400;
+    line-height: 1.15;
+    color: var(--color-text-heading);
+  }
+
+  .box-carousel-subtitle {
+    color: var(--color-text-secondary);
+    font-size: 0.9375rem;
+    line-height: 1.7;
+    max-width: 380px;
+    margin-bottom: var(--space-sm);
+  }
+
+  /* Track wrapper */
+  .box-carousel-track-wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-lg);
+  }
+
+  .box-carousel-track {
+    display: flex;
+    gap: var(--space-lg);
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    scroll-behavior: smooth;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    padding-bottom: var(--space-sm);
+  }
+
+  .box-carousel-track::-webkit-scrollbar {
+    display: none;
+  }
+
+  /* Cards */
+  .carousel-card {
+    flex: 0 0 280px;
+    scroll-snap-align: start;
+    text-decoration: none;
+    color: inherit;
+    display: flex;
+    flex-direction: column;
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    background: var(--glass-bg);
+    border: 1px solid var(--glass-border);
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+  }
+
+  .carousel-card:hover {
+    color: inherit;
+    border-color: var(--glass-border-hover);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+  }
+
+  .carousel-card-image {
+    aspect-ratio: 3 / 4;
+    overflow: hidden;
+    background: var(--color-surface);
+  }
+
+  .carousel-card-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.5s ease;
+    opacity: 0.9;
+  }
+
+  .carousel-card:hover .carousel-card-image img {
+    transform: scale(1.04);
+    opacity: 1;
+  }
+
+  .carousel-card-placeholder {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--gradient-warm);
+    font-family: var(--font-display);
+    font-size: 1.5rem;
+    color: var(--color-text-muted);
+  }
+
+  .carousel-card-body {
+    padding: var(--space-md) var(--space-lg);
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-xs);
+  }
+
+  .carousel-card-date {
+    font-size: 0.6875rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--color-text-muted);
+    font-weight: 500;
+  }
+
+  .carousel-card-title {
+    font-size: 1rem;
+    line-height: 1.3;
+    color: var(--color-text-heading);
+  }
+
+  .carousel-card-meta {
+    font-size: 0.75rem;
+    color: var(--color-green-bright);
+    font-weight: 500;
+  }
+
+  /* Dots */
+  .carousel-dots {
+    display: flex;
+    gap: 6px;
+    justify-content: center;
+  }
+
+  .carousel-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    border: 1px solid var(--color-border-hover);
+    background: transparent;
+    cursor: pointer;
+    padding: 0;
+    transition: background 0.25s ease, transform 0.25s ease;
+  }
+
+  .carousel-dot.active {
+    background: var(--color-green-bright);
+    border-color: var(--color-green-bright);
+    transform: scale(1.2);
+  }
+
+  .carousel-dot:hover:not(.active) {
+    background: rgba(111, 170, 128, 0.3);
+  }
+
+  /* Mobile */
+  @media (max-width: 768px) {
+    .box-carousel-layout {
+      grid-template-columns: 1fr;
+      gap: var(--space-xl);
+    }
+
+    .box-carousel-text {
+      position: static;
+      text-align: center;
+      align-items: center;
+    }
+
+    .box-carousel-subtitle {
+      max-width: none;
+    }
+
+    .carousel-card {
+      flex: 0 0 240px;
+    }
+  }
+</style>
