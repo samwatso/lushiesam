@@ -32,6 +32,8 @@ interface SudsBoxJson {
   groupShot?: string;
   tiktokUrl?: string;
   tiktokEmbedId?: string;
+  youtubeId?: string;
+  kitchenMenuUrl?: string;
   products?: {
     name: string;
     type?: string;
@@ -178,6 +180,8 @@ export function loadSudsImports(): SudsImportResult {
           groupShot: resolveImagePath(boxJson.groupShot, slug),
           tiktokUrl: boxJson.tiktokUrl,
           tiktokEmbedId: boxJson.tiktokEmbedId,
+          youtubeId: boxJson.youtubeId,
+          kitchenMenuUrl: boxJson.kitchenMenuUrl,
           products: boxJson.products?.map((p) => ({
             name: p.name,
             type: p.type,

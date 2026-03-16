@@ -12,6 +12,8 @@ const kitchenBoxes = defineCollection({
     groupShot: z.string().optional(),
     tiktokUrl: z.string().url().optional(),
     tiktokEmbedId: z.string().optional(),
+    youtubeId: z.string().optional(),
+    kitchenMenuUrl: z.string().url().optional(),
     products: z.array(z.object({
       name: z.string(),
       type: z.string().optional(),

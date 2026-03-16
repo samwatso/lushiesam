@@ -4,7 +4,7 @@ import BaseLayout from '@/layouts/BaseLayout.astro';
 import Hero from '@/components/Hero.astro';
 import ProductList from '@/components/ProductList.astro';
 import ScreenshotGallery from '@/components/ScreenshotGallery.astro';
-import TikTokEmbed from '@/components/TikTokEmbed.astro';
+import VideoEmbed from '@/components/VideoEmbed.astro';
 import NostalgiaNote from '@/components/NostalgiaNote.astro';
 
 export async function getStaticPaths() {
@@ -36,8 +36,17 @@ const Content = rendered.Content;
 
   <article class="section">
     <div class="container container--narrow">
-      <!-- TikTok Embed -->
-      <TikTokEmbed url={data.tiktokUrl} embedId={data.tiktokEmbedId} />
+      <!-- Video Embed -->
+      <VideoEmbed tiktokUrl={data.tiktokUrl} tiktokEmbedId={data.tiktokEmbedId} youtubeId={data.youtubeId} />
+
+      <!-- Kitchen Menu Link -->
+      {data.kitchenMenuUrl && (
+        <div class="kitchen-menu-link" data-animate="fade-in">
+          <a href={data.kitchenMenuUrl} target="_blank" rel="noopener noreferrer" class="btn btn--secondary">
+            View the Kitchen Menu →
+          </a>
+        </div>
+      )}
 
       <!-- Editorial Summary -->
       {Content ? (
@@ -100,6 +109,10 @@ const Content = rendered.Content;
 </BaseLayout>
 
 <style>
+  .kitchen-menu-link {
+    margin-bottom: var(--space-2xl);
+  }
+
   .group-shot {
     margin: var(--space-3xl) 0;
     border-radius: var(--radius-lg);

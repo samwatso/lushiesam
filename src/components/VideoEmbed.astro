@@ -1,0 +1,106 @@
+---
+interface Props {
+  tiktokUrl?: string;
+  tiktokEmbedId?: string;
+  youtubeId?: string;
+}
+
+const { tiktokUrl, tiktokEmbedId, youtubeId } = Astro.props;
+const hasTikTok = tiktokEmbedId && tiktokEmbedId.length > 0;
+const hasYouTube = youtubeId && youtubeId.length > 0;
+const hasAny = hasTikTok || hasYouTube || tiktokUrl;
+---
+
+{hasAny && (
+  <div class="video-embed-block">
+    {/* YouTube embed */}
+    {hasYouTube && (
+      <div class="video-player video-player--youtube">
+        <iframe
+          src={`https://www.youtube.com/embed/${youtubeId}`}
+          title="YouTube video"
+          frameborder="0"
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+          allowfullscreen
+        ></iframe>
+      </div>
+    )}
+
+    {/* TikTok embed */}
+    {hasTikTok && (
+      <div class="video-player video-player--tiktok">
+        <blockquote
+          class="tiktok-embed"
+          cite={tiktokUrl}
+          data-video-id={tiktokEmbedId}
+          style="max-width: 605px; min-width: 325px;"
+        >
+          <section>
+            <a target="_blank" rel="noopener noreferrer" href={tiktokUrl}>Watch on TikTok</a>
+          </section>
+        </blockquote>
+        <script async src="https://www.tiktok.com/embed.js"></script>
+      </div>
+    )}
+
+    {/* TikTok link fallback (no embed ID, no YouTube) */}
+    {!hasTikTok && !hasYouTube && tiktokUrl && (
+      <div class="video-cta">
+        <p class="video-label">Watch the unboxing</p>
+        <a href={tiktokUrl} target="_blank" rel="noopener noreferrer" class="btn btn--secondary">
+          Watch on TikTok →
+        </a>
+      </div>
+    )}
+  </div>
+)}
+
+<style>
+  .video-embed-block {
+    margin: var(--space-3xl) 0;
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-xl);
+  }
+
+  .video-player {
+    display: flex;
+    justify-content: center;
+  }
+
+  .video-player--youtube {
+    position: relative;
+    width: 100%;
+    padding-bottom: 56.25%;
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    border: 1px solid var(--glass-border);
+    background: var(--color-surface);
+    box-shadow: var(--glass-shadow);
+  }
+
+  .video-player--youtube iframe {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    border: 0;
+  }
+
+  .video-cta {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: var(--space-lg);
+    background: var(--color-bg-card);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-lg);
+  }
+
+  .video-label {
+    font-family: var(--font-display);
+    font-size: 1.125rem;
+    color: var(--color-text-heading);
+  }
+</style>

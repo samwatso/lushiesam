@@ -23,6 +23,8 @@ export interface BoxEntry {
     groupShot?: string;
     tiktokUrl?: string;
     tiktokEmbedId?: string;
+    youtubeId?: string;
+    kitchenMenuUrl?: string;
     products?: {
       name: string;
       type?: string;
