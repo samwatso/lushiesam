@@ -1,0 +1,25 @@
+{
+  "id": "product:violet-cream-bubble-bar",
+  "slug": "violet-cream-bubble-bar",
+  "name": "Violet Cream Bubble Bar",
+  "aliases": [],
+  "product_type": "bubble_bar",
+  "scent_family_slug": "",
+  "ingredients": "",
+  "description": "",
+  "archive_note": "",
+  "nostalgia_angle": "",
+  "throwback_reference": "",
+  "related_product_slugs": [],
+  "first_known_box_slug": "2026-03-lush-kitchen-xl-unboxing",
+  "appearance_box_slugs": [
+    "2026-03-lush-kitchen-xl-unboxing"
+  ],
+  "approved_still_path": "/images/boxes/2026-03-lush-kitchen-xl-unboxing/product_4_violet_cream_bubble_bar.webp",
+  "highlight_clip_path": "/videos/highlights/2026-03-lush-kitchen-xl-unboxing/highlight_4_violet_cream_bubble_bar.mp4",
+  "tags": [
+    "bubble bar"
+  ],
+  "created_at": "2026-03-17T22:41:04",
+  "updated_at": "2026-03-17T22:41:04"
+}

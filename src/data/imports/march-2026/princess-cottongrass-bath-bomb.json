@@ -1,0 +1,25 @@
+{
+  "id": "product:princess-cottongrass-bath-bomb",
+  "slug": "princess-cottongrass-bath-bomb",
+  "name": "Princess Cottongrass Bath Bomb",
+  "aliases": [],
+  "product_type": "bath_bomb",
+  "scent_family_slug": "",
+  "ingredients": "",
+  "description": "",
+  "archive_note": "",
+  "nostalgia_angle": "",
+  "throwback_reference": "",
+  "related_product_slugs": [],
+  "first_known_box_slug": "2026-03-lush-kitchen-xl-unboxing",
+  "appearance_box_slugs": [
+    "2026-03-lush-kitchen-xl-unboxing"
+  ],
+  "approved_still_path": "/images/boxes/2026-03-lush-kitchen-xl-unboxing/product_3_princess_cottongrass_bath_bomb.webp",
+  "highlight_clip_path": "/videos/highlights/2026-03-lush-kitchen-xl-unboxing/highlight_3_princess_cottongrass_bath_bomb.mp4",
+  "tags": [
+    "bath bomb"
+  ],
+  "created_at": "2026-03-17T22:41:04",
+  "updated_at": "2026-03-17T22:41:04"
+}
