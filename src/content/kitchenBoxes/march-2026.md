@@ -5,7 +5,6 @@ year: 2026
 summary: "A seven-product spring XL box featuring Chelsea Garden Body Wash, The Rush Body Lotion, Grass Body Scrub, Princess Cottongrass Bath Bomb, Violet Cream Bubble Bar, Tuca Tuca Massage Bar, and Flower Market Soap."
 heroImage: "/images/boxes/march-2026-group.webp"
 groupShot: "/images/boxes/march-2026-group.webp"
-tiktokUrl: ""
 tiktokEmbedId: ""
 products:
   - name: "Chelsea Garden Body Wash"
