@@ -28,18 +28,43 @@ const familyColors: Record<string, string> = {
 // Priority order for tie-breaking: warm > floral > fresh > citrus
 const familyPriority: Record<string, number> = { warm: 4, floral: 3, fresh: 2, citrus: 1 };
 
-function classifyScent(scent?: string): string {
-  if (!scent) return 'warm';
-  const lower = scent.toLowerCase();
+// Extra keywords to match against product names when no scent data is available
+const nameKeywords: Record<string, string[]> = {
+  floral: ['rose', 'jasmine', 'flower', 'blooming', 'violet', 'cherry blossom', 'geranium', 'iris', 'petal', 'bouquet', 'tulip', 'garden', 'cottongrass', 'blossom'],
+  citrus: ['lime', 'lemon', 'orange', 'grapefruit', 'bergamot', 'mandarin', 'citrus', 'yuzu', 'tangerine'],
+  warm: ['honey', 'vanilla', 'cinnamon', 'cocoa', 'chocolate', 'toffee', 'caramel', 'ginger', 'toddy', 'yog nog', 'custard'],
+  fresh: ['grass', 'mint', 'eucalyptus', 'tea tree', 'olive', 'lavender', 'green', 'rush', 'sea', 'ocean', 'rain', 'bamboo'],
+};
+
+function classifyScent(scent?: string, productName?: string): string {
+  // Try scent data first
+  const text = scent || '';
+  const lower = text.toLowerCase();
   const scores: Record<string, number> = { floral: 0, citrus: 0, warm: 0, fresh: 0 };
-  for (const [family, keywords] of Object.entries(scentKeywords)) {
-    keywords.forEach((k) => { if (lower.includes(k)) scores[family]++; });
+
+  if (lower) {
+    for (const [family, keywords] of Object.entries(scentKeywords)) {
+      keywords.forEach((k) => { if (lower.includes(k)) scores[family]++; });
+    }
+    const firstNote = text.split(',')[0].trim().toLowerCase();
+    for (const [family, keywords] of Object.entries(scentKeywords)) {
+      if (keywords.some((k) => firstNote.includes(k))) { scores[family] += 0.5; break; }
+    }
   }
-  // First note in the scent string gets a small boost (it's the dominant note)
-  const firstNote = scent.split(',')[0].trim().toLowerCase();
-  for (const [family, keywords] of Object.entries(scentKeywords)) {
-    if (keywords.some((k) => firstNote.includes(k))) { scores[family] += 0.5; break; }
+
+  // If no scent data or no matches, try the product name
+  const hasMatch = Object.values(scores).some((s) => s > 0);
+  if (!hasMatch && productName) {
+    const nameLower = productName.toLowerCase();
+    for (const [family, keywords] of Object.entries(nameKeywords)) {
+      keywords.forEach((k) => { if (nameLower.includes(k)) scores[family]++; });
+    }
   }
+
+  // If still no matches, return 'unclassified' instead of defaulting to warm
+  const topScore = Math.max(...Object.values(scores));
+  if (topScore === 0) return 'warm';
+
   return Object.entries(scores)
     .sort((a, b) => b[1] - a[1] || (familyPriority[b[0]] ?? 0) - (familyPriority[a[0]] ?? 0))[0][0];
 }
@@ -81,7 +106,7 @@ for (const box of allBoxes) {
 
   for (const p of box.data.products ?? []) {
     const pid = `product-${p.name.toLowerCase().replace(/[^a-z0-9]+/g, '-')}`;
-    const family = classifyScent(p.scent);
+    const family = classifyScent(p.scent, p.name);
     const fc = familyColors[family];
 
     boxProducts.push({ name: p.name, type: p.type || '', family, familyColor: fc });
