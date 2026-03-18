@@ -12,10 +12,10 @@ const allBoxes = (await getAllBoxes())
 
 // Scent classification keywords (shared with ScentProfile)
 const scentKeywords: Record<string, string[]> = {
-  floral: ['cherry blossom', 'ylang ylang', 'rose', 'jasmine', 'geranium', 'iris', 'violet', 'fresh floral', 'tuca tuca', 'sex bomb', 'sex in the shower', 'flying fox'],
-  citrus: ['lime', 'lemongrass', 'bergamot', 'grapefruit', 'lemon', 'orange', 'citrus', 'mandarin', 'brightside', 'easy peeler', 'yuzu'],
-  warm: ['honey', 'vanilla', 'tonka', 'cocoa', 'benzoin', 'sandalwood', 'cinnamon', 'cream', 'argan', 'strawberry', 'chocolate', 'snow fairy', 'honey i washed', 'american cream', 'peachy', '29 high street', 'hot toddy', 'yog nog', 'sultana', 'prince charming', 'creamy candy'],
-  fresh: ['neroli', 'lavender', 'oat milk', 'mint', 'eucalyptus', 'tea tree', 'olive', 'grass', 'dirty', 'karma', 'lord of misrule', 'twilight', 'sleepy', 'olive branch', 'intergalactic'],
+  floral: ['cherry blossom', 'ylang ylang', 'rose', 'jasmine', 'geranium', 'iris', 'violet', 'fresh floral', 'tuca tuca', 'sex bomb', 'sex in the shower', 'flying fox', 'florals', 'bouquet', 'cotton flower', 'petal'],
+  citrus: ['lime', 'lemongrass', 'bergamot', 'grapefruit', 'lemon', 'orange', 'citrus', 'mandarin', 'brightside', 'easy peeler', 'yuzu', 'sweet citrus', 'energising', 'tangerine'],
+  warm: ['honey', 'vanilla', 'tonka', 'cocoa', 'benzoin', 'sandalwood', 'cinnamon', 'cream', 'argan', 'strawberry', 'chocolate', 'snow fairy', 'honey i washed', 'american cream', 'peachy', '29 high street', 'hot toddy', 'yog nog', 'sultana', 'prince charming', 'creamy candy', 'spiced', 'spice', 'warming', 'rich blend'],
+  fresh: ['neroli', 'lavender', 'oat milk', 'mint', 'eucalyptus', 'tea tree', 'olive', 'grass', 'dirty', 'karma', 'lord of misrule', 'twilight', 'sleepy', 'olive branch', 'intergalactic', 'earthy', 'green notes', 'herbaceous', 'herbs', 'fresh cut'],
 };
 
 const familyColors: Record<string, string> = {
@@ -43,6 +43,10 @@ const nameKeywords: Record<string, string[]> = {
 function classifyScent(scent?: string, productName?: string, productType?: string): string {
   // Non-cosmetic items (notebooks, bags, wraps, etc.) have no scent
   if (productType && nonCosmeticTypes.some((t) => productType.toLowerCase().includes(t))) {
+    return 'unclassified';
+  }
+  // Explicit "Non Cosmetic" scent label
+  if (scent && scent.toLowerCase().includes('non cosmetic')) {
     return 'unclassified';
   }
 
