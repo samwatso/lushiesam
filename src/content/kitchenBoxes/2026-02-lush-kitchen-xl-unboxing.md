@@ -1,12 +1,11 @@
 ---
 title: "February 2026 Lush Kitchen XL Unboxing"
-slug: "2026-02-lush-kitchen-xl-unboxing"
-month: "February 2026"
+month: "February"
 year: 2026
-date: "2026-02"
-productCount: 7
-topPick: "Happy Blooming body lotion"
+summary: "A seven-product Valentine's XL box featuring Happy Blooming Body Lotion, Aubergine Bath Bomb, Keep it Fluffy Bubble Bar, Peachy Soap, Sex in the Shower Emoitbomb, Two Heart Shower Gel, and Jasmine Dream Bath Melt."
 heroImage: "/images/boxes/2026-02-lush-kitchen-xl-unboxing/group_shot.jpg"
+groupShot: "/images/boxes/2026-02-lush-kitchen-xl-unboxing/group_shot.jpg"
+tiktokEmbedId: ""
 products:
   - name: "Happy Blooming body lotion"
     slug: "happy-blooming-body-lotion"
@@ -43,11 +42,6 @@ products:
     type: "bath_melt"
     image: "/images/boxes/2026-02-lush-kitchen-xl-unboxing/product_6_jasmine_dream_bath_melt.jpg"
     highlightClip: "/videos/highlights/2026-02-lush-kitchen-xl-unboxing/highlight_6_jasmine_dream_bath_melt.mp4"
-textureNotes:
-  - "Aubergine bath bomb: fizzing and colour swirls"
-  - "Keep it fluffy bubble bar: crumbling and foam"
-  - "Peachy soap: lather and slice"
-  - "Two Heart shower gel: squeeze and lather"
 nostalgiaNotes:
   - title: "Happy Blooming body lotion"
     body: "A Valentine's Kitchen exclusive evoking the romantic, rosy warmth fans associate with special Lush seasonal drops"
