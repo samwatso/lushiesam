@@ -1,0 +1,25 @@
+{
+  "id": "product:aubergine-bath-bomb",
+  "slug": "aubergine-bath-bomb",
+  "name": "Aubergine bath bomb",
+  "aliases": [],
+  "product_type": "bath_bomb",
+  "scent_family_slug": "",
+  "ingredients": "",
+  "description": "The famously cheeky aubergine \u2014 shaped bath bomb that smells exactly like walking into a Lush shop \u2014 the scent is '29 High Street', crafted to capture that iconic store \u2014 floor fragrance. Contains fresh aubergine for its skin \u2014 loving vitamins and minerals.",
+  "archive_note": "Released as part of the February 2026 Lush Kitchen XL Valentine's subscription box",
+  "nostalgia_angle": "Floral body lotions are a beloved Lush staple, and a Valentine's seasonal release always carries a sense of occasion for subscribers",
+  "throwback_reference": "",
+  "related_product_slugs": [],
+  "first_known_box_slug": "2026-02-lush-kitchen-xl-unboxing",
+  "appearance_box_slugs": [
+    "2026-02-lush-kitchen-xl-unboxing"
+  ],
+  "approved_still_path": "/images/boxes/2026-02-lush-kitchen-xl-unboxing/product_1_aubergine_bath_bomb.jpg",
+  "highlight_clip_path": "/videos/highlights/2026-02-lush-kitchen-xl-unboxing/highlight_1_aubergine_bath_bomb.mp4",
+  "tags": [
+    "bath bomb"
+  ],
+  "created_at": "2026-03-17T23:39:38",
+  "updated_at": "2026-03-17T23:48:00"
+}

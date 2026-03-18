@@ -1,9 +1,9 @@
 {
-  "id": "product:violet-cream-bubble-bar",
-  "slug": "violet-cream-bubble-bar",
-  "name": "Violet Cream Bubble Bar",
+  "id": "product:the-rush-body-lotion",
+  "slug": "the-rush-body-lotion",
+  "name": "The Rush Body Lotion",
   "aliases": [],
-  "product_type": "bubble_bar",
+  "product_type": "body_lotion",
   "scent_family_slug": "",
   "ingredients": "",
   "description": "",
@@ -15,10 +15,10 @@
   "appearance_box_slugs": [
     "2026-03-lush-kitchen-xl-unboxing"
   ],
-  "approved_still_path": "/images/boxes/2026-03-lush-kitchen-xl-unboxing/product_4_violet_cream_bubble_bar.webp",
-  "highlight_clip_path": "/videos/highlights/2026-03-lush-kitchen-xl-unboxing/highlight_4_violet_cream_bubble_bar.mp4",
+  "approved_still_path": "exports/job_57/stills/product_1_the_rush_body_lotion.jpg",
+  "highlight_clip_path": "exports/job_57/highlights/highlight_1_the_rush_body_lotion.mp4",
   "tags": [
-    "bubble bar"
+    "body lotion"
   ],
   "created_at": "2026-03-17T22:41:04",
   "updated_at": "2026-03-17T22:41:04"

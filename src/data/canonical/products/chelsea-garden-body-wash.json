@@ -1,7 +1,7 @@
 {
-  "id": "product:grass-body-scrub",
-  "slug": "grass-body-scrub",
-  "name": "Grass Body Scrub",
+  "id": "product:chelsea-garden-body-wash",
+  "slug": "chelsea-garden-body-wash",
+  "name": "Chelsea Garden Body Wash",
   "aliases": [],
   "product_type": "unknown",
   "scent_family_slug": "",
@@ -15,8 +15,8 @@
   "appearance_box_slugs": [
     "2026-03-lush-kitchen-xl-unboxing"
   ],
-  "approved_still_path": "/images/boxes/2026-03-lush-kitchen-xl-unboxing/product_2_grass_body_scrub.webp",
-  "highlight_clip_path": "/videos/highlights/2026-03-lush-kitchen-xl-unboxing/highlight_2_grass_body_scrub.mp4",
+  "approved_still_path": "exports/job_57/stills/product_0_chelsea_garden_body_wash.jpg",
+  "highlight_clip_path": "exports/job_57/highlights/highlight_0_chelsea_garden_body_wash.mp4",
   "tags": [],
   "created_at": "2026-03-17T22:41:04",
   "updated_at": "2026-03-17T22:41:04"

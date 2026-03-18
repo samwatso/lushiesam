@@ -1,9 +1,9 @@
 {
-  "id": "product:the-rush-body-lotion",
-  "slug": "the-rush-body-lotion",
-  "name": "The Rush Body Lotion",
+  "id": "product:tuca-tuca-massage-bar",
+  "slug": "tuca-tuca-massage-bar",
+  "name": "Tuca Tuca Massage Bar",
   "aliases": [],
-  "product_type": "body_lotion",
+  "product_type": "massage_bar",
   "scent_family_slug": "",
   "ingredients": "",
   "description": "",
@@ -15,10 +15,10 @@
   "appearance_box_slugs": [
     "2026-03-lush-kitchen-xl-unboxing"
   ],
-  "approved_still_path": "/images/boxes/2026-03-lush-kitchen-xl-unboxing/product_1_the_rush_body_lotion.webp",
-  "highlight_clip_path": "/videos/highlights/2026-03-lush-kitchen-xl-unboxing/highlight_1_the_rush_body_lotion.mp4",
+  "approved_still_path": "exports/job_57/stills/product_5_tuca_tuca_massage_bar.jpg",
+  "highlight_clip_path": "exports/job_57/highlights/highlight_5_tuca_tuca_massage_bar.mp4",
   "tags": [
-    "body lotion"
+    "massage bar"
   ],
   "created_at": "2026-03-17T22:41:04",
   "updated_at": "2026-03-17T22:41:04"

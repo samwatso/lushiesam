@@ -1,0 +1,27 @@
+{
+  "id": "product:two-heart-shower-gel",
+  "slug": "two-heart-shower-gel",
+  "name": "Two Heart shower gel",
+  "aliases": [],
+  "product_type": "shower_gel",
+  "scent_family_slug": "",
+  "ingredients": "",
+  "description": "A romantically scented shower gel shaped around the Valentine's season, delivering soft floral rose notes to leave skin feeling cleansed and sweetly fragranced.",
+  "archive_note": "First released as part of Lush's 2019 Valentine's collection alongside the Peachy bath bomb; the scent is '29 High Street', designed to replicate the signature smell of a Lush store",
+  "nostalgia_angle": "A cult favourite from Lush's cheeky 2019 Valentine's line, the Aubergine bath bomb became instantly iconic for its phallic design and its uncanny recreation of that beloved Lush shop floor smell",
+  "throwback_reference": "Companion to the Peachy bath bomb from the 2019 Valentine's line; shares the 29 High Street scent with other products in that range",
+  "related_product_slugs": [
+    "peachy-soap"
+  ],
+  "first_known_box_slug": "2026-02-lush-kitchen-xl-unboxing",
+  "appearance_box_slugs": [
+    "2026-02-lush-kitchen-xl-unboxing"
+  ],
+  "approved_still_path": "/images/boxes/2026-02-lush-kitchen-xl-unboxing/product_5_two_heart_shower_gel.jpg",
+  "highlight_clip_path": "/videos/highlights/2026-02-lush-kitchen-xl-unboxing/highlight_5_two_heart_shower_gel.mp4",
+  "tags": [
+    "shower gel"
+  ],
+  "created_at": "2026-03-17T23:39:38",
+  "updated_at": "2026-03-17T23:48:00"
+}

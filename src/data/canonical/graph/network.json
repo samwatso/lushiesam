@@ -13,6 +13,18 @@
       }
     },
     {
+      "id": "box:2026-02-lush-kitchen-xl-unboxing",
+      "type": "box",
+      "label": "February 2026 Lush Kitchen XL Unboxing",
+      "slug": "2026-02-lush-kitchen-xl-unboxing",
+      "meta": {
+        "month": "February 2026",
+        "year": 2026,
+        "product_count": 7,
+        "date": "2026-02"
+      }
+    },
+    {
       "id": "box:2026-03-lush-kitchen-xl-unboxing",
       "type": "box",
       "label": "March 2026 Lush Kitchen XL Unboxing",
@@ -31,6 +43,16 @@
       "slug": "13-rabbits-lush-melt",
       "meta": {
         "product_type": "unknown",
+        "scent_family": ""
+      }
+    },
+    {
+      "id": "product:aubergine-bath-bomb",
+      "type": "product",
+      "label": "Aubergine bath bomb",
+      "slug": "aubergine-bath-bomb",
+      "meta": {
+        "product_type": "bath_bomb",
         "scent_family": ""
       }
     },
@@ -95,6 +117,16 @@
       }
     },
     {
+      "id": "product:happy-blooming-body-lotion",
+      "type": "product",
+      "label": "Happy Blooming body lotion",
+      "slug": "happy-blooming-body-lotion",
+      "meta": {
+        "product_type": "body_lotion",
+        "scent_family": ""
+      }
+    },
+    {
       "id": "product:heavenly-bodies-buttercream",
       "type": "product",
       "label": "Heavenly Bodies Buttercream",
@@ -105,12 +137,42 @@
       }
     },
     {
+      "id": "product:jasmine-dream-bath-melt",
+      "type": "product",
+      "label": "Jasmine Dream bath melt",
+      "slug": "jasmine-dream-bath-melt",
+      "meta": {
+        "product_type": "bath_melt",
+        "scent_family": ""
+      }
+    },
+    {
+      "id": "product:keep-it-fluffy-bubble-bar",
+      "type": "product",
+      "label": "Keep it fluffy bubble bar",
+      "slug": "keep-it-fluffy-bubble-bar",
+      "meta": {
+        "product_type": "bubble_bar",
+        "scent_family": ""
+      }
+    },
+    {
       "id": "product:lucky-bunny-shower-jelly",
       "type": "product",
       "label": "Lucky Bunny Shower Jelly",
       "slug": "lucky-bunny-shower-jelly",
       "meta": {
         "product_type": "shower_jelly",
+        "scent_family": ""
+      }
+    },
+    {
+      "id": "product:peachy-soap",
+      "type": "product",
+      "label": "Peachy soap",
+      "slug": "peachy-soap",
+      "meta": {
+        "product_type": "soap",
         "scent_family": ""
       }
     },
@@ -135,6 +197,16 @@
       }
     },
     {
+      "id": "product:sex-in-the-shower-emoitbomb",
+      "type": "product",
+      "label": "Sex in the Shower Emoitbomb",
+      "slug": "sex-in-the-shower-emoitbomb",
+      "meta": {
+        "product_type": "unknown",
+        "scent_family": ""
+      }
+    },
+    {
       "id": "product:the-rush-body-lotion",
       "type": "product",
       "label": "The Rush Body Lotion",
@@ -151,6 +223,16 @@
       "slug": "tuca-tuca-massage-bar",
       "meta": {
         "product_type": "massage_bar",
+        "scent_family": ""
+      }
+    },
+    {
+      "id": "product:two-heart-shower-gel",
+      "type": "product",
+      "label": "Two Heart shower gel",
+      "slug": "two-heart-shower-gel",
+      "meta": {
+        "product_type": "shower_gel",
         "scent_family": ""
       }
     },
@@ -230,6 +312,69 @@
       }
     },
     {
+      "source": "box:2026-02-lush-kitchen-xl-unboxing",
+      "target": "product:aubergine-bath-bomb",
+      "type": "contains",
+      "label": "contains",
+      "meta": {
+        "order": 1
+      }
+    },
+    {
+      "source": "box:2026-02-lush-kitchen-xl-unboxing",
+      "target": "product:happy-blooming-body-lotion",
+      "type": "contains",
+      "label": "contains",
+      "meta": {
+        "order": 0
+      }
+    },
+    {
+      "source": "box:2026-02-lush-kitchen-xl-unboxing",
+      "target": "product:jasmine-dream-bath-melt",
+      "type": "contains",
+      "label": "contains",
+      "meta": {
+        "order": 6
+      }
+    },
+    {
+      "source": "box:2026-02-lush-kitchen-xl-unboxing",
+      "target": "product:keep-it-fluffy-bubble-bar",
+      "type": "contains",
+      "label": "contains",
+      "meta": {
+        "order": 2
+      }
+    },
+    {
+      "source": "box:2026-02-lush-kitchen-xl-unboxing",
+      "target": "product:peachy-soap",
+      "type": "contains",
+      "label": "contains",
+      "meta": {
+        "order": 3
+      }
+    },
+    {
+      "source": "box:2026-02-lush-kitchen-xl-unboxing",
+      "target": "product:sex-in-the-shower-emoitbomb",
+      "type": "contains",
+      "label": "contains",
+      "meta": {
+        "order": 4
+      }
+    },
+    {
+      "source": "box:2026-02-lush-kitchen-xl-unboxing",
+      "target": "product:two-heart-shower-gel",
+      "type": "contains",
+      "label": "contains",
+      "meta": {
+        "order": 5
+      }
+    },
+    {
       "source": "box:2026-03-lush-kitchen-xl-unboxing",
       "target": "product:chelsea-garden-body-wash",
       "type": "contains",
@@ -291,15 +436,95 @@
       "meta": {
         "order": 4
       }
+    },
+    {
+      "source": "product:happy-blooming-body-lotion",
+      "target": "product:likely-references-the-classic-rose-jam-scent-family-a-longtime-valentines-season",
+      "type": "throwback_to",
+      "label": "throwback to",
+      "meta": {
+        "confidence": 0.8,
+        "note": "Happy Blooming body lotion is a throwback to Likely references the classic Rose Jam scent family, a longtime Valentine's season favourite"
+      }
+    },
+    {
+      "source": "product:happy-blooming-body-lotion",
+      "target": "product:rose-jam-shower-gel",
+      "type": "related_product",
+      "label": "related product",
+      "meta": {
+        "confidence": 0.9,
+        "note": "Happy Blooming body lotion → Rose Jam shower gel"
+      }
+    },
+    {
+      "source": "product:keep-it-fluffy-bubble-bar",
+      "target": "product:aubergine-bath-bomb",
+      "type": "related_product",
+      "label": "related product",
+      "meta": {
+        "confidence": 0.9,
+        "note": "Keep it fluffy bubble bar → Aubergine bath bomb"
+      }
+    },
+    {
+      "source": "product:keep-it-fluffy-bubble-bar",
+      "target": "product:companion-piece-to-the-iconic-aubergine-bath-bomb-from-the-2019-valentines-colle",
+      "type": "throwback_to",
+      "label": "throwback to",
+      "meta": {
+        "confidence": 0.8,
+        "note": "Keep it fluffy bubble bar is a throwback to Companion piece to the iconic Aubergine bath bomb from the 2019 Valentine's collection"
+      }
+    },
+    {
+      "source": "product:sex-in-the-shower-emoitbomb",
+      "target": "product:based-on-the-classic-sex-in-the-shower-solid-perfume-and-body-care-range",
+      "type": "throwback_to",
+      "label": "throwback to",
+      "meta": {
+        "confidence": 0.8,
+        "note": "Sex in the Shower Emoitbomb is a throwback to Based on the classic Sex in the Shower solid perfume and body care range"
+      }
+    },
+    {
+      "source": "product:sex-in-the-shower-emoitbomb",
+      "target": "product:sex-in-the-shower-solid-perfume",
+      "type": "related_product",
+      "label": "related product",
+      "meta": {
+        "confidence": 0.9,
+        "note": "Sex in the Shower Emoitbomb → Sex in the Shower solid perfume"
+      }
+    },
+    {
+      "source": "product:two-heart-shower-gel",
+      "target": "product:companion-to-the-peachy-bath-bomb-from-the-2019-valentines-line-shares-the-29-hi",
+      "type": "throwback_to",
+      "label": "throwback to",
+      "meta": {
+        "confidence": 0.8,
+        "note": "Two Heart shower gel is a throwback to Companion to the Peachy bath bomb from the 2019 Valentine's line; shares the 29 High Street scent with other products in that range"
+      }
+    },
+    {
+      "source": "product:two-heart-shower-gel",
+      "target": "product:peachy-soap",
+      "type": "related_product",
+      "label": "related product",
+      "meta": {
+        "confidence": 0.9,
+        "note": "Two Heart shower gel → Peachy soap"
+      }
     }
   ],
   "metadata": {
-    "generated_at": "2026-03-17T22:41:04",
-    "box_count": 2,
-    "product_count": 14,
+    "generated_at": "2026-03-17T23:48:00",
+    "box_count": 3,
+    "product_count": 21,
     "scent_family_count": 0,
-    "relationship_count": 0,
-    "node_count": 16,
-    "edge_count": 14
+    "relationship_count": 8,
+    "node_count": 24,
+    "edge_count": 29
   }
 }

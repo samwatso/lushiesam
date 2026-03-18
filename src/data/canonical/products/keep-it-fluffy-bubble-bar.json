@@ -1,0 +1,27 @@
+{
+  "id": "product:keep-it-fluffy-bubble-bar",
+  "slug": "keep-it-fluffy-bubble-bar",
+  "name": "Keep it fluffy bubble bar",
+  "aliases": [],
+  "product_type": "bubble_bar",
+  "scent_family_slug": "",
+  "ingredients": "",
+  "description": "A generously bubbly bubble bar that lives up to its name, creating a fluffy, pillowy bath full of soft, skin \u2014 softening bubbles with a delightful lingering fragrance.",
+  "archive_note": "The Peachy concept originated in Lush's 2019 Valentine's line alongside the Aubergine bath bomb, becoming one of the most talked-about seasonal releases of that year",
+  "nostalgia_angle": "Peachy has a cheeky Valentine's legacy stretching back to 2019, making it a fan-favourite returning seasonal treat",
+  "throwback_reference": "Companion piece to the iconic Aubergine bath bomb from the 2019 Valentine's collection",
+  "related_product_slugs": [
+    "aubergine-bath-bomb"
+  ],
+  "first_known_box_slug": "2026-02-lush-kitchen-xl-unboxing",
+  "appearance_box_slugs": [
+    "2026-02-lush-kitchen-xl-unboxing"
+  ],
+  "approved_still_path": "/images/boxes/2026-02-lush-kitchen-xl-unboxing/product_2_keep_it_fluffy_bubble_bar.jpg",
+  "highlight_clip_path": "/videos/highlights/2026-02-lush-kitchen-xl-unboxing/highlight_2_keep_it_fluffy_bubble_bar.mp4",
+  "tags": [
+    "bubble bar"
+  ],
+  "created_at": "2026-03-17T23:39:38",
+  "updated_at": "2026-03-17T23:48:00"
+}

@@ -1,0 +1,27 @@
+{
+  "id": "product:happy-blooming-body-lotion",
+  "slug": "happy-blooming-body-lotion",
+  "name": "Happy Blooming body lotion",
+  "aliases": [],
+  "product_type": "body_lotion",
+  "scent_family_slug": "",
+  "ingredients": "",
+  "description": "A blooming floral body lotion designed for Valentine's season, leaving skin soft and delicately scented with springlike florals.",
+  "archive_note": "Released as part of the February 2026 Lush Kitchen XL Valentine's subscription box",
+  "nostalgia_angle": "A Valentine's Kitchen exclusive evoking the romantic, rosy warmth fans associate with special Lush seasonal drops",
+  "throwback_reference": "Likely references the classic Rose Jam scent family, a longtime Valentine's season favourite",
+  "related_product_slugs": [
+    "rose-jam-shower-gel"
+  ],
+  "first_known_box_slug": "2026-02-lush-kitchen-xl-unboxing",
+  "appearance_box_slugs": [
+    "2026-02-lush-kitchen-xl-unboxing"
+  ],
+  "approved_still_path": "/images/boxes/2026-02-lush-kitchen-xl-unboxing/product_0_happy_blooming_body_lotion.jpg",
+  "highlight_clip_path": "/videos/highlights/2026-02-lush-kitchen-xl-unboxing/highlight_0_happy_blooming_body_lotion.mp4",
+  "tags": [
+    "body lotion"
+  ],
+  "created_at": "2026-03-17T23:39:38",
+  "updated_at": "2026-03-17T23:48:00"
+}

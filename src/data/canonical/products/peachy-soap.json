@@ -1,0 +1,25 @@
+{
+  "id": "product:peachy-soap",
+  "slug": "peachy-soap",
+  "name": "Peachy soap",
+  "aliases": [],
+  "product_type": "soap",
+  "scent_family_slug": "",
+  "ingredients": "",
+  "description": "A cheeky, peachy \u2014 shaped soap that's equal parts playful and practical, with a sweet fruity scent that makes it a perennial Valentine's favourite.",
+  "archive_note": "Released as part of the February 2026 Lush Kitchen XL Valentine's subscription box",
+  "nostalgia_angle": "Jasmine-scented Lush products carry a rich heritage, and bath melts are treasured for their deeply moisturising, indulgent soak",
+  "throwback_reference": "",
+  "related_product_slugs": [],
+  "first_known_box_slug": "2026-02-lush-kitchen-xl-unboxing",
+  "appearance_box_slugs": [
+    "2026-02-lush-kitchen-xl-unboxing"
+  ],
+  "approved_still_path": "/images/boxes/2026-02-lush-kitchen-xl-unboxing/product_3_peachy_soap.jpg",
+  "highlight_clip_path": "/videos/highlights/2026-02-lush-kitchen-xl-unboxing/highlight_3_peachy_soap.mp4",
+  "tags": [
+    "soap"
+  ],
+  "created_at": "2026-03-17T23:39:38",
+  "updated_at": "2026-03-17T23:48:00"
+}
