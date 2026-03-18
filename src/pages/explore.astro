@@ -10,62 +10,102 @@ const allBoxes = (await getAllBoxes())
     return dateB - dateA;
   });
 
-// Scent classification keywords (shared with ScentProfile)
+// ── 8-category fragrance wheel ──────────────────────────
+// Aligned to Lush product profiles: splits the old "warm" bucket into
+// Sweet / Gourmand / Spiced / Earthy, and pulls Herbal out of Fresh.
 const scentKeywords: Record<string, string[]> = {
-  floral: ['cherry blossom', 'ylang ylang', 'rose', 'jasmine', 'geranium', 'iris', 'violet', 'fresh floral', 'tuca tuca', 'sex bomb', 'sex in the shower', 'flying fox', 'florals', 'bouquet', 'cotton flower', 'petal'],
-  citrus: ['lime', 'lemongrass', 'bergamot', 'grapefruit', 'lemon', 'orange', 'citrus', 'mandarin', 'brightside', 'easy peeler', 'yuzu', 'sweet citrus', 'energising', 'tangerine'],
-  warm: ['honey', 'vanilla', 'tonka', 'cocoa', 'benzoin', 'sandalwood', 'cinnamon', 'cream', 'argan', 'strawberry', 'chocolate', 'snow fairy', 'honey i washed', 'american cream', 'peachy', '29 high street', 'hot toddy', 'yog nog', 'sultana', 'prince charming', 'creamy candy', 'spiced', 'spice', 'warming', 'rich blend'],
-  fresh: ['neroli', 'lavender', 'oat milk', 'mint', 'eucalyptus', 'tea tree', 'olive', 'grass', 'dirty', 'karma', 'lord of misrule', 'twilight', 'sleepy', 'olive branch', 'intergalactic', 'earthy', 'green notes', 'herbaceous', 'herbs', 'fresh cut'],
+  floral:   ['cherry blossom', 'ylang ylang', 'rose', 'jasmine', 'geranium', 'iris', 'violet', 'fresh floral', 'tuca tuca', 'sex bomb', 'sex in the shower', 'flying fox', 'florals', 'bouquet', 'cotton flower', 'petal', 'sakura', 'mimosa', 'neroli', 'mixed florals', 'soft florals'],
+  citrus:   ['lime', 'lemongrass', 'bergamot', 'grapefruit', 'lemon', 'orange', 'citrus', 'mandarin', 'brightside', 'easy peeler', 'yuzu', 'sweet citrus', 'energising', 'tangerine', 'happy hippy', 'avobath'],
+  sweet:    ['snow fairy', 'american cream', 'creamy candy', 'peachy', 'strawberry', 'candy', 'prince charming', 'bubblegum', 'marshmallow', 'fairy', 'shimmy shimmy', 'cream', 'sweet'],
+  gourmand: ['honey', 'vanilla', 'tonka', 'cocoa', 'chocolate', 'benzoin', 'honey i washed', 'yog nog', 'sultana', 'sticky dates', 'caramel', 'toffee', 'custard', 'argan', 'rich blend'],
+  spiced:   ['spiced', 'spice', 'cinnamon', 'warming', 'hot toddy', 'cinders', 'ginger', 'clove', 'cardamom', 'nutmeg', 'lord of misrule', 'fireside'],
+  herbal:   ['herbaceous', 'rosemary', 'tea tree', 'herbs', 'karma', 'dirty', 'thyme', 'sage', 'fennel', 'juniper'],
+  fresh:    ['lavender', 'oat milk', 'mint', 'eucalyptus', 'grass', 'twilight', 'sleepy', 'olive branch', 'intergalactic', 'green notes', 'fresh cut', 'rain', 'ocean', 'sea', 'bamboo', 'olive', 'cool', 'clean'],
+  earthy:   ['earthy', 'sandalwood', 'patchouli', 'cedar', 'vetiver', 'oudh', '29 high street', 'breath of god', 'musk', 'woody', 'incense', 'amber', 'moss'],
 };
 
 const familyColors: Record<string, string> = {
-  floral: '#e8a0bf',
-  citrus: '#6faa80',
-  warm: '#c4a265',
-  fresh: '#7ec8b8',
+  floral:   '#e8a0bf',
+  citrus:   '#a8c96a',
+  sweet:    '#f4a4c0',
+  gourmand: '#c4a265',
+  spiced:   '#d4764e',
+  herbal:   '#7bb878',
+  fresh:    '#7ec8b8',
+  earthy:   '#9b8b7a',
   unclassified: '#999999',
 };
 
 // Non-cosmetic product types that should never be scent-classified
 const nonCosmeticTypes = ['notebook', 'bag', 'wrap', 'knot wrap', 'tin', 'box', 'accessory', 'sticker', 'card', 'zine', 'tote'];
 
-// Priority order for tie-breaking: warm > floral > fresh > citrus
-const familyPriority: Record<string, number> = { warm: 4, floral: 3, fresh: 2, citrus: 1 };
-
-// Extra keywords to match against product names when no scent data is available
-const nameKeywords: Record<string, string[]> = {
-  floral: ['rose', 'jasmine', 'flower', 'blooming', 'violet', 'cherry blossom', 'geranium', 'iris', 'petal', 'bouquet', 'tulip', 'garden', 'cottongrass', 'blossom'],
-  citrus: ['lime', 'lemon', 'orange', 'grapefruit', 'bergamot', 'mandarin', 'citrus', 'yuzu', 'tangerine'],
-  warm: ['honey', 'vanilla', 'cinnamon', 'cocoa', 'chocolate', 'toffee', 'caramel', 'ginger', 'toddy', 'yog nog', 'custard'],
-  fresh: ['grass', 'mint', 'eucalyptus', 'tea tree', 'olive', 'lavender', 'green', 'rush', 'sea', 'ocean', 'rain', 'bamboo'],
+// Tie-breaking priority (higher wins): spiced > gourmand > sweet > earthy > floral > herbal > fresh > citrus
+const familyPriority: Record<string, number> = {
+  spiced: 8, gourmand: 7, sweet: 6, earthy: 5, floral: 4, herbal: 3, fresh: 2, citrus: 1,
 };
+
+// Fallback: match against product names when no scent data
+const nameKeywords: Record<string, string[]> = {
+  floral:   ['rose', 'jasmine', 'flower', 'blooming', 'violet', 'cherry blossom', 'geranium', 'iris', 'petal', 'bouquet', 'tulip', 'garden', 'cottongrass', 'blossom', 'sakura'],
+  citrus:   ['lime', 'lemon', 'orange', 'grapefruit', 'bergamot', 'mandarin', 'citrus', 'yuzu', 'tangerine'],
+  sweet:    ['candy', 'fairy', 'bubblegum', 'marshmallow', 'cream puff', 'meringue'],
+  gourmand: ['honey', 'vanilla', 'cocoa', 'chocolate', 'toffee', 'caramel', 'custard', 'yog nog', 'fudge'],
+  spiced:   ['cinnamon', 'ginger', 'toddy', 'spice', 'clove', 'chai'],
+  herbal:   ['rosemary', 'thyme', 'sage', 'herb', 'fennel'],
+  fresh:    ['grass', 'mint', 'eucalyptus', 'tea tree', 'olive', 'lavender', 'green', 'rush', 'sea', 'ocean', 'rain', 'bamboo'],
+  earthy:   ['wood', 'moss', 'forest', 'mushroom', 'soil', 'cedar', 'oak'],
+};
+
+// Known Lush named scent families — shown as a tag in the detail panel
+const lushFamilies: Record<string, string> = {
+  'snow fairy': 'Snow Fairy', 'american cream': 'American Cream', 'karma': 'Karma',
+  '29 high street': '29 High Street', 'sleepy': 'Sleepy', 'honey i washed': 'Honey I Washed The Kids',
+  'lord of misrule': 'Lord of Misrule', 'sex bomb': 'Sex Bomb', 'sultana': 'Sultana',
+  'twilight': 'Twilight', 'intergalactic': 'Intergalactic', 'sakura': 'Sakura',
+  'dirty': 'Dirty', 'olive branch': 'Olive Branch', 'sex in the shower': 'Sex in the Shower',
+  'flying fox': 'Flying Fox', 'brightside': 'Brightside', 'avobath': 'Avobath',
+  'happy hippy': 'Happy Hippy', 'sticky dates': 'Sticky Dates', 'hot toddy': 'Hot Toddy',
+  'peachy': 'Peachy', 'yog nog': 'Yog Nog', 'cinders': 'Cinders',
+  'creamy candy': 'Creamy Candy', 'prince charming': 'Prince Charming',
+  'breath of god': 'Breath of God', 'rose jam': 'Rose Jam',
+};
+
+function detectLushFamily(scent?: string, productName?: string): string | undefined {
+  const text = `${scent || ''} ${productName || ''}`.toLowerCase();
+  for (const [key, label] of Object.entries(lushFamilies)) {
+    if (text.includes(key)) return label;
+  }
+  return undefined;
+}
 
 function classifyScent(scent?: string, productName?: string, productType?: string): string {
   // Non-cosmetic items (notebooks, bags, wraps, etc.) have no scent
   if (productType && nonCosmeticTypes.some((t) => productType.toLowerCase().includes(t))) {
     return 'unclassified';
   }
-  // Explicit "Non Cosmetic" scent label
   if (scent && scent.toLowerCase().includes('non cosmetic')) {
     return 'unclassified';
   }
 
-  // Try scent data first
   const text = scent || '';
   const lower = text.toLowerCase();
-  const scores: Record<string, number> = { floral: 0, citrus: 0, warm: 0, fresh: 0 };
+  const scores: Record<string, number> = {
+    floral: 0, citrus: 0, sweet: 0, gourmand: 0,
+    spiced: 0, herbal: 0, fresh: 0, earthy: 0,
+  };
 
   if (lower) {
     for (const [family, keywords] of Object.entries(scentKeywords)) {
       keywords.forEach((k) => { if (lower.includes(k)) scores[family]++; });
     }
+    // Boost first note
     const firstNote = text.split(',')[0].trim().toLowerCase();
     for (const [family, keywords] of Object.entries(scentKeywords)) {
       if (keywords.some((k) => firstNote.includes(k))) { scores[family] += 0.5; break; }
     }
   }
 
-  // If no scent data or no matches, try the product name
+  // Fallback to product name
   const hasMatch = Object.values(scores).some((s) => s > 0);
   if (!hasMatch && productName) {
     const nameLower = productName.toLowerCase();
@@ -74,7 +114,6 @@ function classifyScent(scent?: string, productName?: string, productType?: strin
     }
   }
 
-  // No matches — genuinely unclassified
   const topScore = Math.max(...Object.values(scores));
   if (topScore === 0) return 'unclassified';
 
@@ -91,11 +130,12 @@ interface GNode {
   year?: number;
   summary?: string;
   slug?: string;
-  boxProducts?: { name: string; type: string; family: string; familyColor: string }[];
+  boxProducts?: { name: string; type: string; family: string; familyColor: string; lushFamily?: string }[];
   productType?: string;
   scent?: string;
   family?: string;
   familyColor?: string;
+  lushFamily?: string;
   highlight?: boolean;
   nostalgiaNote?: string;
   productBoxes?: { label: string; slug: string; month: string; year: number }[];
@@ -121,8 +161,9 @@ for (const box of allBoxes) {
     const pid = `product-${p.name.toLowerCase().replace(/[^a-z0-9]+/g, '-')}`;
     const family = classifyScent(p.scent, p.name, p.type);
     const fc = familyColors[family];
+    const lf = detectLushFamily(p.scent, p.name);
 
-    boxProducts.push({ name: p.name, type: p.type || '', family, familyColor: fc });
+    boxProducts.push({ name: p.name, type: p.type || '', family, familyColor: fc, lushFamily: lf });
 
     if (!productMap.has(pid)) {
       const node: GNode = {
@@ -133,6 +174,7 @@ for (const box of allBoxes) {
         scent: p.scent,
         family,
         familyColor: fc,
+        lushFamily: lf,
         highlight: p.highlight,
         nostalgiaNote: p.nostalgiaNote,
         productBoxes: [{ label: box.data.title, slug: box.id, month: box.data.month, year: box.data.year }],
@@ -261,8 +303,8 @@ const graphDataJSON = JSON.stringify({ nodes, edges });
   interface N {
     id: string; type: string; label: string;
     month?: string; year?: number; summary?: string; slug?: string;
-    boxProducts?: { name: string; type: string; family: string; familyColor: string }[];
-    productType?: string; scent?: string; family?: string; familyColor?: string;
+    boxProducts?: { name: string; type: string; family: string; familyColor: string; lushFamily?: string }[];
+    productType?: string; scent?: string; family?: string; familyColor?: string; lushFamily?: string;
     highlight?: boolean; nostalgiaNote?: string;
     productBoxes?: { label: string; slug: string; month: string; year: number }[];
     x?: number; y?: number; fx?: number | null; fy?: number | null;
@@ -523,7 +565,13 @@ const graphDataJSON = JSON.stringify({ nodes, edges });
         ${node.family && node.family !== 'unclassified' ? `
         <div class="panel-family-badge">
           <span class="panel-product-dot" style="background:${node.familyColor}"></span>
-          <span>${node.family.charAt(0).toUpperCase() + node.family.slice(1)} family</span>
+          <span>${node.family.charAt(0).toUpperCase() + node.family.slice(1)}</span>
+        </div>
+        ` : ''}
+        ${node.lushFamily ? `
+        <div class="panel-lush-family">
+          <span class="panel-lush-family-label">Lush family</span>
+          <span class="panel-lush-family-name">${escapeHtml(node.lushFamily)}</span>
         </div>
         ` : ''}
         ${node.nostalgiaNote ? `
@@ -1246,7 +1294,27 @@ const graphDataJSON = JSON.stringify({ nodes, edges });
     gap: 6px;
     font-size: 0.75rem;
     color: var(--color-text-secondary);
+    margin-bottom: var(--space-xs);
+  }
+
+  :global(.panel-lush-family) {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 0.7rem;
     margin-bottom: var(--space-lg);
+  }
+
+  :global(.panel-lush-family-label) {
+    color: var(--color-text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  :global(.panel-lush-family-name) {
+    color: var(--color-text-primary);
+    font-weight: 600;
+    font-style: italic;
   }
 
   :global(.panel-product-dot) {
