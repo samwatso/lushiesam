@@ -1,0 +1,27 @@
+{
+  "id": "product:burning-rosemary-incense",
+  "slug": "burning-rosemary-incense",
+  "name": "Burning Rosemary incense",
+  "aliases": [],
+  "product_type": "unknown",
+  "scent_family_slug": "herbaceous",
+  "ingredients": "",
+  "description": "Fragrant incense sticks infused with the cleansing, herbaceous scent of burning rosemary \u2014 perfect for setting a witchy autumnal atmosphere at home.",
+  "archive_note": "A seasonal Kitchen exclusive incense product, part of Lush's Halloween and autumnal home fragrance offerings.",
+  "nostalgia_angle": "A rare non-cosmetic Kitchen offering, beloved by fans who appreciate Lush's forays into home fragrance.",
+  "throwback_reference": "Echoes the ancient tradition of burning rosemary for purification and protection, a perfect fit for Lush's autumnal witchy aesthetic.",
+  "related_product_slugs": [
+    "serpent-potion-body-butter"
+  ],
+  "first_known_box_slug": "2025-10-lush-kitchen-xl-unboxing",
+  "appearance_box_slugs": [
+    "2025-10-lush-kitchen-xl-unboxing"
+  ],
+  "approved_still_path": "/images/boxes/2025-10-lush-kitchen-xl-unboxing/product_5_burning_rosemary_incense.jpg",
+  "highlight_clip_path": "/videos/highlights/2025-10-lush-kitchen-xl-unboxing/highlight_5_burning_rosemary_incense.mp4",
+  "tags": [
+    "Herbaceous"
+  ],
+  "created_at": "2026-03-18T01:12:51",
+  "updated_at": "2026-03-18T01:12:51"
+}

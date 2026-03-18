@@ -1,0 +1,28 @@
+{
+  "id": "product:magic-bath-bomb",
+  "slug": "magic-bath-bomb",
+  "name": "Magic bath bomb",
+  "aliases": [],
+  "product_type": "bath_bomb",
+  "scent_family_slug": "sweet-citrus",
+  "ingredients": "",
+  "description": "A truly enchanting bath bomb with a remarkably potent and long-lasting scent \u2014 fans have noted its fragrance is so strong it can perfume nearby objects even weeks later. Drop into your bath and let the magic unfold.",
+  "archive_note": "A recurring Lush Kitchen exclusive bath bomb that has appeared periodically since at least 2016, consistently selling out quickly due to high demand.",
+  "nostalgia_angle": "A long-coveted Kitchen classic that fans have chased for years, known for its incredibly powerful and lingering scent that even perfumed nearby catalogues.",
+  "throwback_reference": "A Kitchen classic that has returned multiple times since at least 2016, legendary among fans for its extraordinarily potent and long-lasting fragrance \u2014 reportedly strong enough to scent nearby Lush catalogues and packaging left in the same room.",
+  "related_product_slugs": [
+    "wizard-bubble-bar"
+  ],
+  "first_known_box_slug": "2025-10-lush-kitchen-xl-unboxing",
+  "appearance_box_slugs": [
+    "2025-10-lush-kitchen-xl-unboxing"
+  ],
+  "approved_still_path": "/images/boxes/2025-10-lush-kitchen-xl-unboxing/product_7_magic_bath_bomb.jpg",
+  "highlight_clip_path": "/videos/highlights/2025-10-lush-kitchen-xl-unboxing/highlight_7_magic_bath_bomb.mp4",
+  "tags": [
+    "bath bomb",
+    "Sweet Citrus"
+  ],
+  "created_at": "2026-03-18T01:12:51",
+  "updated_at": "2026-03-18T01:12:51"
+}

@@ -1,0 +1,27 @@
+{
+  "id": "product:toil-and-trouble-body-scrub",
+  "slug": "toil-and-trouble-body-scrub",
+  "name": "Toil and Trouble body scrub",
+  "aliases": [],
+  "product_type": "unknown",
+  "scent_family_slug": "spiced",
+  "ingredients": "",
+  "description": "A bubbling, cauldron-inspired body scrub that sloughs away dead skin with a dark, spiced, and magical scent blend worthy of any witch's potion.",
+  "archive_note": "A recurring Halloween Kitchen exclusive body scrub, inspired by the witches' chant from Shakespeare's Macbeth.",
+  "nostalgia_angle": "Named after the famous Macbeth incantation, this Halloween Kitchen scrub is a fan-favourite seasonal treat.",
+  "throwback_reference": "Inspired by the witches' spell in Shakespeare's Macbeth \u2014 'Double, double toil and trouble; fire burn and cauldron bubble.'",
+  "related_product_slugs": [
+    "incantation-shower-gel"
+  ],
+  "first_known_box_slug": "2025-10-lush-kitchen-xl-unboxing",
+  "appearance_box_slugs": [
+    "2025-10-lush-kitchen-xl-unboxing"
+  ],
+  "approved_still_path": "/images/boxes/2025-10-lush-kitchen-xl-unboxing/product_3_toil_and_trouble_body_scrub.jpg",
+  "highlight_clip_path": "/videos/highlights/2025-10-lush-kitchen-xl-unboxing/highlight_3_toil_and_trouble_body_scrub.mp4",
+  "tags": [
+    "Spiced"
+  ],
+  "created_at": "2026-03-18T01:12:51",
+  "updated_at": "2026-03-18T01:12:51"
+}

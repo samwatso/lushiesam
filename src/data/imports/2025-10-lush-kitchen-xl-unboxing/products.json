@@ -1,0 +1,94 @@
+[
+  {
+    "name": "Lush Notebook",
+    "type": "Unknown",
+    "description": "A handy Lush-branded notebook, perfect for jotting down your favourite product combinations, bath rituals, or Kitchen wishlist. A fun non-cosmetic extra included in the XL subscription box.",
+    "image": "/images/boxes/2025-10-lush-kitchen-xl-unboxing/product_0_lush_notebook.jpg",
+    "scent": "Non Cosmetic",
+    "kitchenExclusive": true,
+    "tags": [
+      "Non-cosmetic"
+    ]
+  },
+  {
+    "name": "Incantation shower gel",
+    "type": "Shower Gel",
+    "description": "A bewitching shower gel crafted for Halloween, wrapping you in dark, mysterious, and enchanting scents to cast a spell on your shower routine.",
+    "image": "/images/boxes/2025-10-lush-kitchen-xl-unboxing/product_1_incantation_shower_gel.jpg",
+    "scent": "Spiced",
+    "kitchenExclusive": true,
+    "tags": [
+      "shower gel",
+      "Spiced"
+    ]
+  },
+  {
+    "name": "Frog Spell shower gummy",
+    "type": "Unknown",
+    "description": "A fun, squishy shower gummy in the shape of a frog, lathering up with a magical, enchanting scent to transform your shower into a witch's cauldron.",
+    "image": "/images/boxes/2025-10-lush-kitchen-xl-unboxing/product_2_frog_spell_shower_gummy.jpg",
+    "scent": "Earthy Green",
+    "kitchenExclusive": true,
+    "tags": [
+      "Earthy Green"
+    ]
+  },
+  {
+    "name": "Toil and Trouble body scrub",
+    "type": "Unknown",
+    "description": "A bubbling, cauldron-inspired body scrub that sloughs away dead skin with a dark, spiced, and magical scent blend worthy of any witch's potion.",
+    "image": "/images/boxes/2025-10-lush-kitchen-xl-unboxing/product_3_toil_and_trouble_body_scrub.jpg",
+    "scent": "Spiced",
+    "kitchenExclusive": true,
+    "tags": [
+      "Spiced"
+    ]
+  },
+  {
+    "name": "Wizard bubble bar",
+    "type": "Bubble Bar",
+    "description": "An adorably sparkly purple-hatted wizard bubble bar with a warm, unique scent of fennel oil, tangerine, and juniperberry \u2014 sweet, spicy, fruity, and utterly magical. Crumble under running water for a bubbling, enchanting bath.",
+    "image": "/images/boxes/2025-10-lush-kitchen-xl-unboxing/product_4_wizard_bubble_bar.jpg",
+    "scent": "Sweet Citrus",
+    "kitchenExclusive": true,
+    "tags": [
+      "bubble bar",
+      "Sweet Citrus"
+    ]
+  },
+  {
+    "name": "Burning Rosemary incense",
+    "type": "Unknown",
+    "description": "Fragrant incense sticks infused with the cleansing, herbaceous scent of burning rosemary \u2014 perfect for setting a witchy autumnal atmosphere at home.",
+    "image": "/images/boxes/2025-10-lush-kitchen-xl-unboxing/product_5_burning_rosemary_incense.jpg",
+    "scent": "Herbaceous",
+    "kitchenExclusive": true,
+    "tags": [
+      "Herbaceous"
+    ]
+  },
+  {
+    "name": "Serpent Potion body butter",
+    "type": "Body Butter",
+    "description": "A rich, indulgent body butter inspired by mystical serpent potions, deeply nourishing skin with a dark, magical, and spiced scent blend.",
+    "image": "/images/boxes/2025-10-lush-kitchen-xl-unboxing/product_6_serpent_potion_body_butter.jpg",
+    "scent": "Spiced",
+    "kitchenExclusive": true,
+    "tags": [
+      "body butter",
+      "Spiced"
+    ]
+  },
+  {
+    "name": "Magic bath bomb",
+    "type": "Bath Bomb",
+    "description": "A truly enchanting bath bomb with a remarkably potent and long-lasting scent \u2014 fans have noted its fragrance is so strong it can perfume nearby objects even weeks later. Drop into your bath and let the magic unfold.",
+    "image": "/images/boxes/2025-10-lush-kitchen-xl-unboxing/product_7_magic_bath_bomb.jpg",
+    "scent": "Sweet Citrus",
+    "kitchenExclusive": true,
+    "tags": [
+      "bath bomb",
+      "Sweet Citrus"
+    ]
+  }
+]

@@ -1,0 +1,28 @@
+{
+  "id": "product:incantation-shower-gel",
+  "slug": "incantation-shower-gel",
+  "name": "Incantation shower gel",
+  "aliases": [],
+  "product_type": "shower_gel",
+  "scent_family_slug": "spiced",
+  "ingredients": "",
+  "description": "A bewitching shower gel crafted for Halloween, wrapping you in dark, mysterious, and enchanting scents to cast a spell on your shower routine.",
+  "archive_note": "A seasonal Halloween Kitchen product, part of Lush's annual witchy autumn lineup.",
+  "nostalgia_angle": "A spellbinding Halloween Kitchen release that fans eagerly anticipate each autumn season.",
+  "throwback_reference": "Part of Lush's annual Halloween Kitchen spellbook-themed collection, evoking dark botanical and witchy scent traditions.",
+  "related_product_slugs": [
+    "toil-and-trouble-body-scrub"
+  ],
+  "first_known_box_slug": "2025-10-lush-kitchen-xl-unboxing",
+  "appearance_box_slugs": [
+    "2025-10-lush-kitchen-xl-unboxing"
+  ],
+  "approved_still_path": "/images/boxes/2025-10-lush-kitchen-xl-unboxing/product_1_incantation_shower_gel.jpg",
+  "highlight_clip_path": "/videos/highlights/2025-10-lush-kitchen-xl-unboxing/highlight_1_incantation_shower_gel.mp4",
+  "tags": [
+    "shower gel",
+    "Spiced"
+  ],
+  "created_at": "2026-03-18T01:12:51",
+  "updated_at": "2026-03-18T01:12:51"
+}

@@ -1,0 +1,28 @@
+{
+  "id": "product:wizard-bubble-bar",
+  "slug": "wizard-bubble-bar",
+  "name": "Wizard bubble bar",
+  "aliases": [],
+  "product_type": "bubble_bar",
+  "scent_family_slug": "sweet-citrus",
+  "ingredients": "",
+  "description": "An adorably sparkly purple-hatted wizard bubble bar with a warm, unique scent of fennel oil, tangerine, and juniperberry \u2014 sweet, spicy, fruity, and utterly magical. Crumble under running water for a bubbling, enchanting bath.",
+  "archive_note": "Originally released as a Halloween product, the Wizard bubble bar has reappeared periodically on the Lush Kitchen menu as a much-requested seasonal exclusive.",
+  "nostalgia_angle": "A cult Halloween Kitchen favourite that fans hunt down each year, originally released as a Halloween product before becoming a coveted Kitchen reappearance.",
+  "throwback_reference": "A Halloween bubble bar with roots in Lush's early seasonal product history, beloved for its whimsical wizard shape and distinctive fennel, tangerine, and juniperberry scent combination.",
+  "related_product_slugs": [
+    "magic-bath-bomb"
+  ],
+  "first_known_box_slug": "2025-10-lush-kitchen-xl-unboxing",
+  "appearance_box_slugs": [
+    "2025-10-lush-kitchen-xl-unboxing"
+  ],
+  "approved_still_path": "/images/boxes/2025-10-lush-kitchen-xl-unboxing/product_4_wizard_bubble_bar.jpg",
+  "highlight_clip_path": "/videos/highlights/2025-10-lush-kitchen-xl-unboxing/highlight_4_wizard_bubble_bar.mp4",
+  "tags": [
+    "bubble bar",
+    "Sweet Citrus"
+  ],
+  "created_at": "2026-03-18T01:12:51",
+  "updated_at": "2026-03-18T01:12:51"
+}

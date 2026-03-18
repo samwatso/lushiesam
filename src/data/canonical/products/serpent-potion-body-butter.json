@@ -1,0 +1,28 @@
+{
+  "id": "product:serpent-potion-body-butter",
+  "slug": "serpent-potion-body-butter",
+  "name": "Serpent Potion body butter",
+  "aliases": [],
+  "product_type": "body_butter",
+  "scent_family_slug": "spiced",
+  "ingredients": "",
+  "description": "A rich, indulgent body butter inspired by mystical serpent potions, deeply nourishing skin with a dark, magical, and spiced scent blend.",
+  "archive_note": "A Halloween seasonal Kitchen exclusive, part of the 2025 autumnal spellcasting-themed range.",
+  "nostalgia_angle": "A Halloween Kitchen exclusive body butter that fans covet for its evocative, potion-inspired name and rich autumnal scent.",
+  "throwback_reference": "Inspired by alchemical and folk magic traditions of serpent-based potions, fitting within Lush's Halloween spellcasting narrative for 2025.",
+  "related_product_slugs": [
+    "toil-and-trouble-body-scrub"
+  ],
+  "first_known_box_slug": "2025-10-lush-kitchen-xl-unboxing",
+  "appearance_box_slugs": [
+    "2025-10-lush-kitchen-xl-unboxing"
+  ],
+  "approved_still_path": "/images/boxes/2025-10-lush-kitchen-xl-unboxing/product_6_serpent_potion_body_butter.jpg",
+  "highlight_clip_path": "/videos/highlights/2025-10-lush-kitchen-xl-unboxing/highlight_6_serpent_potion_body_butter.mp4",
+  "tags": [
+    "body butter",
+    "Spiced"
+  ],
+  "created_at": "2026-03-18T01:12:51",
+  "updated_at": "2026-03-18T01:12:51"
+}

@@ -1,0 +1,27 @@
+{
+  "id": "product:frog-spell-shower-gummy",
+  "slug": "frog-spell-shower-gummy",
+  "name": "Frog Spell shower gummy",
+  "aliases": [],
+  "product_type": "unknown",
+  "scent_family_slug": "earthy-green",
+  "ingredients": "",
+  "description": "A fun, squishy shower gummy in the shape of a frog, lathering up with a magical, enchanting scent to transform your shower into a witch's cauldron.",
+  "archive_note": "A Halloween Kitchen exclusive shower gummy, part of the autumnal spellbook-themed range.",
+  "nostalgia_angle": "Part of Lush's beloved Halloween Kitchen exclusives, a product format fans look forward to each year.",
+  "throwback_reference": "A nod to classic witch's familiar imagery \u2014 the frog as a magical creature \u2014 rendered in Lush's playful shower gummy format.",
+  "related_product_slugs": [
+    "wizard-bubble-bar"
+  ],
+  "first_known_box_slug": "2025-10-lush-kitchen-xl-unboxing",
+  "appearance_box_slugs": [
+    "2025-10-lush-kitchen-xl-unboxing"
+  ],
+  "approved_still_path": "/images/boxes/2025-10-lush-kitchen-xl-unboxing/product_2_frog_spell_shower_gummy.jpg",
+  "highlight_clip_path": "/videos/highlights/2025-10-lush-kitchen-xl-unboxing/highlight_2_frog_spell_shower_gummy.mp4",
+  "tags": [
+    "Earthy Green"
+  ],
+  "created_at": "2026-03-18T01:12:51",
+  "updated_at": "2026-03-18T01:12:51"
+}

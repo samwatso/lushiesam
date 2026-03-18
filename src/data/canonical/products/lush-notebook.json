@@ -1,0 +1,27 @@
+{
+  "id": "product:lush-notebook",
+  "slug": "lush-notebook",
+  "name": "Lush Notebook",
+  "aliases": [],
+  "product_type": "unknown",
+  "scent_family_slug": "non-cosmetic",
+  "ingredients": "",
+  "description": "A handy Lush-branded notebook, perfect for jotting down your favourite product combinations, bath rituals, or Kitchen wishlist. A fun non-cosmetic extra included in the XL subscription box.",
+  "archive_note": "A non-cosmetic branded item included as a bonus in the October 2025 Lush Kitchen XL subscription box.",
+  "nostalgia_angle": "A charming non-cosmetic extra that delights subscribers, reminiscent of Lush's tradition of including fun branded extras in special boxes.",
+  "throwback_reference": "Continues Lush's tradition of including lifestyle and stationery extras in special subscription and gift sets.",
+  "related_product_slugs": [
+    "lush-kitchen-xl-subscription-box-extras"
+  ],
+  "first_known_box_slug": "2025-10-lush-kitchen-xl-unboxing",
+  "appearance_box_slugs": [
+    "2025-10-lush-kitchen-xl-unboxing"
+  ],
+  "approved_still_path": "/images/boxes/2025-10-lush-kitchen-xl-unboxing/product_0_lush_notebook.jpg",
+  "highlight_clip_path": "/videos/highlights/2025-10-lush-kitchen-xl-unboxing/highlight_0_lush_notebook.mp4",
+  "tags": [
+    "Non-cosmetic"
+  ],
+  "created_at": "2026-03-18T01:12:51",
+  "updated_at": "2026-03-18T01:12:51"
+}
