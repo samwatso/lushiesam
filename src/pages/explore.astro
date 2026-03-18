@@ -23,7 +23,11 @@ const familyColors: Record<string, string> = {
   citrus: '#6faa80',
   warm: '#c4a265',
   fresh: '#7ec8b8',
+  unclassified: '#999999',
 };
+
+// Non-cosmetic product types that should never be scent-classified
+const nonCosmeticTypes = ['notebook', 'bag', 'wrap', 'knot wrap', 'tin', 'box', 'accessory', 'sticker', 'card', 'zine', 'tote'];
 
 // Priority order for tie-breaking: warm > floral > fresh > citrus
 const familyPriority: Record<string, number> = { warm: 4, floral: 3, fresh: 2, citrus: 1 };
@@ -36,7 +40,12 @@ const nameKeywords: Record<string, string[]> = {
   fresh: ['grass', 'mint', 'eucalyptus', 'tea tree', 'olive', 'lavender', 'green', 'rush', 'sea', 'ocean', 'rain', 'bamboo'],
 };
 
-function classifyScent(scent?: string, productName?: string): string {
+function classifyScent(scent?: string, productName?: string, productType?: string): string {
+  // Non-cosmetic items (notebooks, bags, wraps, etc.) have no scent
+  if (productType && nonCosmeticTypes.some((t) => productType.toLowerCase().includes(t))) {
+    return 'unclassified';
+  }
+
   // Try scent data first
   const text = scent || '';
   const lower = text.toLowerCase();
@@ -61,9 +70,9 @@ function classifyScent(scent?: string, productName?: string): string {
     }
   }
 
-  // If still no matches, return 'unclassified' instead of defaulting to warm
+  // No matches — genuinely unclassified
   const topScore = Math.max(...Object.values(scores));
-  if (topScore === 0) return 'warm';
+  if (topScore === 0) return 'unclassified';
 
   return Object.entries(scores)
     .sort((a, b) => b[1] - a[1] || (familyPriority[b[0]] ?? 0) - (familyPriority[a[0]] ?? 0))[0][0];
@@ -106,7 +115,7 @@ for (const box of allBoxes) {
 
   for (const p of box.data.products ?? []) {
     const pid = `product-${p.name.toLowerCase().replace(/[^a-z0-9]+/g, '-')}`;
-    const family = classifyScent(p.scent, p.name);
+    const family = classifyScent(p.scent, p.name, p.type);
     const fc = familyColors[family];
 
     boxProducts.push({ name: p.name, type: p.type || '', family, familyColor: fc });
@@ -126,8 +135,10 @@ for (const box of allBoxes) {
       };
       nodes.push(node);
       productMap.set(pid, node);
-      usedFamilies.add(family);
-      edges.push({ source: pid, target: `family-${family}`, type: 'scent-family' });
+      if (family !== 'unclassified') {
+        usedFamilies.add(family);
+        edges.push({ source: pid, target: `family-${family}`, type: 'scent-family' });
+      }
     } else {
       productMap.get(pid)!.productBoxes?.push({
         label: box.data.title, slug: box.id, month: box.data.month, year: box.data.year,
@@ -505,10 +516,12 @@ const graphDataJSON = JSON.stringify({ nodes, edges });
         ${node.productType ? `<span class="panel-tag panel-tag--product">${escapeHtml(node.productType)}</span>` : ''}
         <h3 class="panel-title">${escapeHtml(node.label)}</h3>
         ${node.scent ? `<p class="panel-scent">${escapeHtml(node.scent)}</p>` : ''}
+        ${node.family && node.family !== 'unclassified' ? `
         <div class="panel-family-badge">
           <span class="panel-product-dot" style="background:${node.familyColor}"></span>
-          <span>${node.family ? node.family.charAt(0).toUpperCase() + node.family.slice(1) : ''} family</span>
+          <span>${node.family.charAt(0).toUpperCase() + node.family.slice(1)} family</span>
         </div>
+        ` : ''}
         ${node.nostalgiaNote ? `
           <div class="panel-nostalgia">
             <h4>Nostalgia Note</h4>
