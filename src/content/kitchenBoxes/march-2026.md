@@ -35,14 +35,14 @@ products:
     type: "Bubble Bar"
     description: "Sweet violet cream with vintage vibes. Crumbling foam and fluffy bubbles."
     image: "/images/boxes/march-2026/product_4_violet_cream_bubble_bar.jpg"
-    scent: "Violet, cream, sweet"
+    scent: "Violet, soft florals"
     highlight: true
     nostalgiaNote: "Giving vintage vibes — long-time fans will remember Violet Cream from Mother's Day 2021."
   - name: "Tuca Tuca Massage Bar"
     type: "Massage Bar"
     description: "Rich, warming blend that melts beautifully on contact. Self care Sunday essential."
     image: "/images/boxes/march-2026/product_5_tuca_tuca_massage_bar.jpg"
-    scent: "Warming, rich blend"
+    scent: "Tuca Tuca"
     highlight: false
   - name: "Flower Market Soap"
     type: "Soap"
