@@ -25,6 +25,18 @@
       }
     },
     {
+      "id": "box:2026-01-lush-kitchen-xl-unboxing",
+      "type": "box",
+      "label": "January 2026 Lush Kitchen XL Unboxing",
+      "slug": "2026-01-lush-kitchen-xl-unboxing",
+      "meta": {
+        "month": "January 2026",
+        "year": 2026,
+        "product_count": 8,
+        "date": "2026-01"
+      }
+    },
+    {
       "id": "box:2026-02-lush-kitchen-xl-unboxing",
       "type": "box",
       "label": "February 2026 Lush Kitchen XL Unboxing",
@@ -79,6 +91,16 @@
       }
     },
     {
+      "id": "product:butterball",
+      "type": "product",
+      "label": "Butterball",
+      "slug": "butterball",
+      "meta": {
+        "product_type": "unknown",
+        "scent_family": "vanilla"
+      }
+    },
+    {
       "id": "product:carrot-soap",
       "type": "product",
       "label": "Carrot Soap",
@@ -109,6 +131,26 @@
       }
     },
     {
+      "id": "product:dream-time",
+      "type": "product",
+      "label": "Dream Time",
+      "slug": "dream-time",
+      "meta": {
+        "product_type": "unknown",
+        "scent_family": "sleepy"
+      }
+    },
+    {
+      "id": "product:eye-mask",
+      "type": "product",
+      "label": "Eye mask",
+      "slug": "eye-mask",
+      "meta": {
+        "product_type": "unknown",
+        "scent_family": "sleepy"
+      }
+    },
+    {
       "id": "product:flower-market-soap",
       "type": "product",
       "label": "Flower Market Soap",
@@ -119,6 +161,16 @@
       }
     },
     {
+      "id": "product:forty-winks",
+      "type": "product",
+      "label": "Forty Winks",
+      "slug": "forty-winks",
+      "meta": {
+        "product_type": "unknown",
+        "scent_family": "lavender"
+      }
+    },
+    {
       "id": "product:frog-spell-shower-gummy",
       "type": "product",
       "label": "Frog Spell shower gummy",
@@ -126,6 +178,16 @@
       "meta": {
         "product_type": "unknown",
         "scent_family": "earthy-green"
+      }
+    },
+    {
+      "id": "product:golden-slumbers",
+      "type": "product",
+      "label": "Golden slumbers",
+      "slug": "golden-slumbers",
+      "meta": {
+        "product_type": "unknown",
+        "scent_family": "lavender"
       }
     },
     {
@@ -196,6 +258,16 @@
       "meta": {
         "product_type": "bubble_bar",
         "scent_family": "snow-fairy"
+      }
+    },
+    {
+      "id": "product:lavender-vida-loca",
+      "type": "product",
+      "label": "Lavender Vida Loca",
+      "slug": "lavender-vida-loca",
+      "meta": {
+        "product_type": "unknown",
+        "scent_family": "lavender"
       }
     },
     {
@@ -276,6 +348,26 @@
       "meta": {
         "product_type": "unknown",
         "scent_family": "sex-in-the-shower"
+      }
+    },
+    {
+      "id": "product:sleepy",
+      "type": "product",
+      "label": "Sleepy",
+      "slug": "sleepy",
+      "meta": {
+        "product_type": "unknown",
+        "scent_family": "sleepy"
+      }
+    },
+    {
+      "id": "product:softy",
+      "type": "product",
+      "label": "Softy",
+      "slug": "softy",
+      "meta": {
+        "product_type": "unknown",
+        "scent_family": "marshmallow"
       }
     },
     {
@@ -402,6 +494,24 @@
       }
     },
     {
+      "id": "scent:lavender",
+      "type": "scent_family",
+      "label": "Lavender",
+      "slug": "lavender",
+      "meta": {
+        "product_count": 3
+      }
+    },
+    {
+      "id": "scent:marshmallow",
+      "type": "scent_family",
+      "label": "Marshmallow",
+      "slug": "marshmallow",
+      "meta": {
+        "product_count": 1
+      }
+    },
+    {
       "id": "scent:non-cosmetic",
       "type": "scent_family",
       "label": "Non-cosmetic",
@@ -435,6 +545,15 @@
       "slug": "sex-in-the-shower",
       "meta": {
         "product_count": 1
+      }
+    },
+    {
+      "id": "scent:sleepy",
+      "type": "scent_family",
+      "label": "Sleepy",
+      "slug": "sleepy",
+      "meta": {
+        "product_count": 3
       }
     },
     {
@@ -474,6 +593,15 @@
       }
     },
     {
+      "id": "scent:vanilla",
+      "type": "scent_family",
+      "label": "Vanilla",
+      "slug": "vanilla",
+      "meta": {
+        "product_count": 1
+      }
+    },
+    {
       "id": "scent:violet",
       "type": "scent_family",
       "label": "Violet",
@@ -499,8 +627,29 @@
       "meta": {}
     },
     {
+      "source": "product:butterball",
+      "target": "scent:vanilla",
+      "type": "belongs_to_scent_family",
+      "label": "scent family",
+      "meta": {}
+    },
+    {
       "source": "product:chelsea-garden-body-wash",
       "target": "scent:fresh-florals",
+      "type": "belongs_to_scent_family",
+      "label": "scent family",
+      "meta": {}
+    },
+    {
+      "source": "product:dream-time",
+      "target": "scent:sleepy",
+      "type": "belongs_to_scent_family",
+      "label": "scent family",
+      "meta": {}
+    },
+    {
+      "source": "product:eye-mask",
+      "target": "scent:sleepy",
       "type": "belongs_to_scent_family",
       "label": "scent family",
       "meta": {}
@@ -513,8 +662,22 @@
       "meta": {}
     },
     {
+      "source": "product:forty-winks",
+      "target": "scent:lavender",
+      "type": "belongs_to_scent_family",
+      "label": "scent family",
+      "meta": {}
+    },
+    {
       "source": "product:frog-spell-shower-gummy",
       "target": "scent:earthy-green",
+      "type": "belongs_to_scent_family",
+      "label": "scent family",
+      "meta": {}
+    },
+    {
+      "source": "product:golden-slumbers",
+      "target": "scent:lavender",
       "type": "belongs_to_scent_family",
       "label": "scent family",
       "meta": {}
@@ -550,6 +713,13 @@
     {
       "source": "product:keep-it-fluffy-bubble-bar",
       "target": "scent:snow-fairy",
+      "type": "belongs_to_scent_family",
+      "label": "scent family",
+      "meta": {}
+    },
+    {
+      "source": "product:lavender-vida-loca",
+      "target": "scent:lavender",
       "type": "belongs_to_scent_family",
       "label": "scent family",
       "meta": {}
@@ -592,6 +762,20 @@
     {
       "source": "product:sex-in-the-shower-emoitbomb",
       "target": "scent:sex-in-the-shower",
+      "type": "belongs_to_scent_family",
+      "label": "scent family",
+      "meta": {}
+    },
+    {
+      "source": "product:sleepy",
+      "target": "scent:sleepy",
+      "type": "belongs_to_scent_family",
+      "label": "scent family",
+      "meta": {}
+    },
+    {
+      "source": "product:softy",
+      "target": "scent:marshmallow",
       "type": "belongs_to_scent_family",
       "label": "scent family",
       "meta": {}
@@ -774,6 +958,78 @@
       }
     },
     {
+      "source": "box:2026-01-lush-kitchen-xl-unboxing",
+      "target": "product:butterball",
+      "type": "contains",
+      "label": "contains",
+      "meta": {
+        "order": 1
+      }
+    },
+    {
+      "source": "box:2026-01-lush-kitchen-xl-unboxing",
+      "target": "product:dream-time",
+      "type": "contains",
+      "label": "contains",
+      "meta": {
+        "order": 6
+      }
+    },
+    {
+      "source": "box:2026-01-lush-kitchen-xl-unboxing",
+      "target": "product:eye-mask",
+      "type": "contains",
+      "label": "contains",
+      "meta": {
+        "order": 0
+      }
+    },
+    {
+      "source": "box:2026-01-lush-kitchen-xl-unboxing",
+      "target": "product:forty-winks",
+      "type": "contains",
+      "label": "contains",
+      "meta": {
+        "order": 3
+      }
+    },
+    {
+      "source": "box:2026-01-lush-kitchen-xl-unboxing",
+      "target": "product:golden-slumbers",
+      "type": "contains",
+      "label": "contains",
+      "meta": {
+        "order": 7
+      }
+    },
+    {
+      "source": "box:2026-01-lush-kitchen-xl-unboxing",
+      "target": "product:lavender-vida-loca",
+      "type": "contains",
+      "label": "contains",
+      "meta": {
+        "order": 4
+      }
+    },
+    {
+      "source": "box:2026-01-lush-kitchen-xl-unboxing",
+      "target": "product:sleepy",
+      "type": "contains",
+      "label": "contains",
+      "meta": {
+        "order": 2
+      }
+    },
+    {
+      "source": "box:2026-01-lush-kitchen-xl-unboxing",
+      "target": "product:softy",
+      "type": "contains",
+      "label": "contains",
+      "meta": {
+        "order": 5
+      }
+    },
+    {
       "source": "box:2026-02-lush-kitchen-xl-unboxing",
       "target": "product:aubergine-bath-bomb",
       "type": "contains",
@@ -940,6 +1196,26 @@
       }
     },
     {
+      "source": "product:butterball",
+      "target": "product:butterball-bath-bomb",
+      "type": "related_product",
+      "label": "related product",
+      "meta": {
+        "confidence": 0.9,
+        "note": "Butterball → Butterball bath bomb"
+      }
+    },
+    {
+      "source": "product:butterball",
+      "target": "product:the-original-butterball-bath-bomb-a-lush-classic-known-for-its-cocoa-butter-and-",
+      "type": "throwback_to",
+      "label": "throwback to",
+      "meta": {
+        "confidence": 0.8,
+        "note": "Butterball is a throwback to The original Butterball bath bomb, a Lush classic known for its cocoa butter and almond oil skin-softening properties"
+      }
+    },
+    {
       "source": "product:chelsea-garden-body-wash",
       "target": "product:flower-market-soap",
       "type": "related_product",
@@ -980,6 +1256,76 @@
       }
     },
     {
+      "source": "product:dream-time",
+      "target": "product:a-solid-bath-oil-companion-to-the-sleepy-and-twilight-range-channelling-the-same",
+      "type": "throwback_to",
+      "label": "throwback to",
+      "meta": {
+        "confidence": 0.8,
+        "note": "Dream Time is a throwback to A solid bath oil companion to the Sleepy and Twilight range, channelling the same calming, sleep-inducing botanical oils in a luxurious cocoa butter base"
+      }
+    },
+    {
+      "source": "product:dream-time",
+      "target": "product:eye-mask",
+      "type": "same_scent_family",
+      "label": "same scent family",
+      "meta": {
+        "confidence": 1.0,
+        "note": "Both in scent family: sleepy"
+      }
+    },
+    {
+      "source": "product:dream-time",
+      "target": "product:sleepy",
+      "type": "same_scent_family",
+      "label": "same scent family",
+      "meta": {
+        "confidence": 1.0,
+        "note": "Both in scent family: sleepy"
+      }
+    },
+    {
+      "source": "product:dream-time",
+      "target": "product:sleepy-body-lotion",
+      "type": "related_product",
+      "label": "related product",
+      "meta": {
+        "confidence": 0.9,
+        "note": "Dream Time → Sleepy body lotion"
+      }
+    },
+    {
+      "source": "product:eye-mask",
+      "target": "product:companion-product-to-the-iconic-sleepy-body-lotion-and-twilight-bath-bomb-extend",
+      "type": "throwback_to",
+      "label": "throwback to",
+      "meta": {
+        "confidence": 0.8,
+        "note": "Eye mask is a throwback to Companion product to the iconic Sleepy body lotion and Twilight bath bomb, extending the lavender-tonka sleep ritual"
+      }
+    },
+    {
+      "source": "product:eye-mask",
+      "target": "product:sleepy",
+      "type": "same_scent_family",
+      "label": "same scent family",
+      "meta": {
+        "confidence": 1.0,
+        "note": "Both in scent family: sleepy"
+      }
+    },
+    {
+      "source": "product:eye-mask",
+      "target": "product:sleepy-body-lotion",
+      "type": "related_product",
+      "label": "related product",
+      "meta": {
+        "confidence": 0.9,
+        "note": "Eye mask → Sleepy body lotion"
+      }
+    },
+    {
       "source": "product:flower-market-soap",
       "target": "product:chelsea-garden-body-wash",
       "type": "related_product",
@@ -1010,6 +1356,46 @@
       }
     },
     {
+      "source": "product:forty-winks",
+      "target": "product:golden-slumbers",
+      "type": "same_scent_family",
+      "label": "same scent family",
+      "meta": {
+        "confidence": 1.0,
+        "note": "Both in scent family: lavender"
+      }
+    },
+    {
+      "source": "product:forty-winks",
+      "target": "product:lavender-vida-loca",
+      "type": "same_scent_family",
+      "label": "same scent family",
+      "meta": {
+        "confidence": 1.0,
+        "note": "Both in scent family: lavender"
+      }
+    },
+    {
+      "source": "product:forty-winks",
+      "target": "product:part-of-lushs-sleep-focused-product-family-alongside-sleepy-and-dream-time-shari",
+      "type": "throwback_to",
+      "label": "throwback to",
+      "meta": {
+        "confidence": 0.8,
+        "note": "Forty Winks is a throwback to Part of Lush's sleep-focused product family alongside Sleepy and Dream Time, sharing the lavender-led relaxation theme"
+      }
+    },
+    {
+      "source": "product:forty-winks",
+      "target": "product:sleepy-body-lotion",
+      "type": "related_product",
+      "label": "related product",
+      "meta": {
+        "confidence": 0.9,
+        "note": "Forty Winks → Sleepy body lotion"
+      }
+    },
+    {
       "source": "product:frog-spell-shower-gummy",
       "target": "product:a-nod-to-classic-witchs-familiar-imagery-the-frog-as-a-magical-creature-rendered",
       "type": "throwback_to",
@@ -1027,6 +1413,36 @@
       "meta": {
         "confidence": 0.9,
         "note": "Frog Spell shower gummy → Wizard bubble bar"
+      }
+    },
+    {
+      "source": "product:golden-slumbers",
+      "target": "product:lavender-vida-loca",
+      "type": "same_scent_family",
+      "label": "same scent family",
+      "meta": {
+        "confidence": 1.0,
+        "note": "Both in scent family: lavender"
+      }
+    },
+    {
+      "source": "product:golden-slumbers",
+      "target": "product:shares-its-lavender-and-chamomile-sleep-inducing-dna-with-the-wider-lush-sleep-r",
+      "type": "throwback_to",
+      "label": "throwback to",
+      "meta": {
+        "confidence": 0.8,
+        "note": "Golden slumbers is a throwback to Shares its lavender and chamomile sleep-inducing DNA with the wider Lush sleep range, with neroli adding a brightening, clarifying twist reminiscent of products like Twilight"
+      }
+    },
+    {
+      "source": "product:golden-slumbers",
+      "target": "product:twilight-bath-bomb",
+      "type": "related_product",
+      "label": "related product",
+      "meta": {
+        "confidence": 0.9,
+        "note": "Golden slumbers → Twilight bath bomb"
       }
     },
     {
@@ -1137,6 +1553,26 @@
       "meta": {
         "confidence": 0.8,
         "note": "Keep it fluffy bubble bar is a throwback to Companion piece to the iconic Aubergine bath bomb from the 2019 Valentine's collection"
+      }
+    },
+    {
+      "source": "product:lavender-vida-loca",
+      "target": "product:forty-winks-massage-bar",
+      "type": "related_product",
+      "label": "related product",
+      "meta": {
+        "confidence": 0.9,
+        "note": "Lavender Vida Loca → Forty Winks massage bar"
+      }
+    },
+    {
+      "source": "product:lavender-vida-loca",
+      "target": "product:shares-its-calming-lavender-and-chamomile-spirit-with-the-broader-lush-sleep-ran",
+      "type": "throwback_to",
+      "label": "throwback to",
+      "meta": {
+        "confidence": 0.8,
+        "note": "Lavender Vida Loca is a throwback to Shares its calming lavender and chamomile spirit with the broader Lush sleep range, acting as a cleansing companion to products like Sleepy and Forty Winks"
       }
     },
     {
@@ -1280,6 +1716,46 @@
       }
     },
     {
+      "source": "product:sleepy",
+      "target": "product:a-shower-gummy-interpretation-of-the-iconic-sleepy-body-lotion-carrying-the-same",
+      "type": "throwback_to",
+      "label": "throwback to",
+      "meta": {
+        "confidence": 0.8,
+        "note": "Sleepy is a throwback to A shower gummy interpretation of the iconic Sleepy body lotion, carrying the same malty lavender and tonka bean scent"
+      }
+    },
+    {
+      "source": "product:sleepy",
+      "target": "product:sleepy-body-lotion",
+      "type": "related_product",
+      "label": "related product",
+      "meta": {
+        "confidence": 0.9,
+        "note": "Sleepy → Sleepy body lotion"
+      }
+    },
+    {
+      "source": "product:softy",
+      "target": "product:dream-cream-body-lotion",
+      "type": "related_product",
+      "label": "related product",
+      "meta": {
+        "confidence": 0.9,
+        "note": "Softy → Dream Cream body lotion"
+      }
+    },
+    {
+      "source": "product:softy",
+      "target": "product:evokes-the-same-cosy-marshmallow-soft-comfort-as-products-like-sleepy-making-it-",
+      "type": "throwback_to",
+      "label": "throwback to",
+      "meta": {
+        "confidence": 0.8,
+        "note": "Softy is a throwback to Evokes the same cosy, marshmallow-soft comfort as products like Sleepy, making it a natural bedtime foot-care companion"
+      }
+    },
+    {
       "source": "product:the-rush-body-lotion",
       "target": "product:bucks-fizz-body-conditioner",
       "type": "related_product",
@@ -1401,12 +1877,12 @@
     }
   ],
   "metadata": {
-    "generated_at": "2026-03-18T01:12:51",
-    "box_count": 4,
-    "product_count": 29,
-    "scent_family_count": 16,
-    "relationship_count": 50,
-    "node_count": 49,
-    "edge_count": 101
+    "generated_at": "2026-03-23T00:09:46",
+    "box_count": 5,
+    "product_count": 37,
+    "scent_family_count": 20,
+    "relationship_count": 72,
+    "node_count": 62,
+    "edge_count": 139
   }
 }

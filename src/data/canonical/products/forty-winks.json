@@ -1,0 +1,27 @@
+{
+  "id": "product:forty-winks",
+  "slug": "forty-winks",
+  "name": "Forty Winks",
+  "aliases": [],
+  "product_type": "unknown",
+  "scent_family_slug": "lavender",
+  "ingredients": "",
+  "description": "MASSAGE BAR: Lavender and rosemary clear the fog while tarragon banishes apathy, so after a good massage you should feel just about ready to tackle anything! LAVENDER VIDA LOCA Soap Flourishes of lavender and sweet chamomile help soothe your skin and clear your mind so you can sink into a peaceful slumber.",
+  "archive_note": "Forty Winks massage bar has appeared in various formats across Lush's main line and Kitchen over the years, consistently featuring lavender and rosemary as hero notes",
+  "nostalgia_angle": "Forty Winks has long been a cherished product in Lush's sleep and relaxation repertoire, beloved by fans who use it as part of a bedtime massage ritual",
+  "throwback_reference": "Part of Lush's sleep-focused product family alongside Sleepy and Dream Time, sharing the lavender-led relaxation theme",
+  "related_product_slugs": [
+    "sleepy-body-lotion"
+  ],
+  "first_known_box_slug": "2026-01-lush-kitchen-xl-unboxing",
+  "appearance_box_slugs": [
+    "2026-01-lush-kitchen-xl-unboxing"
+  ],
+  "approved_still_path": "/images/boxes/2026-01-lush-kitchen-xl-unboxing/product_3_forty_winks.jpg",
+  "highlight_clip_path": "/videos/highlights/2026-01-lush-kitchen-xl-unboxing/highlight_3_forty_winks.mp4",
+  "tags": [
+    "Lavender"
+  ],
+  "created_at": "2026-03-23T00:09:46",
+  "updated_at": "2026-03-23T00:09:46"
+}

@@ -1,0 +1,27 @@
+{
+  "id": "product:dream-time",
+  "slug": "dream-time",
+  "name": "Dream Time",
+  "aliases": [],
+  "product_type": "unknown",
+  "scent_family_slug": "sleepy",
+  "ingredients": "",
+  "description": "NAKED BATH OIL: A small but mighty brick of luxurious cocoa butter to moisturise your skin and all the most calming oils we could think of.",
+  "archive_note": "Dream Time naked bath oil is a Kitchen exclusive that fits within Lush's growing sleep and relaxation product family, using a naked/solid format to reduce packaging",
+  "nostalgia_angle": "Naked bath oils are a fan-favourite Kitchen format, and Dream Time resonates deeply with those who love Lush's sleep-focused range and the ritual of a calming evening bath",
+  "throwback_reference": "A solid bath oil companion to the Sleepy and Twilight range, channelling the same calming, sleep-inducing botanical oils in a luxurious cocoa butter base",
+  "related_product_slugs": [
+    "sleepy-body-lotion"
+  ],
+  "first_known_box_slug": "2026-01-lush-kitchen-xl-unboxing",
+  "appearance_box_slugs": [
+    "2026-01-lush-kitchen-xl-unboxing"
+  ],
+  "approved_still_path": "/images/boxes/2026-01-lush-kitchen-xl-unboxing/product_6_dream_time.jpg",
+  "highlight_clip_path": "/videos/highlights/2026-01-lush-kitchen-xl-unboxing/highlight_6_dream_time.mp4",
+  "tags": [
+    "Sleepy"
+  ],
+  "created_at": "2026-03-23T00:09:46",
+  "updated_at": "2026-03-23T00:09:46"
+}

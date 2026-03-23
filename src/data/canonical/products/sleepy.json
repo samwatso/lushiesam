@@ -1,0 +1,27 @@
+{
+  "id": "product:sleepy",
+  "slug": "sleepy",
+  "name": "Sleepy",
+  "aliases": [],
+  "product_type": "unknown",
+  "scent_family_slug": "sleepy",
+  "ingredients": "",
+  "description": "SHOWER GUMMY: When twilight settles in, wash the day away with sweet and comforting malty lavender suds.",
+  "archive_note": "The Sleepy scent family launched as a body lotion and expanded into a full range of products; shower gummy formats are a newer Kitchen innovation",
+  "nostalgia_angle": "The Sleepy range took the Lush world by storm and became a cult phenomenon, with fans swearing by its sleep-inducing lavender and tonka scent \u2014 this shower gummy brings that magic into the bathroom routine",
+  "throwback_reference": "A shower gummy interpretation of the iconic Sleepy body lotion, carrying the same malty lavender and tonka bean scent",
+  "related_product_slugs": [
+    "sleepy-body-lotion"
+  ],
+  "first_known_box_slug": "2026-01-lush-kitchen-xl-unboxing",
+  "appearance_box_slugs": [
+    "2026-01-lush-kitchen-xl-unboxing"
+  ],
+  "approved_still_path": "/images/boxes/2026-01-lush-kitchen-xl-unboxing/product_2_sleepy.jpg",
+  "highlight_clip_path": "/videos/highlights/2026-01-lush-kitchen-xl-unboxing/highlight_2_sleepy.mp4",
+  "tags": [
+    "Sleepy"
+  ],
+  "created_at": "2026-03-23T00:09:46",
+  "updated_at": "2026-03-23T00:09:46"
+}

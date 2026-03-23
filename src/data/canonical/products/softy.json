@@ -1,0 +1,27 @@
+{
+  "id": "product:softy",
+  "slug": "softy",
+  "name": "Softy",
+  "aliases": [],
+  "product_type": "unknown",
+  "scent_family_slug": "marshmallow",
+  "ingredients": "",
+  "description": "FOOT LOTION: Kick back and relax as a dreamy blend of rich butters and marshmallow root soften your soles.",
+  "archive_note": "Softy has appeared as a Kitchen exclusive foot lotion, celebrated for its marshmallow root and rich butter blend aimed at intense foot softening",
+  "nostalgia_angle": "Softy foot lotion is a Kitchen gem that fans of Lush's indulgent body care line adore for its gentle, comforting formula perfect for tired feet",
+  "throwback_reference": "Evokes the same cosy, marshmallow-soft comfort as products like Sleepy, making it a natural bedtime foot-care companion",
+  "related_product_slugs": [
+    "dream-cream-body-lotion"
+  ],
+  "first_known_box_slug": "2026-01-lush-kitchen-xl-unboxing",
+  "appearance_box_slugs": [
+    "2026-01-lush-kitchen-xl-unboxing"
+  ],
+  "approved_still_path": "/images/boxes/2026-01-lush-kitchen-xl-unboxing/product_5_softy.jpg",
+  "highlight_clip_path": "/videos/highlights/2026-01-lush-kitchen-xl-unboxing/highlight_5_softy.mp4",
+  "tags": [
+    "Marshmallow"
+  ],
+  "created_at": "2026-03-23T00:09:46",
+  "updated_at": "2026-03-23T00:09:46"
+}

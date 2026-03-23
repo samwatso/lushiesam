@@ -1,0 +1,27 @@
+{
+  "id": "product:butterball",
+  "slug": "butterball",
+  "name": "Butterball",
+  "aliases": [],
+  "product_type": "unknown",
+  "scent_family_slug": "vanilla",
+  "ingredients": "",
+  "description": "BODY LOTION: Get soft and snuggly with this dreamy cream of moisturising cocoa butter and almond oil, with a comforting vanilla \u2014 like fragrance.",
+  "archive_note": "One of Lush's longest-running products, Butterball has been a mainstay on the main line for decades before appearing as Kitchen iterations",
+  "nostalgia_angle": "Butterball is one of Lush's most enduring and beloved bath bombs, a staple since the early days and a perennial fan favourite for its simple, skin-loving luxury",
+  "throwback_reference": "The original Butterball bath bomb, a Lush classic known for its cocoa butter and almond oil skin-softening properties",
+  "related_product_slugs": [
+    "butterball-bath-bomb"
+  ],
+  "first_known_box_slug": "2026-01-lush-kitchen-xl-unboxing",
+  "appearance_box_slugs": [
+    "2026-01-lush-kitchen-xl-unboxing"
+  ],
+  "approved_still_path": "/images/boxes/2026-01-lush-kitchen-xl-unboxing/product_1_butterball.jpg",
+  "highlight_clip_path": "/videos/highlights/2026-01-lush-kitchen-xl-unboxing/highlight_1_butterball.mp4",
+  "tags": [
+    "Vanilla"
+  ],
+  "created_at": "2026-03-23T00:09:46",
+  "updated_at": "2026-03-23T00:09:46"
+}

@@ -1,0 +1,27 @@
+{
+  "id": "product:golden-slumbers",
+  "slug": "golden-slumbers",
+  "name": "Golden slumbers",
+  "aliases": [],
+  "product_type": "unknown",
+  "scent_family_slug": "lavender",
+  "ingredients": "",
+  "description": "BATH BOMB: Soak in glittering golden waters of calming chamomile and lavender, while a clearing shot of neroli cuts through your thoughts.",
+  "archive_note": "Golden Slumbers bath bomb has appeared as a Kitchen and seasonal exclusive, celebrated for its golden glittering waters and sleep-focused botanical blend of chamomile, lavender, and neroli",
+  "nostalgia_angle": "The name is a nod to the beloved Beatles song, instantly evoking warmth and nostalgia \u2014 fans of Lush's sleep range adore this bath bomb for combining glittering, golden visuals with genuinely calming botanicals",
+  "throwback_reference": "Shares its lavender and chamomile sleep-inducing DNA with the wider Lush sleep range, with neroli adding a brightening, clarifying twist reminiscent of products like Twilight",
+  "related_product_slugs": [
+    "twilight-bath-bomb"
+  ],
+  "first_known_box_slug": "2026-01-lush-kitchen-xl-unboxing",
+  "appearance_box_slugs": [
+    "2026-01-lush-kitchen-xl-unboxing"
+  ],
+  "approved_still_path": "/images/boxes/2026-01-lush-kitchen-xl-unboxing/product_7_golden_slumbers.jpg",
+  "highlight_clip_path": "/videos/highlights/2026-01-lush-kitchen-xl-unboxing/highlight_7_golden_slumbers.mp4",
+  "tags": [
+    "Lavender"
+  ],
+  "created_at": "2026-03-23T00:09:46",
+  "updated_at": "2026-03-23T00:09:46"
+}

@@ -1,0 +1,90 @@
+[
+  {
+    "name": "Eye mask",
+    "type": "Unknown",
+    "description": "A soothing eye mask infused with the calming, dreamy scent of the beloved Sleepy range \u2014 lavender and tonka bean \u2014 designed to help you drift off into a restful slumber.",
+    "image": "/images/boxes/2026-01-lush-kitchen-xl-unboxing/product_0_eye_mask.jpg",
+    "scent": "Sleepy",
+    "kitchenExclusive": true,
+    "tags": [
+      "Sleepy"
+    ]
+  },
+  {
+    "name": "Butterball",
+    "type": "Unknown",
+    "description": "BODY LOTION: Get soft and snuggly with this dreamy cream of moisturising cocoa butter and almond oil, with a comforting vanilla \u2014 like fragrance.",
+    "image": "/images/boxes/2026-01-lush-kitchen-xl-unboxing/product_1_butterball.jpg",
+    "scent": "Vanilla",
+    "kitchenExclusive": true,
+    "tags": [
+      "Vanilla"
+    ]
+  },
+  {
+    "name": "Sleepy",
+    "type": "Unknown",
+    "description": "SHOWER GUMMY: When twilight settles in, wash the day away with sweet and comforting malty lavender suds.",
+    "image": "/images/boxes/2026-01-lush-kitchen-xl-unboxing/product_2_sleepy.jpg",
+    "scent": "Sleepy",
+    "kitchenExclusive": true,
+    "tags": [
+      "Sleepy"
+    ]
+  },
+  {
+    "name": "Forty Winks",
+    "type": "Unknown",
+    "description": "MASSAGE BAR: Lavender and rosemary clear the fog while tarragon banishes apathy, so after a good massage you should feel just about ready to tackle anything! LAVENDER VIDA LOCA Soap Flourishes of lavender and sweet chamomile help soothe your skin and clear your mind so you can sink into a peaceful slumber.",
+    "image": "/images/boxes/2026-01-lush-kitchen-xl-unboxing/product_3_forty_winks.jpg",
+    "scent": "Lavender",
+    "kitchenExclusive": true,
+    "tags": [
+      "Lavender"
+    ]
+  },
+  {
+    "name": "Lavender Vida Loca",
+    "type": "Unknown",
+    "description": "Soap: flourishes of lavender and sweet chamomile help sooth your skin and clear your mind so you can sink into a peaceful slumber.",
+    "image": "/images/boxes/2026-01-lush-kitchen-xl-unboxing/product_4_lavender_vida_loca.jpg",
+    "scent": "Lavender",
+    "kitchenExclusive": true,
+    "tags": [
+      "Lavender"
+    ]
+  },
+  {
+    "name": "Softy",
+    "type": "Unknown",
+    "description": "FOOT LOTION: Kick back and relax as a dreamy blend of rich butters and marshmallow root soften your soles.",
+    "image": "/images/boxes/2026-01-lush-kitchen-xl-unboxing/product_5_softy.jpg",
+    "scent": "Marshmallow",
+    "kitchenExclusive": true,
+    "tags": [
+      "Marshmallow"
+    ]
+  },
+  {
+    "name": "Dream Time",
+    "type": "Unknown",
+    "description": "NAKED BATH OIL: A small but mighty brick of luxurious cocoa butter to moisturise your skin and all the most calming oils we could think of.",
+    "image": "/images/boxes/2026-01-lush-kitchen-xl-unboxing/product_6_dream_time.jpg",
+    "scent": "Sleepy",
+    "kitchenExclusive": true,
+    "tags": [
+      "Sleepy"
+    ]
+  },
+  {
+    "name": "Golden slumbers",
+    "type": "Unknown",
+    "description": "BATH BOMB: Soak in glittering golden waters of calming chamomile and lavender, while a clearing shot of neroli cuts through your thoughts.",
+    "image": "/images/boxes/2026-01-lush-kitchen-xl-unboxing/product_7_golden_slumbers.jpg",
+    "scent": "Lavender",
+    "kitchenExclusive": true,
+    "tags": [
+      "Lavender"
+    ]
+  }
+]

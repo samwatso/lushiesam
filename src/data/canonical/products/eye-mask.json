@@ -1,0 +1,27 @@
+{
+  "id": "product:eye-mask",
+  "slug": "eye-mask",
+  "name": "Eye mask",
+  "aliases": [],
+  "product_type": "unknown",
+  "scent_family_slug": "sleepy",
+  "ingredients": "",
+  "description": "A soothing eye mask infused with the calming, dreamy scent of the beloved Sleepy range \u2014 lavender and tonka bean \u2014 designed to help you drift off into a restful slumber.",
+  "archive_note": "The Sleepy eye mask is a Kitchen and exclusive product designed as part of the broader Sleepy sleep range",
+  "nostalgia_angle": "Part of Lush's beloved Sleepy range, a fan-favourite sleep-aid collection that has built a devoted following since its launch",
+  "throwback_reference": "Companion product to the iconic Sleepy body lotion and Twilight bath bomb, extending the lavender-tonka sleep ritual",
+  "related_product_slugs": [
+    "sleepy-body-lotion"
+  ],
+  "first_known_box_slug": "2026-01-lush-kitchen-xl-unboxing",
+  "appearance_box_slugs": [
+    "2026-01-lush-kitchen-xl-unboxing"
+  ],
+  "approved_still_path": "/images/boxes/2026-01-lush-kitchen-xl-unboxing/product_0_eye_mask.jpg",
+  "highlight_clip_path": "/videos/highlights/2026-01-lush-kitchen-xl-unboxing/highlight_0_eye_mask.mp4",
+  "tags": [
+    "Sleepy"
+  ],
+  "created_at": "2026-03-23T00:09:46",
+  "updated_at": "2026-03-23T00:09:46"
+}
