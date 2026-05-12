@@ -25,15 +25,15 @@ const scentKeywords: Record<string, string[]> = {
 };
 
 const familyColors: Record<string, string> = {
-  floral:   '#e8a0bf',
-  citrus:   '#a8c96a',
-  sweet:    '#f4a4c0',
-  gourmand: '#c4a265',
-  spiced:   '#d4764e',
-  herbal:   '#7bb878',
-  fresh:    '#7ec8b8',
-  earthy:   '#9b8b7a',
-  unclassified: '#999999',
+  floral:   '#ff8db8',
+  citrus:   '#ffe66f',
+  sweet:    '#ffb6dd',
+  gourmand: '#ffb25f',
+  spiced:   '#ff7f5f',
+  herbal:   '#8ff5d2',
+  fresh:    '#83d9ff',
+  earthy:   '#b79a78',
+  unclassified: '#a7adc0',
 };
 
 // Non-cosmetic product types that should never be scent-classified
@@ -218,23 +218,56 @@ for (const [family, color] of Object.entries(familyColors)) {
 }
 
 const graphDataJSON = JSON.stringify({ nodes, edges });
+const boxNodes = nodes.filter((node) => node.type === 'box');
+const productNodes = nodes.filter((node) => node.type === 'product');
+const familyNodes = nodes.filter((node) => node.type === 'scent-family');
+const nostalgiaNodes = productNodes.filter((node) => node.nostalgiaNote);
+const highlightedProducts = productNodes.filter((node) => node.highlight).slice(0, 6);
 ---
 
 <BaseLayout title="Explore" description="A visual map of products, throwbacks, and scent links across Lush Kitchen boxes since 2022.">
   <div class="explore-page">
-    <!-- Header -->
-    <div class="explore-hero">
-      <div class="container">
-        <span class="explore-tag">Visual Archive</span>
-        <h1 class="explore-title">Explore the Archive</h1>
-        <p class="explore-subtitle">
-          See how kitchen boxes, products, and scent families connect — a visual map of the Lush Kitchen world since 2022.
-        </p>
+    <section class="explore-hero">
+      <div class="container container--wide explore-hero-inner">
+        <div data-animate="fade-up">
+          <span class="eyebrow">Relationship map</span>
+          <h1>Trace the archive by connection.</h1>
+          <p class="lede">
+            A visual map of monthly boxes, products and scent families. Select a node to reveal what it contains, where it appears, and which notes connect it to the wider Kitchen timeline.
+          </p>
+        </div>
+        <aside class="map-stats liquid-panel">
+          <div><strong>{boxNodes.length}</strong><span>boxes</span></div>
+          <div><strong>{productNodes.length}</strong><span>products</span></div>
+          <div><strong>{familyNodes.length}</strong><span>scent groups</span></div>
+        </aside>
       </div>
-    </div>
+    </section>
+
+    <section class="guided-discovery">
+      <div class="container container--wide">
+        <div class="guided-grid" data-animate="stagger-children" data-stagger="0.08">
+          <a href="#relationship-map" class="guide-card liquid-panel">
+            <span class="chip">Start here</span>
+            <strong>Open the relationship map</strong>
+            <p>Drag, zoom and select nodes to see box-to-product and product-to-scent links.</p>
+          </a>
+          <a href="#scent-index" class="guide-card liquid-panel">
+            <span class="chip" style="--chip-color: var(--color-pink);">Scent index</span>
+            <strong>{familyNodes.length} active scent groups</strong>
+            <p>Scan fragrance families without needing to parse the graph first.</p>
+          </a>
+          <a href="#collector-notes" class="guide-card liquid-panel">
+            <span class="chip" style="--chip-color: var(--color-gold);">Nostalgia</span>
+            <strong>{nostalgiaNodes.length} nostalgia markers</strong>
+            <p>Find products with throwback notes and returning-favourite context.</p>
+          </a>
+        </div>
+      </div>
+    </section>
 
     <!-- Controls -->
-    <div class="explore-controls">
+    <div class="explore-controls" id="relationship-map">
       <div class="container explore-controls-inner">
         <div class="filter-group" role="group" aria-label="Filter node types">
           <button class="filter-btn active" data-filter="all">All</button>
@@ -256,27 +289,59 @@ const graphDataJSON = JSON.stringify({ nodes, edges });
     </div>
 
     <!-- Graph -->
-    <div class="explore-graph" id="graph-container">
-      <svg id="graph-svg" role="img" aria-label="Interactive network graph of kitchen boxes, products, and scent families"></svg>
+    <section class="graph-shell">
+      <div class="container container--wide">
+        <div class="explore-graph liquid-panel" id="graph-container">
+          <svg id="graph-svg" role="img" aria-label="Interactive network graph of kitchen boxes, products, and scent families"></svg>
 
-      <!-- Legend -->
-      <div class="graph-legend">
-        <div class="legend-item"><span class="legend-swatch legend-swatch--box"></span>Kitchen Box</div>
-        <div class="legend-item"><span class="legend-swatch legend-swatch--product"></span>Product</div>
-        {Object.entries(familyColors).map(([family, color]) => (
-          usedFamilies.has(family) && (
-            <div class="legend-item"><span class="legend-swatch" style={`background:${color}`}></span>{family.charAt(0).toUpperCase() + family.slice(1)}</div>
-          )
-        ))}
-      </div>
+          <!-- Legend -->
+          <div class="graph-legend">
+            <div class="legend-item"><span class="legend-swatch legend-swatch--box"></span>Kitchen Box</div>
+            <div class="legend-item"><span class="legend-swatch legend-swatch--product"></span>Product</div>
+            {Object.entries(familyColors).map(([family, color]) => (
+              usedFamilies.has(family) && (
+                <div class="legend-item"><span class="legend-swatch" style={`background:${color}`}></span>{family.charAt(0).toUpperCase() + family.slice(1)}</div>
+              )
+            ))}
+          </div>
 
-      <!-- Zoom controls -->
-      <div class="zoom-controls">
-        <button id="zoom-in" aria-label="Zoom in">+</button>
-        <button id="zoom-out" aria-label="Zoom out">&minus;</button>
-        <button id="zoom-reset" aria-label="Reset view">↻</button>
+          <!-- Zoom controls -->
+          <div class="zoom-controls">
+            <button id="zoom-in" aria-label="Zoom in">+</button>
+            <button id="zoom-out" aria-label="Zoom out">&minus;</button>
+            <button id="zoom-reset" aria-label="Reset view">↻</button>
+          </div>
+        </div>
       </div>
-    </div>
+    </section>
+
+    <section class="map-fallback section">
+      <div class="container container--wide fallback-grid">
+        <div id="scent-index" class="fallback-panel liquid-panel">
+          <span class="section-kicker">Scent scan</span>
+          <h2>Families in the map</h2>
+          <div class="fallback-list">
+            {familyNodes.map((family) => (
+              <button type="button" class="fallback-node" data-focus-node={family.id}>
+                <span class="chip" style={`--chip-color: ${family.familyColor};`}>{family.label}</span>
+              </button>
+            ))}
+          </div>
+        </div>
+        <div id="collector-notes" class="fallback-panel liquid-panel">
+          <span class="section-kicker">Collector notes</span>
+          <h2>Highlighted products</h2>
+          <div class="fallback-list fallback-list--stacked">
+            {[...highlightedProducts, ...nostalgiaNodes].slice(0, 8).map((product) => (
+              <button type="button" class="fallback-node fallback-node--product" data-focus-node={product.id}>
+                <strong>{product.label}</strong>
+                <span>{product.scent || product.productType || 'Product record'}</span>
+              </button>
+            ))}
+          </div>
+        </div>
+      </div>
+    </section>
 
     <!-- Detail panel -->
     <aside class="detail-panel" id="detail-panel" aria-label="Node details">
@@ -293,7 +358,7 @@ const graphDataJSON = JSON.stringify({ nodes, edges });
 
 <!-- Client-side graph -->
 <script>
-  import { forceSimulation, forceLink, forceManyBody, forceCenter, forceCollide, forceX, forceY } from 'd3-force';
+  import { forceSimulation, forceLink, forceManyBody, forceCenter, forceCollide, forceY } from 'd3-force';
   import { select } from 'd3-selection';
   import { zoom, zoomIdentity } from 'd3-zoom';
   import { drag } from 'd3-drag';
@@ -343,9 +408,9 @@ const graphDataJSON = JSON.stringify({ nodes, edges });
   glowMerge.append('feMergeNode').attr('in', 'SourceGraphic');
 
   // Zoom behavior
-  const zoomBehavior = zoom<SVGSVGElement, unknown>()
+  const zoomBehavior = zoom()
     .scaleExtent([0.25, 4])
-    .on('zoom', (event) => {
+    .on('zoom', (event: { transform: { toString(): string } }) => {
       mainGroup.attr('transform', event.transform.toString());
     });
   svg.call(zoomBehavior as any);
@@ -366,13 +431,13 @@ const graphDataJSON = JSON.stringify({ nodes, edges });
   }
 
   function getNodeFill(n: N): string {
-    if (n.type === 'box') return 'rgba(90, 138, 106, 0.25)';
+    if (n.type === 'box') return 'rgba(255, 255, 255, 0.14)';
     if (n.type === 'scent-family') return n.familyColor || '#c4a265';
-    return 'rgba(26, 32, 27, 0.85)';
+    return n.familyColor ? `${n.familyColor}33` : 'rgba(255, 255, 255, 0.12)';
   }
 
   function getNodeStroke(n: N): string {
-    if (n.type === 'box') return '#6faa80';
+    if (n.type === 'box') return '#f7f5ef';
     if (n.type === 'scent-family') return n.familyColor || '#c4a265';
     return n.familyColor || 'rgba(255, 255, 255, 0.15)';
   }
@@ -384,16 +449,16 @@ const graphDataJSON = JSON.stringify({ nodes, edges });
   }
 
   // ── Force simulation ──────────────────────────────────
-  const simulation = forceSimulation<N>(nodes)
-    .force('link', forceLink<N, E>(edges)
+  const simulation = forceSimulation(nodes)
+    .force('link', forceLink(edges)
       .id((d: any) => d.id)
       .distance((d: any) => d.type === 'contains' ? 90 : 140)
       .strength((d: any) => d.type === 'contains' ? 0.7 : 0.3)
     )
-    .force('charge', forceManyBody<N>().strength(-350))
+    .force('charge', forceManyBody().strength(-350))
     .force('center', forceCenter(width / 2, height / 2))
-    .force('collide', forceCollide<N>().radius((d: any) => getRadius(d) + 12))
-    .force('y', forceY<N>().y((d: any) => {
+    .force('collide', forceCollide().radius((d: any) => getRadius(d) + 12))
+    .force('y', forceY().y((d: any) => {
       if (d.type === 'box') return height * 0.38;
       if (d.type === 'scent-family') return height * 0.62;
       return height * 0.5;
@@ -401,19 +466,19 @@ const graphDataJSON = JSON.stringify({ nodes, edges });
     .alphaDecay(0.02);
 
   // ── Render edges ──────────────────────────────────────
-  const edgeElements = edgeLayer.selectAll<SVGLineElement, E>('line')
+  const edgeElements = edgeLayer.selectAll('line')
     .data(edges)
     .join('line')
     .attr('class', (d: E) => `edge edge--${d.type}`)
     .attr('stroke', (d: E) => {
-      if (d.type === 'contains') return 'rgba(111, 170, 128, 0.12)';
-      return 'rgba(255, 255, 255, 0.06)';
+      if (d.type === 'contains') return 'rgba(255, 255, 255, 0.11)';
+      return 'rgba(255, 141, 184, 0.12)';
     })
     .attr('stroke-width', (d: E) => d.type === 'contains' ? 1.2 : 0.8)
     .attr('stroke-dasharray', (d: E) => d.type === 'scent-family' ? '4,3' : 'none');
 
   // ── Render nodes ──────────────────────────────────────
-  const dragBehavior = drag<SVGGElement, N>()
+  const dragBehavior = drag()
     .on('start', (event: any, d: N) => {
       if (!event.active) simulation.alphaTarget(0.3).restart();
       d.fx = d.x;
@@ -429,7 +494,7 @@ const graphDataJSON = JSON.stringify({ nodes, edges });
       d.fy = null;
     });
 
-  const nodeGroups = nodeLayer.selectAll<SVGGElement, N>('g')
+  const nodeGroups = nodeLayer.selectAll('g')
     .data(nodes)
     .join('g')
     .attr('class', (d: N) => `node node--${d.type}`)
@@ -514,7 +579,7 @@ const graphDataJSON = JSON.stringify({ nodes, edges });
   }
 
   nodeGroups
-    .on('mouseenter', (event: any, d: N) => {
+    .on('mouseenter', (_event: MouseEvent, d: N) => {
       if (!selectedId) highlightNode(d.id);
       hoveredId = d.id;
     })
@@ -761,6 +826,14 @@ const graphDataJSON = JSON.stringify({ nodes, edges });
     }
   });
 
+  document.querySelectorAll<HTMLElement>('[data-focus-node]').forEach((button) => {
+    button.addEventListener('click', () => {
+      const node = nodes.find((n) => n.id === button.dataset.focusNode);
+      if (node) focusOnNode(node);
+      document.getElementById('relationship-map')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    });
+  });
+
   // Close search when clicking outside
   document.addEventListener('click', (e) => {
     if (!(e.target as HTMLElement).closest('.search-wrapper')) {
@@ -787,7 +860,7 @@ const graphDataJSON = JSON.stringify({ nodes, edges });
     height = container.clientHeight;
     svg.attr('width', width).attr('height', height);
     simulation.force('center', forceCenter(width / 2, height / 2));
-    simulation.force('y', forceY<N>().y((d: any) => {
+    simulation.force('y', forceY().y((d: any) => {
       if (d.type === 'box') return height * 0.38;
       if (d.type === 'scent-family') return height * 0.62;
       return height * 0.5;
@@ -1201,11 +1274,17 @@ const graphDataJSON = JSON.stringify({ nodes, edges });
     z-index: 50;
     overflow-y: auto;
     transform: translateX(100%);
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
     transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1);
   }
 
   .detail-panel.open {
     transform: translateX(0);
+    opacity: 1;
+    visibility: visible;
+    pointer-events: auto;
   }
 
   .panel-close {
@@ -1451,6 +1530,347 @@ const graphDataJSON = JSON.stringify({ nodes, edges });
 
     .detail-panel.open {
       transform: translateY(0);
+    }
+  }
+
+  /* Liquid Archive Phase 2 overrides */
+  .explore-page {
+    min-height: 100vh;
+    padding-top: 0;
+  }
+
+  .explore-hero {
+    position: relative;
+    min-height: 62svh;
+    display: flex;
+    align-items: end;
+    padding: 8rem 0 var(--space-3xl);
+    overflow: hidden;
+  }
+
+  .explore-hero::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background:
+      radial-gradient(circle at 20% 18%, rgba(131, 217, 255, 0.2), transparent 28rem),
+      radial-gradient(circle at 80% 18%, rgba(255, 141, 184, 0.18), transparent 27rem),
+      radial-gradient(circle at 52% 80%, rgba(255, 230, 111, 0.09), transparent 24rem),
+      conic-gradient(from 120deg at 52% 44%, transparent 0deg, rgba(169, 140, 255, 0.1) 52deg, transparent 116deg),
+      linear-gradient(180deg, rgba(255,255,255,0.04), transparent 74%);
+    pointer-events: none;
+  }
+
+  .explore-hero-inner {
+    position: relative;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 380px;
+    gap: var(--space-2xl);
+    align-items: end;
+  }
+
+  .explore-hero h1 {
+    max-width: 980px;
+    margin: var(--space-sm) 0 var(--space-lg);
+    font-size: clamp(3.25rem, 8vw, 7.75rem);
+  }
+
+  .map-stats {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: var(--space-sm);
+    border-radius: var(--radius-2xl);
+    padding: var(--space-lg);
+  }
+
+  .map-stats div {
+    padding: var(--space-md);
+    border-radius: var(--radius-lg);
+    background: rgba(255,255,255,0.055);
+  }
+
+  .map-stats strong {
+    display: block;
+    font-size: 1.65rem;
+  }
+
+  .map-stats span {
+    color: var(--color-text-muted);
+    font-size: 0.68rem;
+    font-weight: 900;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+
+  .guided-discovery {
+    padding: 0 0 var(--space-2xl);
+  }
+
+  .guided-grid,
+  .fallback-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: var(--space-lg);
+  }
+
+  .guide-card {
+    border-radius: var(--radius-2xl);
+    padding: var(--space-lg);
+    overflow: hidden;
+    transition: transform 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+  }
+
+  .guide-card::after {
+    content: '';
+    position: absolute;
+    inset: auto -24% -48% 20%;
+    height: 72%;
+    border-radius: 50%;
+    background: radial-gradient(ellipse, rgba(255, 141, 184, 0.12), transparent 70%);
+    filter: blur(22px);
+    pointer-events: none;
+  }
+
+  .guide-card:hover {
+    transform: translateY(-4px);
+    border-color: var(--glass-border-hover);
+    box-shadow: var(--shadow-lg);
+  }
+
+  .guide-card strong {
+    display: block;
+    margin: var(--space-md) 0 var(--space-sm);
+    font-size: 1.25rem;
+    color: var(--color-white);
+  }
+
+  .guide-card p,
+  .fallback-panel p {
+    color: var(--color-text-secondary);
+    font-size: 0.92rem;
+  }
+
+  .explore-controls {
+    top: 5.8rem;
+    z-index: 12;
+    padding: var(--space-md) 0;
+    border: 0;
+    background: transparent;
+  }
+
+  .explore-controls-inner {
+    padding: var(--space-sm);
+    border: 1px solid var(--glass-border);
+    border-radius: var(--radius-2xl);
+    background: rgba(8, 11, 14, 0.7);
+    box-shadow: var(--glass-shadow);
+    backdrop-filter: blur(24px);
+    -webkit-backdrop-filter: blur(24px);
+  }
+
+  .filter-group {
+    border-radius: var(--radius-full);
+    background: rgba(255,255,255,0.055);
+    padding: 0.25rem;
+  }
+
+  .filter-btn {
+    min-height: 2.6rem;
+    border-radius: var(--radius-full);
+    border: 0;
+    color: var(--color-text-secondary);
+    font-weight: 900;
+  }
+
+  .filter-btn.active {
+    background: rgba(247,245,239,0.94);
+    color: #050608;
+  }
+
+  .search-input {
+    min-height: 3rem;
+    border: 1px solid rgba(255,255,255,0.11);
+    border-radius: var(--radius-full);
+    background: rgba(255,255,255,0.065);
+    color: var(--color-white);
+  }
+
+  .graph-shell {
+    padding: 0 0 var(--space-4xl);
+  }
+
+  .explore-graph {
+    height: min(72svh, 780px);
+    border-radius: var(--radius-2xl);
+    overflow: hidden;
+    border: 1px solid var(--glass-border);
+    background:
+      radial-gradient(circle at 25% 20%, rgba(131, 217, 255, 0.12), transparent 32rem),
+      radial-gradient(circle at 75% 70%, rgba(255, 141, 184, 0.12), transparent 30rem),
+      radial-gradient(circle at 55% 45%, rgba(255, 230, 111, 0.06), transparent 26rem),
+      rgba(255,255,255,0.035);
+    box-shadow: var(--glass-shadow), inset 0 0 0 1px rgba(255,255,255,0.035);
+  }
+
+  .explore-graph::before {
+    content: '';
+    position: absolute;
+    inset: -20% -10%;
+    pointer-events: none;
+    opacity: 0.36;
+    background:
+      conic-gradient(from 120deg at 24% 40%, transparent, rgba(255, 141, 184, 0.24), transparent 32%),
+      conic-gradient(from -20deg at 80% 18%, transparent, rgba(131, 217, 255, 0.2), transparent 35%);
+    filter: blur(34px);
+  }
+
+  .graph-legend,
+  .zoom-controls {
+    border: 1px solid var(--glass-border);
+    border-radius: var(--radius-xl);
+    background:
+      linear-gradient(135deg, rgba(255, 141, 184, 0.07), transparent 42%),
+      rgba(8, 11, 14, 0.72);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+  }
+
+  .zoom-controls button {
+    color: var(--color-white);
+    background: transparent;
+  }
+
+  .node circle {
+    filter: drop-shadow(0 0 14px rgba(255, 141, 184, 0.16));
+    transition: r 0.24s ease, filter 0.24s ease, opacity 0.24s ease;
+  }
+
+  .node.highlighted circle {
+    filter: drop-shadow(0 0 30px rgba(255, 230, 111, 0.34));
+  }
+
+  .edge.highlighted {
+    stroke: rgba(255, 230, 111, 0.58) !important;
+    stroke-width: 2 !important;
+    stroke-dasharray: 7 5;
+    animation: relationship-flow 1.8s linear infinite;
+  }
+
+  @keyframes relationship-flow {
+    to { stroke-dashoffset: -24; }
+  }
+
+  .map-fallback {
+    padding-top: 0;
+  }
+
+  .fallback-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .fallback-panel {
+    border-radius: var(--radius-2xl);
+    padding: var(--space-xl);
+  }
+
+  .fallback-panel h2 {
+    margin: var(--space-sm) 0 var(--space-lg);
+    font-size: clamp(2rem, 4vw, 3.4rem);
+  }
+
+  .fallback-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.6rem;
+  }
+
+  .fallback-list--stacked {
+    display: grid;
+  }
+
+  .fallback-node {
+    text-align: left;
+    border: 0;
+    background: transparent;
+    color: inherit;
+    cursor: pointer;
+  }
+
+  .fallback-node--product {
+    display: grid;
+    gap: 0.25rem;
+    padding: var(--space-md);
+    border: 1px solid rgba(255,255,255,0.09);
+    border-radius: var(--radius-lg);
+    background: rgba(255,255,255,0.055);
+  }
+
+  .fallback-node--product span {
+    color: var(--color-text-muted);
+    font-size: 0.82rem;
+  }
+
+  .detail-panel {
+    top: 0;
+    right: 0;
+    width: min(420px, 100vw);
+    padding-top: 6.5rem;
+    border-left: 1px solid var(--glass-border);
+    background: rgba(8, 11, 14, 0.82);
+    backdrop-filter: blur(28px) saturate(1.2);
+    -webkit-backdrop-filter: blur(28px) saturate(1.2);
+  }
+
+  .panel-close {
+    top: 5.9rem;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.08);
+    color: var(--color-white);
+  }
+
+  :global(.panel-title) {
+    font-size: 2rem;
+  }
+
+  @media (max-width: 980px) {
+    .explore-hero-inner,
+    .guided-grid,
+    .fallback-grid {
+      grid-template-columns: 1fr;
+    }
+
+    .explore-controls {
+      position: relative;
+      top: auto;
+    }
+  }
+
+  @media (max-width: 768px) {
+    .explore-hero {
+      min-height: auto;
+      padding: 7rem 0 var(--space-3xl);
+    }
+
+    .explore-hero h1 {
+      font-size: clamp(3rem, 16vw, 4.8rem);
+    }
+
+    .map-stats {
+      grid-template-columns: 1fr;
+    }
+
+    .explore-graph {
+      height: 470px;
+      border-radius: var(--radius-xl);
+    }
+
+    .detail-panel {
+      padding-top: var(--space-xl);
+      border-radius: var(--radius-2xl) var(--radius-2xl) 0 0;
+    }
+
+    .panel-close {
+      top: var(--space-md);
     }
   }
 </style>

@@ -1,8 +1,8 @@
 ---
 import { getAllBoxes } from '@/lib/content';
 import BaseLayout from '@/layouts/BaseLayout.astro';
-import BoxCarousel from '@/components/BoxCarousel.astro';
-import ScentProfile from '@/components/ScentProfile.astro';
+import BoxCard from '@/components/BoxCard.astro';
+import ProductList from '@/components/ProductList.astro';
 import CTABlock from '@/components/CTABlock.astro';
 
 const allBoxes = (await getAllBoxes())
@@ -14,406 +14,511 @@ const allBoxes = (await getAllBoxes())
   });
 
 const latestBox = allBoxes[0];
-
-// Grab up to 5 products from the latest box for floating pills
-const heroProducts = latestBox?.data.products?.slice(0, 5) ?? [];
-// Use group shot first, fall back to hero image
+const previousBoxes = allBoxes.slice(1, 4);
+const allProducts = allBoxes.flatMap((box) => box.data.products ?? []);
+const uniqueProductNames = new Set(allProducts.map((product) => product.name));
+const scentNotes = [...new Set(allProducts.flatMap((product) => product.scent?.split(',').map((note) => note.trim()).filter(Boolean) ?? []))];
+const featuredProducts = latestBox?.data.products?.filter((product) => product.highlight).slice(0, 4)
+  ?? latestBox?.data.products?.slice(0, 4)
+  ?? [];
 const heroImage = latestBox?.data.groupShot || latestBox?.data.heroImage;
-// Split title for word-by-word reveal
-const heroTitle = 'Inside the Lush Kitchen Box';
-const heroWords = heroTitle.split(' ');
+const heroScentCards = (latestBox?.data.products ?? []).slice(0, 5);
 ---
 
 <BaseLayout title="Home">
-  <!-- ================================
-       Home Hero — image-driven, playful
-       ================================ -->
-  <section class="home-hero">
-    <!-- Background image -->
-    <div class="home-hero-bg">
-      {heroImage ? (
-        <img src={heroImage} alt={latestBox?.data.title ?? 'Lush Kitchen box contents'} class="home-hero-image" />
-      ) : (
-        <div class="home-hero-fallback"></div>
-      )}
-      <div class="home-hero-gradient"></div>
+  <section class="liquid-hero">
+    <div class="hero-media" aria-hidden="true">
+      {heroImage ? <img src={heroImage} alt="" /> : <div class="hero-media-fallback"></div>}
     </div>
+    <div class="hero-shade"></div>
+    <div class="scent-mist hero-mist hero-mist--rose" aria-hidden="true"></div>
+    <div class="painted-aura hero-stroke" aria-hidden="true"></div>
 
-    <!-- Floating product pills -->
-    {heroProducts.length > 0 && (
-      <div class="home-hero-floats" aria-hidden="true">
-        {heroProducts.map((p, i) => (
-          <span class="float-pill" data-float={i}>{p.name}</span>
-        ))}
+    <div class="container container--wide liquid-hero-inner">
+      <div class="hero-copy" data-animate="fade-up">
+        <span class="eyebrow">Independent scent atelier</span>
+        <h1>Kitchen history, bottled as light.</h1>
+        <p class="lede">
+          A cinematic archive of Lush Kitchen boxes, limited-run products, scent families and nostalgic community favourites.
+        </p>
+        <div class="hero-actions">
+          {latestBox && <a href={`/kitchen-boxes/${latestBox.id}/`} class="btn btn--primary">Open latest box</a>}
+          <a href="/kitchen-boxes/" class="btn btn--secondary">Browse the archive</a>
+        </div>
       </div>
-    )}
 
-    <!-- Content overlay -->
-    <div class="container home-hero-content">
-      <span class="home-hero-tag">Fan Archive</span>
-      <h1 class="home-hero-title">
-        {heroWords.map((word) => (
-          <span class="hw-mask"><span class="hw">{word}&nbsp;</span></span>
-        ))}
-      </h1>
-      <p class="home-hero-subtitle">
-        Unboxings, product highlights, and nostalgic Lush favourites since 2022.
-      </p>
-      <div class="home-hero-actions">
+      <aside class="hero-orbital liquid-panel" data-animate="fade-in" aria-label="Archive snapshot">
+        <span class="panel-label">Archive signal</span>
+        <div class="hero-stat-grid">
+          <div>
+            <strong>{allBoxes.length}</strong>
+            <span>Boxes</span>
+          </div>
+          <div>
+            <strong>{uniqueProductNames.size}</strong>
+            <span>Products</span>
+          </div>
+          <div>
+            <strong>{scentNotes.length}</strong>
+            <span>Scent notes</span>
+          </div>
+        </div>
         {latestBox && (
-          <a href={`/kitchen-boxes/${latestBox.id}/`} class="btn btn--primary">Latest Box</a>
+          <a href={`/kitchen-boxes/${latestBox.id}/`} class="latest-mini">
+            <span>Latest record</span>
+            <strong>{latestBox.data.month} {latestBox.data.year}</strong>
+          </a>
         )}
-        <a href="/kitchen-boxes/" class="btn btn--secondary">Browse Archive</a>
+      </aside>
+
+      <div class="hero-scent-stack" aria-label="Featured scent cards" data-animate="stagger-children" data-stagger="0.08">
+        {heroScentCards.map((product, index) => (
+          <a
+            href={latestBox ? `/kitchen-boxes/${latestBox.id}/#products` : '/kitchen-boxes/'}
+            class={`floating-scent-card floating-scent-card--${index + 1}`}
+            style={`--card-accent: ${index % 5 === 0 ? 'var(--scent-rose)' : index % 5 === 1 ? 'var(--scent-citrus)' : index % 5 === 2 ? 'var(--scent-mint)' : index % 5 === 3 ? 'var(--scent-violet)' : 'var(--scent-amber)'}`}
+          >
+            <span>{product.type || 'Archive object'}</span>
+            <strong>{product.name}</strong>
+            {product.scent && <small>{product.scent}</small>}
+          </a>
+        ))}
       </div>
     </div>
   </section>
 
-  <!-- Latest Kitchen Box — Scroll Scene -->
   {latestBox && (
-    <section class="latest-box-scene section--alt" data-glow="green">
-      <div class="container">
-        <div class="latest-scene-stage">
-          <div class="latest-scene-image">
-            {latestBox.data.heroImage ? (
-              <img src={latestBox.data.heroImage} alt={latestBox.data.title} />
-            ) : (
-              <div class="latest-scene-placeholder">
-                <span>{latestBox.data.month} '{String(latestBox.data.year).slice(2)}</span>
-              </div>
-            )}
-            <div class="latest-scene-overlay">
-              <span class="latest-scene-label">Latest Box</span>
-              <h3>{latestBox.data.title}</h3>
-              <span class="latest-scene-date">{latestBox.data.month} {latestBox.data.year}</span>
-            </div>
-          </div>
-
-          <p class="latest-scene-summary">{latestBox.data.summary}</p>
-
-          {latestBox.data.products && latestBox.data.products.length > 0 && (
-            <div class="latest-scene-products">
-              {latestBox.data.products.slice(0, 5).map((p) => (
-                <div class="scene-product">
-                  <span class="scene-product-name">{p.name}</span>
-                  {p.scent && <span class="scene-product-scent">{p.scent}</span>}
-                </div>
-              ))}
-            </div>
-          )}
-
-          <a href={`/kitchen-boxes/${latestBox.id}/`} class="btn btn--primary latest-scene-cta">
-            View full box details →
-          </a>
+    <section class="featured-record section">
+      <div class="container container--wide">
+        <div class="section-header" data-animate="fade-up">
+          <span class="section-kicker">Latest box</span>
+          <h2>{latestBox.data.month} {latestBox.data.year}</h2>
+          <p>{latestBox.data.summary}</p>
         </div>
+
+        <BoxCard
+          title={latestBox.data.title}
+          slug={latestBox.id}
+          month={latestBox.data.month}
+          year={latestBox.data.year}
+          summary={latestBox.data.summary}
+          heroImage={latestBox.data.heroImage}
+          productCount={latestBox.data.products?.length}
+          products={latestBox.data.products}
+          featured
+        />
       </div>
     </section>
   )}
 
-  <!-- Scent Profile -->
-  {latestBox?.data.products && latestBox.data.products.length > 0 && (
-    <ScentProfile
-      products={latestBox.data.products}
-      month={latestBox.data.month}
-      year={latestBox.data.year}
-    />
+  {featuredProducts.length > 0 && (
+    <section class="section product-story-section">
+      <div class="container">
+        <div class="split-heading" data-animate="fade-up">
+          <span class="section-kicker">Product field notes</span>
+          <h2>Objects, scents and tiny time capsules.</h2>
+          <p>
+            Each monthly box is treated as a record: what arrived, what it smelled like, and why it matters to collectors.
+          </p>
+        </div>
+        <ProductList products={featuredProducts} />
+      </div>
+    </section>
   )}
 
-  <!-- Box Carousel -->
-  {allBoxes.length > 0 && (
-    <BoxCarousel
-      boxes={allBoxes.map((box) => ({
-        title: box.data.title,
-        slug: box.id,
-        month: box.data.month,
-        year: box.data.year,
-        summary: box.data.summary,
-        heroImage: box.data.heroImage,
-        productCount: box.data.products?.length,
-      }))}
-    />
-  )}
+  <section class="section archive-lanes">
+    <div class="container container--wide">
+      <div class="section-header section-header--row" data-animate="fade-up">
+        <div>
+          <span class="section-kicker">Timeline</span>
+          <h2>Recent archive records</h2>
+        </div>
+        <a href="/kitchen-boxes/" class="btn btn--secondary">View full timeline</a>
+      </div>
 
-  <!-- TikTok CTA -->
+      <div class="archive-lane-grid" data-animate="stagger-children" data-stagger="0.1">
+        {previousBoxes.map((box) => (
+          <BoxCard
+            title={box.data.title}
+            slug={box.id}
+            month={box.data.month}
+            year={box.data.year}
+            summary={box.data.summary}
+            heroImage={box.data.heroImage}
+            productCount={box.data.products?.length}
+            products={box.data.products}
+          />
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section class="section discovery-section">
+    <div class="container">
+      <div class="discovery-panel liquid-panel" data-animate="scale-up">
+        <span class="section-kicker">Explore by relationship</span>
+        <h2>Follow the scent trail.</h2>
+        <p>
+          Move beyond chronology: trace products to boxes, boxes to scent families, and returning favourites to community nostalgia.
+        </p>
+        <div class="discovery-actions">
+          <a href="/explore/" class="btn btn--primary">Open visual map</a>
+          <a href="/products/" class="btn btn--secondary">Browse products</a>
+        </div>
+        <div class="scent-ribbon" aria-label="Example scent notes">
+          {scentNotes.slice(0, 10).map((note, index) => (
+            <span class="chip" style={`--chip-color: ${index % 3 === 0 ? 'var(--color-pink)' : index % 3 === 1 ? 'var(--color-blue)' : 'var(--color-gold)'}`}>{note}</span>
+          ))}
+        </div>
+      </div>
+    </div>
+  </section>
+
   <CTABlock
-    title="Watch on TikTok"
-    description="Monthly unboxings, bath demos, and first impressions from @lushiesam."
+    title="Watch the archive unfold"
+    description="Monthly unboxings, bath demos, product close-ups and community-first Lush Kitchen notes from @lushiesam."
     primaryLink="https://www.tiktok.com/@lushiesam"
     primaryLabel="Follow @lushiesam"
     secondaryLink="/kitchen-boxes/"
-    secondaryLabel="Browse the Archive"
+    secondaryLabel="Browse boxes"
   />
 </BaseLayout>
 
 <style>
-  /* ========================================
-     Home Hero — visual, playful, sensory
-     ======================================== */
-  .home-hero {
+  .liquid-hero {
     position: relative;
-    min-height: 92vh;
+    min-height: 100svh;
     display: flex;
     align-items: flex-end;
     overflow: hidden;
+    padding: 7rem 0 var(--space-3xl);
   }
 
-  /* Background image layer */
-  .home-hero-bg {
+  .hero-media,
+  .hero-shade {
     position: absolute;
     inset: 0;
-    z-index: 0;
   }
 
-  .home-hero-image {
+  .hero-media img,
+  .hero-media-fallback {
     width: 100%;
     height: 100%;
     object-fit: cover;
-    object-position: center 40%;
+    transform: scale(1.04);
   }
 
-  .home-hero-fallback {
-    width: 100%;
-    height: 100%;
+  .hero-media-fallback {
     background: var(--gradient-hero);
   }
 
-  .home-hero-gradient {
-    position: absolute;
-    inset: 0;
+  .hero-shade {
     background:
-      linear-gradient(180deg, rgba(14, 17, 15, 0.25) 0%, rgba(14, 17, 15, 0.1) 30%, rgba(14, 17, 15, 0.6) 65%, rgba(14, 17, 15, 0.95) 100%),
-      linear-gradient(90deg, rgba(14, 17, 15, 0.5) 0%, transparent 60%);
+      linear-gradient(180deg, rgba(5, 6, 8, 0.02) 0%, rgba(5, 6, 8, 0.16) 34%, rgba(5, 6, 8, 0.94) 100%),
+      radial-gradient(circle at 18% 34%, rgba(255, 141, 184, 0.24), transparent 28rem),
+      radial-gradient(circle at 82% 22%, rgba(169, 140, 255, 0.2), transparent 24rem),
+      radial-gradient(circle at 58% 76%, rgba(255, 230, 111, 0.12), transparent 24rem);
   }
 
-  /* Content overlay */
-  .home-hero-content {
-    position: relative;
-    z-index: 2;
-    padding-bottom: var(--space-4xl);
-    max-width: 640px;
-  }
-
-  .home-hero-tag {
-    display: inline-block;
-    font-family: var(--font-body);
-    font-size: 0.6875rem;
-    font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: 0.12em;
-    color: var(--color-green-bright);
-    margin-bottom: var(--space-md);
-    padding: 0.25rem 0.65rem;
-    background: rgba(90, 138, 106, 0.15);
-    border: 1px solid rgba(90, 138, 106, 0.25);
-    border-radius: var(--radius-full);
-  }
-
-  .home-hero-title {
-    font-family: var(--font-display);
-    font-size: clamp(2.5rem, 6vw, 4rem);
-    font-weight: 400;
-    line-height: 1.1;
-    color: var(--color-white);
-    margin-bottom: var(--space-lg);
-  }
-
-  .hw-mask {
-    display: inline-block;
-    overflow: hidden;
-    vertical-align: bottom;
-  }
-
-  .hw {
-    display: inline-block;
-  }
-
-  .home-hero-subtitle {
-    font-size: clamp(1rem, 2vw, 1.125rem);
-    color: var(--color-text-secondary);
-    line-height: 1.7;
-    max-width: 480px;
-    margin-bottom: var(--space-xl);
-  }
-
-  .home-hero-actions {
-    display: flex;
-    gap: var(--space-md);
-    flex-wrap: wrap;
-  }
-
-  /* Floating product pills */
-  .home-hero-floats {
-    position: absolute;
-    inset: 0;
+  .hero-mist {
     z-index: 1;
+    right: 8vw;
+    top: 18vh;
+    animation: atelier-drift 18s ease-in-out infinite alternate;
+  }
+
+  .hero-stroke {
+    z-index: 1;
+    left: 8vw;
+    bottom: 18vh;
+    animation: atelier-stroke 14s ease-in-out infinite alternate;
+  }
+
+  .liquid-hero-inner {
+    position: relative;
+    z-index: 1;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 380px;
+    gap: var(--space-2xl);
+    align-items: end;
+  }
+
+  .hero-copy {
+    max-width: 880px;
+  }
+
+  .hero-copy h1 {
+    max-width: 950px;
+    margin: var(--space-md) 0 var(--space-lg);
+    letter-spacing: -0.02em;
+  }
+
+  .hero-actions,
+  .discovery-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-md);
+    margin-top: var(--space-xl);
+  }
+
+  .hero-orbital {
+    border-radius: var(--radius-2xl);
+    padding: var(--space-lg);
+    align-self: end;
+  }
+
+  .hero-scent-stack {
+    position: absolute;
+    right: clamp(1rem, 7vw, 6rem);
+    top: 18%;
+    z-index: 2;
+    width: min(28vw, 360px);
+    min-width: 280px;
     pointer-events: none;
   }
 
-  .float-pill {
+  .floating-scent-card {
     position: absolute;
-    padding: 0.35rem 0.85rem;
-    border-radius: var(--radius-full);
-    font-family: var(--font-body);
-    font-size: 0.75rem;
-    font-weight: 500;
+    display: grid;
+    gap: 0.3rem;
+    width: min(260px, 72vw);
+    padding: 0.9rem 1rem;
+    border: 1px solid color-mix(in srgb, var(--card-accent) 30%, white 0%);
+    border-radius: 1.25rem;
     color: var(--color-white);
-    background: rgba(26, 32, 27, 0.55);
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    white-space: nowrap;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+    background:
+      linear-gradient(135deg, color-mix(in srgb, var(--card-accent) 24%, transparent), rgba(255, 255, 255, 0.055)),
+      rgba(8, 11, 14, 0.52);
+    box-shadow: 0 20px 64px rgba(0, 0, 0, 0.36), 0 0 42px color-mix(in srgb, var(--card-accent) 20%, transparent);
+    backdrop-filter: blur(22px) saturate(1.24);
+    -webkit-backdrop-filter: blur(22px) saturate(1.24);
+    pointer-events: auto;
+    transform: translate3d(0, 0, 0) rotate(var(--tilt, -3deg));
+    transition: transform 0.35s ease, box-shadow 0.35s ease;
+    animation: atelier-float 9s ease-in-out infinite alternate;
   }
 
-  /* Scatter positions — right side and top of hero */
-  .float-pill[data-float="0"] { top: 20%; right: 10%; }
-  .float-pill[data-float="1"] { top: 38%; right: 5%; }
-  .float-pill[data-float="2"] { top: 55%; right: 14%; }
-  .float-pill[data-float="3"] { top: 15%; right: 30%; }
-  .float-pill[data-float="4"] { top: 42%; right: 25%; }
-
-  /* ========================================
-     Latest Box Scene
-     ======================================== */
-  .latest-box-scene {
-    position: relative;
-    overflow: visible;
-    padding: var(--space-3xl) 0;
+  .floating-scent-card:hover {
+    transform: translateY(-8px) rotate(0deg) scale(1.02);
+    box-shadow: 0 24px 80px rgba(0, 0, 0, 0.38), 0 0 46px color-mix(in srgb, var(--card-accent) 24%, transparent);
   }
 
-  .latest-scene-stage {
+  .floating-scent-card span,
+  .floating-scent-card small {
+    color: var(--color-text-muted);
+    font-size: 0.68rem;
+    font-weight: 900;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+
+  .floating-scent-card strong {
+    font-size: 1rem;
+    line-height: 1.1;
+  }
+
+  .floating-scent-card--1 { top: 0; right: 1rem; --tilt: -4deg; }
+  .floating-scent-card--2 { top: 6.4rem; right: 6rem; --tilt: 3deg; animation-delay: -1s; }
+  .floating-scent-card--3 { top: 12.8rem; right: 0; --tilt: -2deg; animation-delay: -2s; }
+  .floating-scent-card--4 { top: 19.2rem; right: 5rem; --tilt: 4deg; animation-delay: -3s; }
+  .floating-scent-card--5 { top: 25.6rem; right: 1.5rem; --tilt: -3deg; animation-delay: -4s; }
+
+  .panel-label {
+    display: block;
+    margin-bottom: var(--space-md);
+    color: var(--color-text-muted);
+    font-size: 0.72rem;
+    font-weight: 900;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+  }
+
+  .hero-stat-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: var(--space-sm);
+  }
+
+  .hero-stat-grid div {
+    padding: var(--space-md);
+    border: 1px solid rgba(255, 255, 255, 0.09);
+    border-radius: var(--radius-lg);
+    background: rgba(255, 255, 255, 0.055);
+  }
+
+  .hero-stat-grid strong {
+    display: block;
+    font-size: 1.8rem;
+    line-height: 1;
+    color: var(--color-white);
+  }
+
+  .hero-stat-grid span,
+  .latest-mini span {
+    display: block;
+    margin-top: 0.35rem;
+    color: var(--color-text-muted);
+    font-size: 0.7rem;
+    font-weight: 800;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  .latest-mini {
+    display: block;
+    margin-top: var(--space-md);
+    padding: var(--space-md);
+    border-radius: var(--radius-lg);
+    background: rgba(184, 255, 208, 0.1);
+    border: 1px solid rgba(184, 255, 208, 0.18);
+  }
+
+  .latest-mini strong {
+    display: block;
+    margin-top: 0.25rem;
+    font-size: 1.15rem;
+  }
+
+  .section-header {
+    max-width: 820px;
+    margin-bottom: var(--space-2xl);
+  }
+
+  .section-header h2,
+  .split-heading h2,
+  .discovery-panel h2 {
+    margin: var(--space-sm) 0 var(--space-md);
+  }
+
+  .section-header p,
+  .split-heading p,
+  .discovery-panel p {
+    color: var(--color-text-secondary);
+    font-size: 1.05rem;
+    line-height: 1.8;
+  }
+
+  .section-header--row {
+    max-width: none;
     display: flex;
-    flex-direction: column;
+    align-items: end;
+    justify-content: space-between;
     gap: var(--space-xl);
   }
 
-  .latest-scene-image {
-    position: relative;
-    border-radius: var(--radius-lg);
+  .split-heading {
+    display: grid;
+    grid-template-columns: minmax(0, 0.9fr) minmax(280px, 0.7fr);
+    gap: var(--space-2xl);
+    align-items: end;
+    margin-bottom: var(--space-2xl);
+  }
+
+  .split-heading .section-kicker {
+    grid-column: 1 / -1;
+  }
+
+  .archive-lane-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: var(--space-lg);
+  }
+
+  .discovery-panel {
+    border-radius: var(--radius-2xl);
+    padding: clamp(1.5rem, 5vw, 4rem);
     overflow: hidden;
-    aspect-ratio: 16 / 9;
-    background: var(--color-surface);
-    box-shadow: var(--glass-shadow);
   }
 
-  .latest-scene-image img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-  }
-
-  .latest-scene-overlay {
+  .discovery-panel::after {
+    content: '';
     position: absolute;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    padding: var(--space-2xl);
-    background: linear-gradient(transparent 0%, rgba(14, 17, 15, 0.85) 100%);
+    width: 38rem;
+    height: 38rem;
+    right: -14rem;
+    top: -12rem;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(154, 215, 255, 0.16), transparent 68%);
+    pointer-events: none;
   }
 
-  .latest-scene-label {
-    font-size: 0.6875rem;
-    font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: 0.12em;
-    color: var(--color-green-bright);
-    display: block;
-    margin-bottom: var(--space-xs);
+  @keyframes atelier-float {
+    from { translate: 0 0; }
+    to { translate: 0 -14px; }
   }
 
-  .latest-scene-overlay h3 {
-    font-size: clamp(1.5rem, 3vw, 2rem);
-    color: var(--color-white);
-    margin-bottom: var(--space-xs);
+  @keyframes atelier-drift {
+    from { transform: translate3d(0, 0, 0) rotate(-8deg) scale(1); }
+    to { transform: translate3d(-34px, 24px, 0) rotate(6deg) scale(1.08); }
   }
 
-  .latest-scene-date {
-    font-size: 0.75rem;
-    color: var(--color-text-muted);
-    text-transform: uppercase;
-    letter-spacing: 0.08em;
+  @keyframes atelier-stroke {
+    from { transform: rotate(-10deg) translateX(0); opacity: 0.42; }
+    to { transform: rotate(-2deg) translateX(42px); opacity: 0.68; }
   }
 
-  .latest-scene-summary {
-    color: var(--color-text-secondary);
-    font-size: 1rem;
-    line-height: 1.7;
-    max-width: 600px;
-  }
-
-  .latest-scene-products {
+  .scent-ribbon {
+    position: relative;
+    z-index: 1;
     display: flex;
-    flex-direction: column;
-    gap: 1px;
-    background: var(--glass-border);
-    border-radius: var(--radius-lg);
-    overflow: hidden;
+    flex-wrap: wrap;
+    gap: 0.55rem;
+    margin-top: var(--space-2xl);
   }
 
-  .scene-product {
-    display: flex;
-    align-items: baseline;
-    gap: var(--space-md);
-    padding: var(--space-md) var(--space-lg);
-    background: var(--glass-bg);
-    backdrop-filter: blur(var(--glass-blur));
-    -webkit-backdrop-filter: blur(var(--glass-blur));
-  }
-
-  .scene-product-name {
-    font-family: var(--font-display);
-    font-size: 1rem;
-    color: var(--color-text-heading);
-  }
-
-  .scene-product-scent {
-    font-size: 0.8125rem;
-    color: var(--color-text-muted);
-    font-style: italic;
-  }
-
-  .latest-scene-cta {
-    align-self: flex-start;
-  }
-
-  .latest-scene-placeholder {
-    width: 100%;
-    height: 100%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-family: var(--font-display);
-    font-size: 2rem;
-    color: var(--color-text-muted);
-    background: var(--gradient-warm);
-  }
-
-  /* ========================================
-     Responsive
-     ======================================== */
-  @media (max-width: 768px) {
-    .home-hero {
-      min-height: 80vh;
+  @media (max-width: 980px) {
+    .liquid-hero-inner,
+    .split-heading,
+    .archive-lane-grid {
+      grid-template-columns: 1fr;
     }
 
-    .home-hero-content {
-      padding-bottom: var(--space-2xl);
+    .hero-orbital {
+      max-width: 520px;
     }
 
-    .home-hero-floats {
+    .hero-scent-stack {
+      position: relative;
+      inset: auto;
+      width: 100%;
+      min-width: 0;
+      display: grid;
+      gap: var(--space-sm);
+      grid-column: 1;
+      pointer-events: auto;
+    }
+
+    .floating-scent-card {
+      position: relative;
+      top: auto;
+      right: auto;
+      width: 100%;
+      animation: none;
+      transform: none;
+    }
+
+    .floating-scent-card:nth-child(n+4) {
       display: none;
     }
 
-    .latest-box-scene {
-      padding: var(--space-2xl) 0;
-    }
-
-    .latest-scene-image {
-      aspect-ratio: 4 / 3;
-    }
-
-    .scene-product {
+    .section-header--row {
+      align-items: stretch;
       flex-direction: column;
-      gap: var(--space-xs);
+    }
+  }
+
+  @media (max-width: 640px) {
+    .liquid-hero {
+      min-height: 92svh;
+      padding-top: 6.2rem;
+    }
+
+    .hero-copy h1 {
+      font-size: clamp(3rem, 17vw, 4.6rem);
+    }
+
+    .hero-stat-grid {
+      grid-template-columns: 1fr;
     }
   }
 </style>

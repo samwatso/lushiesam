@@ -1,7 +1,6 @@
 ---
 import { getAllBoxes } from '@/lib/content';
 import BaseLayout from '@/layouts/BaseLayout.astro';
-import Hero from '@/components/Hero.astro';
 import BoxCard from '@/components/BoxCard.astro';
 
 const allBoxes = (await getAllBoxes())
@@ -12,7 +11,6 @@ const allBoxes = (await getAllBoxes())
     return dateB - dateA;
   });
 
-// Group by year
 const boxesByYear = allBoxes.reduce<Record<number, typeof allBoxes>>((acc, box) => {
   const year = box.data.year;
   if (!acc[year]) acc[year] = [];
@@ -21,64 +19,492 @@ const boxesByYear = allBoxes.reduce<Record<number, typeof allBoxes>>((acc, box) 
 }, {});
 
 const years = Object.keys(boxesByYear).map(Number).sort((a, b) => b - a);
+const productTypes = [...new Set(allBoxes.flatMap((box) => box.data.products?.map((product) => product.type).filter(Boolean) ?? []))].slice(0, 8);
+const scentNotes = [...new Set(allBoxes.flatMap((box) => box.data.products?.flatMap((product) => product.scent?.split(',').map((note) => note.trim()).filter(Boolean) ?? []) ?? []))].slice(0, 10);
+
+const familyKeywords: Record<string, string[]> = {
+  floral: ['flower', 'floral', 'rose', 'jasmine', 'violet', 'garden', 'bloom', 'petal', 'tuca tuca', 'cottongrass'],
+  fresh: ['grass', 'lavender', 'mint', 'fresh', 'green', 'sleepy', 'oat milk', 'clean'],
+  citrus: ['citrus', 'orange', 'lemon', 'lime', 'bergamot', 'grapefruit', 'energising'],
+  sweet: ['sweet', 'peachy', 'cream', 'candy', 'vanilla', 'tonka', 'honey'],
+  earthy: ['earthy', 'rosemary', 'incense', 'wood', 'sandalwood', 'patchouli', '29 high street'],
+};
+
+function detectFamily(scent?: string, name?: string): string {
+  const text = `${scent ?? ''} ${name ?? ''}`.toLowerCase();
+  for (const [family, keywords] of Object.entries(familyKeywords)) {
+    if (keywords.some((keyword) => text.includes(keyword))) return family;
+  }
+  return 'unclassified';
+}
+
+const archiveFamilies = [...new Set(allBoxes.flatMap((box) => box.data.products?.map((product) => detectFamily(product.scent, product.name)).filter((family) => family !== 'unclassified') ?? []))].sort();
+const boxFilterData = new Map(allBoxes.map((box) => {
+  const products = box.data.products ?? [];
+  const families = [...new Set(products.map((product) => detectFamily(product.scent, product.name)).filter((family) => family !== 'unclassified'))];
+  const search = [
+    box.data.title,
+    box.data.month,
+    box.data.year,
+    box.data.summary,
+    ...products.flatMap((product) => [product.name, product.type, product.scent, product.description, product.nostalgiaNote]),
+  ].filter(Boolean).join(' ').toLowerCase();
+  return [box.id, { families, search }];
+}));
 ---
 
 <BaseLayout
   title="Kitchen Box Archive"
   description="A growing archive of Lush Kitchen subscription boxes since 2022. Products, scent notes, and nostalgia."
 >
-  <Hero
-    title="Kitchen Box Archive"
-    subtitle="A growing archive of boxes, scent notes, and throwbacks since 2022."
-    tag="Archive"
-    minimal
-  />
+  <section class="archive-hero">
+    <div class="container container--wide archive-hero-inner">
+      <div class="archive-hero-copy" data-animate="fade-up">
+        <span class="eyebrow">Kitchen Box Archive</span>
+        <h1>Every month, mapped like an artefact.</h1>
+        <p class="lede">
+          Browse Lush Kitchen boxes as a collector timeline: monthly drops, product lineups, scent families and nostalgic returns.
+        </p>
+      </div>
 
-  <section class="section">
-    <div class="container">
-      {years.map((year) => (
-        <div class="year-group">
-          <h2 class="year-heading" data-animate="fade-in">{year}</h2>
-          <div class="grid grid--2" data-animate="stagger-children" data-stagger="0.12">
-            {boxesByYear[year].map((box) => (
-              <BoxCard
-                title={box.data.title}
-                slug={box.id}
-                month={box.data.month}
-                year={box.data.year}
-                summary={box.data.summary}
-                heroImage={box.data.heroImage}
-                productCount={box.data.products?.length}
-              />
-            ))}
+      <div class="archive-console liquid-panel" data-animate="fade-in">
+        <span class="console-label">Archive index</span>
+        <div class="console-stats">
+          <div><strong>{allBoxes.length}</strong><span>records</span></div>
+          <div><strong>{years.length}</strong><span>years</span></div>
+          <div><strong>{productTypes.length}</strong><span>types</span></div>
+        </div>
+        <div class="console-chips">
+          {productTypes.map((type) => <span class="chip">{type}</span>)}
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="archive-filter-shell">
+    <div class="container container--wide">
+      <div class="archive-filters liquid-panel">
+        <label>
+          <span class="visually-hidden">Search archive</span>
+          <input id="archive-search" type="search" placeholder="Search boxes, products, scents..." autocomplete="off" />
+        </label>
+        <select id="archive-year-filter" aria-label="Filter by year">
+          <option value="all">All years</option>
+          {years.map((year) => <option value={String(year)}>{year}</option>)}
+        </select>
+        <select id="archive-family-filter" aria-label="Filter by scent group">
+          <option value="all">All scent groups</option>
+          {archiveFamilies.map((family) => <option value={family}>{family.charAt(0).toUpperCase() + family.slice(1)}</option>)}
+        </select>
+        <button id="archive-clear-filters" class="btn btn--secondary" type="button">Clear</button>
+      </div>
+      <p class="archive-result-count" aria-live="polite"><span id="archive-count">{allBoxes.length}</span> archive records visible</p>
+    </div>
+  </section>
+
+  <section class="archive-browser section">
+    <div class="container container--wide archive-layout">
+      <aside class="timeline-rail liquid-panel" aria-label="Archive years">
+        <span class="rail-label">Jump by year</span>
+        {years.map((year) => (
+          <a href={`#year-${year}`} class="rail-year">
+            <span>{year}</span>
+            <small>{boxesByYear[year].length} boxes</small>
+          </a>
+        ))}
+        <hr />
+        <span class="rail-label">Scent signals</span>
+        <div class="rail-chips">
+          {scentNotes.map((note, index) => (
+            <span class="chip" style={`--chip-color: ${index % 3 === 0 ? 'var(--color-pink)' : index % 3 === 1 ? 'var(--color-blue)' : 'var(--color-gold)'}`}>{note}</span>
+          ))}
+        </div>
+      </aside>
+
+      <div class="archive-results">
+        {years.map((year) => (
+          <section id={`year-${year}`} class="year-group">
+            <div class="year-heading-wrap" data-animate="fade-up">
+              <span class="year-marker">{year}</span>
+              <div>
+                <h2>{year}</h2>
+                <p>{boxesByYear[year].length} Kitchen box records documented</p>
+              </div>
+            </div>
+
+            <div class="archive-grid" data-animate="stagger-children" data-stagger="0.1">
+              {boxesByYear[year].map((box, index) => (
+                <div
+                  class="archive-card-shell"
+                  data-archive-card
+                  data-year={String(box.data.year)}
+                  data-family={(boxFilterData.get(box.id)?.families ?? []).join(' ')}
+                  data-search={boxFilterData.get(box.id)?.search}
+                >
+                  <BoxCard
+                    title={box.data.title}
+                    slug={box.id}
+                    month={box.data.month}
+                    year={box.data.year}
+                    summary={box.data.summary}
+                    heroImage={box.data.heroImage}
+                    productCount={box.data.products?.length}
+                    products={box.data.products}
+                    featured={index === 0 && year === years[0]}
+                  />
+                </div>
+              ))}
+            </div>
+          </section>
+        ))}
+
+        {allBoxes.length === 0 && (
+          <div class="empty-state liquid-panel">
+            <h3>No boxes yet</h3>
+            <p class="text-muted">Kitchen box reviews will appear here as they're published.</p>
           </div>
-        </div>
-      ))}
-
-      {allBoxes.length === 0 && (
-        <div class="empty-state">
-          <h3>No boxes yet</h3>
-          <p class="text-muted">Kitchen box reviews will appear here as they're published.</p>
-        </div>
-      )}
+        )}
+      </div>
     </div>
   </section>
 </BaseLayout>
 
+<script>
+  const archiveSearch = document.getElementById('archive-search') as HTMLInputElement | null;
+  const archiveYear = document.getElementById('archive-year-filter') as HTMLSelectElement | null;
+  const archiveFamily = document.getElementById('archive-family-filter') as HTMLSelectElement | null;
+  const archiveClear = document.getElementById('archive-clear-filters');
+  const archiveCards = Array.from(document.querySelectorAll<HTMLElement>('[data-archive-card]'));
+  const archiveCount = document.getElementById('archive-count');
+  const yearGroups = Array.from(document.querySelectorAll<HTMLElement>('.year-group'));
+
+  function syncArchiveUrl() {
+    const params = new URLSearchParams();
+    if (archiveSearch?.value.trim()) params.set('q', archiveSearch.value.trim());
+    if (archiveYear && archiveYear.value !== 'all') params.set('year', archiveYear.value);
+    if (archiveFamily && archiveFamily.value !== 'all') params.set('family', archiveFamily.value);
+    history.replaceState(null, '', params.toString() ? `${location.pathname}?${params}` : location.pathname);
+  }
+
+  function applyArchiveFilters() {
+    const query = archiveSearch?.value.trim().toLowerCase() ?? '';
+    const year = archiveYear?.value ?? 'all';
+    const family = archiveFamily?.value ?? 'all';
+    let visible = 0;
+
+    archiveCards.forEach((card) => {
+      const matchesQuery = !query || (card.dataset.search ?? '').includes(query);
+      const matchesYear = year === 'all' || card.dataset.year === year;
+      const matchesFamily = family === 'all' || (card.dataset.family ?? '').split(' ').includes(family);
+      const show = matchesQuery && matchesYear && matchesFamily;
+      card.hidden = !show;
+      if (show) visible += 1;
+    });
+
+    yearGroups.forEach((group) => {
+      const hasVisible = !!group.querySelector('[data-archive-card]:not([hidden])');
+      group.hidden = !hasVisible;
+    });
+
+    if (archiveCount) archiveCount.textContent = String(visible);
+    syncArchiveUrl();
+  }
+
+  function hydrateArchiveFilters() {
+    const params = new URLSearchParams(location.search);
+    if (archiveSearch && params.has('q')) archiveSearch.value = params.get('q') ?? '';
+    if (archiveYear && params.has('year')) archiveYear.value = params.get('year') ?? 'all';
+    if (archiveFamily && params.has('family')) archiveFamily.value = params.get('family') ?? 'all';
+    applyArchiveFilters();
+  }
+
+  archiveSearch?.addEventListener('input', applyArchiveFilters);
+  archiveYear?.addEventListener('change', applyArchiveFilters);
+  archiveFamily?.addEventListener('change', applyArchiveFilters);
+  archiveClear?.addEventListener('click', () => {
+    if (archiveSearch) archiveSearch.value = '';
+    if (archiveYear) archiveYear.value = 'all';
+    if (archiveFamily) archiveFamily.value = 'all';
+    applyArchiveFilters();
+    archiveSearch?.focus();
+  });
+
+  hydrateArchiveFilters();
+</script>
+
 <style>
+  .archive-hero {
+    position: relative;
+    min-height: 70svh;
+    display: flex;
+    align-items: end;
+    padding: 8rem 0 var(--space-3xl);
+    overflow: hidden;
+  }
+
+  .archive-hero::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background:
+      radial-gradient(circle at 18% 18%, rgba(143, 245, 210, 0.2), transparent 28rem),
+      radial-gradient(circle at 80% 12%, rgba(255, 141, 184, 0.18), transparent 26rem),
+      radial-gradient(circle at 54% 80%, rgba(169, 140, 255, 0.11), transparent 26rem),
+      conic-gradient(from 150deg at 44% 46%, transparent 0deg, rgba(255, 230, 111, 0.08) 60deg, transparent 118deg),
+      linear-gradient(180deg, rgba(255, 255, 255, 0.04), transparent 72%);
+    pointer-events: none;
+  }
+
+  .archive-hero-inner {
+    position: relative;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 420px;
+    gap: var(--space-2xl);
+    align-items: end;
+  }
+
+  .archive-hero-copy h1 {
+    max-width: 980px;
+    margin: var(--space-sm) 0 var(--space-lg);
+  }
+
+  .archive-console {
+    border-radius: var(--radius-2xl);
+    padding: var(--space-lg);
+    overflow: hidden;
+  }
+
+  .archive-console::after {
+    content: '';
+    position: absolute;
+    inset: auto -20% -36% 14%;
+    height: 60%;
+    border-radius: 50%;
+    background: radial-gradient(ellipse, rgba(255, 141, 184, 0.14), transparent 68%);
+    filter: blur(22px);
+    pointer-events: none;
+  }
+
+  .console-label,
+  .rail-label {
+    display: block;
+    margin-bottom: var(--space-md);
+    color: var(--color-text-muted);
+    font-size: 0.7rem;
+    font-weight: 900;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+  }
+
+  .console-stats {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: var(--space-sm);
+    margin-bottom: var(--space-md);
+  }
+
+  .console-stats div {
+    padding: var(--space-md);
+    border-radius: var(--radius-lg);
+    background:
+      linear-gradient(135deg, rgba(143, 245, 210, 0.07), transparent 48%),
+      rgba(255, 255, 255, 0.06);
+  }
+
+  .console-stats strong {
+    display: block;
+    font-size: 1.75rem;
+    line-height: 1;
+  }
+
+  .console-stats span {
+    color: var(--color-text-muted);
+    font-size: 0.68rem;
+    font-weight: 800;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  .console-chips,
+  .rail-chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.45rem;
+  }
+
+  .archive-filter-shell {
+    position: sticky;
+    top: 5.8rem;
+    z-index: 11;
+    padding: var(--space-md) 0;
+  }
+
+  .archive-filters {
+    display: grid;
+    grid-template-columns: minmax(240px, 1fr) 180px 220px auto;
+    gap: var(--space-sm);
+    align-items: center;
+    padding: var(--space-sm);
+    border-radius: var(--radius-2xl);
+  }
+
+  .archive-filters input,
+  .archive-filters select {
+    width: 100%;
+    min-height: 3rem;
+    border: 1px solid rgba(255,255,255,0.11);
+    border-radius: var(--radius-full);
+    background: rgba(255,255,255,0.065);
+    color: var(--color-white);
+    font: inherit;
+    outline: 0;
+    padding: 0 var(--space-md);
+  }
+
+  .archive-result-count {
+    margin-top: var(--space-sm);
+    color: var(--color-text-muted);
+    font-size: 0.82rem;
+    font-weight: 800;
+  }
+
+  .archive-card-shell[hidden],
+  .year-group[hidden] {
+    display: none;
+  }
+
+  .archive-card-shell {
+    min-width: 0;
+  }
+
+  .archive-card-shell:has(:global(.box-card--featured)) {
+    grid-column: 1 / -1;
+  }
+
+  .archive-browser {
+    padding-top: var(--space-3xl);
+  }
+
+  .archive-layout {
+    display: grid;
+    grid-template-columns: 280px minmax(0, 1fr);
+    gap: var(--space-2xl);
+    align-items: start;
+  }
+
+  .timeline-rail {
+    position: sticky;
+    top: 6.25rem;
+    border-radius: var(--radius-2xl);
+    padding: var(--space-lg);
+  }
+
+  .timeline-rail hr {
+    margin: var(--space-lg) 0;
+    border: 0;
+    border-top: 1px solid var(--color-border);
+  }
+
+  .rail-year {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-md);
+    padding: 0.85rem 0;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.07);
+  }
+
+  .rail-year span {
+    font-size: 1.35rem;
+    font-family: var(--font-display);
+  }
+
+  .rail-year small {
+    color: var(--color-text-muted);
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+  }
+
+  .archive-results {
+    min-width: 0;
+  }
+
   .year-group {
+    scroll-margin-top: 7rem;
     margin-bottom: var(--space-4xl);
   }
 
-  .year-heading {
-    font-size: 1.5rem;
+  .year-heading-wrap {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr);
+    gap: var(--space-lg);
+    align-items: center;
     margin-bottom: var(--space-xl);
-    padding-bottom: var(--space-sm);
-    border-bottom: 1px solid var(--color-border);
+  }
+
+  .year-marker {
+    width: 4.5rem;
+    height: 4.5rem;
+    display: grid;
+    place-items: center;
+    border-radius: 50%;
+    color: #06100b;
+    font-weight: 900;
+    background: var(--gradient-accent);
+    box-shadow: 0 0 56px rgba(255, 141, 184, 0.16), 0 0 42px rgba(143, 245, 210, 0.12);
+  }
+
+  .year-heading-wrap h2 {
+    font-size: clamp(2.5rem, 6vw, 5.8rem);
+  }
+
+  .year-heading-wrap p {
     color: var(--color-text-muted);
   }
 
+  .archive-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--space-lg);
+  }
+
   .empty-state {
-    padding: var(--space-4xl) 0;
+    padding: var(--space-4xl);
+    border-radius: var(--radius-2xl);
+  }
+
+  @media (max-width: 1080px) {
+    .archive-hero-inner,
+    .archive-layout,
+    .archive-grid,
+    .archive-filters {
+      grid-template-columns: 1fr;
+    }
+
+    .archive-filter-shell {
+      position: relative;
+      top: auto;
+    }
+
+    .timeline-rail {
+      position: relative;
+      top: auto;
+    }
+  }
+
+  @media (max-width: 640px) {
+    .archive-hero {
+      min-height: auto;
+      padding: 7rem 0 var(--space-3xl);
+    }
+
+    .console-stats {
+      grid-template-columns: 1fr;
+    }
+
+    .year-heading-wrap {
+      grid-template-columns: 1fr;
+    }
   }
 </style>

@@ -1,5 +1,5 @@
 ---
-import { Droplets, Star, MessageCircle } from '@lucide/astro';
+import { Droplets, MessageCircle, Sparkles } from '@lucide/astro';
 
 interface Product {
   name: string;
@@ -18,9 +18,10 @@ interface Props {
 const { products } = Astro.props;
 ---
 
-<div class="product-list" data-animate="stagger-children" data-stagger="0.1">
-  {products.map((product) => (
-    <div class:list={['product-item', { 'product-item--highlight': product.highlight }]}>
+<div class="product-list" data-animate="stagger-children" data-stagger="0.08">
+  {products.map((product, index) => (
+    <article class:list={['product-item', { 'product-item--highlight': product.highlight }]}>
+      <div class="product-index" aria-hidden="true">{String(index + 1).padStart(2, '0')}</div>
       <div class="product-image">
         {product.image ? (
           <img src={product.image} alt={product.name} loading="lazy" />
@@ -32,138 +33,207 @@ const { products } = Astro.props;
       </div>
       <div class="product-info">
         <div class="product-header">
-          <h4 class="product-name">{product.name}</h4>
-          {product.type && <span class="tag">{product.type}</span>}
-          {product.highlight && <span class="product-star" title="Top pick"><Star size={14} /></span>}
+          <div>
+            {product.type && <span class="product-type">{product.type}</span>}
+            <h4 class="product-name">{product.name}</h4>
+          </div>
+          {product.highlight && <span class="product-star" title="Archive highlight"><Sparkles size={16} /></span>}
         </div>
         {product.description && (
           <p class="product-description">{product.description}</p>
         )}
-        {product.scent && (
-          <p class="product-scent">{product.scent}</p>
-        )}
+        <div class="product-meta">
+          {product.scent && (
+            <span class="chip product-scent" style="--chip-color: var(--color-pink);">{product.scent}</span>
+          )}
+          {product.nostalgiaNote && (
+            <span class="chip product-nostalgia-chip" style="--chip-color: var(--color-gold);">Nostalgia note</span>
+          )}
+        </div>
         {product.nostalgiaNote && (
           <div class="product-nostalgia">
-            <p><MessageCircle size={14} class="nostalgia-icon" /> {product.nostalgiaNote}</p>
+            <MessageCircle size={15} class="nostalgia-icon" />
+            <p>{product.nostalgiaNote}</p>
           </div>
         )}
       </div>
-    </div>
+    </article>
   ))}
 </div>
 
 <style>
   .product-list {
-    display: flex;
-    flex-direction: column;
-    gap: 1px;
-    background: var(--color-border);
-    border-radius: var(--radius-lg);
-    overflow: hidden;
+    display: grid;
+    gap: var(--space-md);
   }
 
   .product-item {
-    display: flex;
+    position: relative;
+    display: grid;
+    grid-template-columns: auto 112px minmax(0, 1fr);
     gap: var(--space-lg);
-    background: var(--color-bg-card);
-    padding: var(--space-lg);
-    transition: background 0.2s ease, box-shadow 0.3s ease;
+    align-items: center;
+    padding: var(--space-md);
+    border: 1px solid var(--glass-border);
+    border-radius: var(--radius-xl);
+    background: rgba(255, 255, 255, 0.055);
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.08);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    overflow: hidden;
+    transition: transform 0.28s ease, background 0.28s ease, border-color 0.28s ease;
+  }
+
+  .product-item::before {
+    content: '';
+    position: absolute;
+    inset: -1px;
+    border-radius: inherit;
+    pointer-events: none;
+    background: linear-gradient(120deg, rgba(255, 255, 255, 0.14), transparent 42%);
+    opacity: 0.7;
   }
 
   .product-item:hover {
-    background: var(--color-bg-hover);
-    box-shadow: inset 0 0 0 1px var(--glass-border-hover);
+    transform: translateY(-3px);
+    background: rgba(255, 255, 255, 0.08);
+    border-color: var(--glass-border-hover);
   }
 
   .product-item--highlight {
-    border-left: 2px solid var(--color-gold);
+    box-shadow: inset 3px 0 0 var(--color-gold), inset 0 1px 0 rgba(255, 255, 255, 0.08);
+  }
+
+  .product-index {
+    position: relative;
+    z-index: 1;
+    width: 2.5rem;
+    font-size: 0.72rem;
+    font-weight: 900;
+    letter-spacing: 0.12em;
+    color: var(--color-text-muted);
   }
 
   .product-image {
-    flex-shrink: 0;
-    width: 80px;
-    height: 80px;
-    border-radius: var(--radius-md);
+    position: relative;
+    z-index: 1;
+    width: 112px;
+    height: 112px;
+    border-radius: var(--radius-lg);
     overflow: hidden;
-    background: var(--color-surface);
+    background: var(--gradient-cool);
+    box-shadow: var(--shadow-sm);
   }
 
   .product-image img {
     width: 100%;
     height: 100%;
     object-fit: cover;
+    transition: transform 0.45s ease;
+  }
+
+  .product-item:hover .product-image img {
+    transform: scale(1.06);
   }
 
   .product-placeholder {
     width: 100%;
     height: 100%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    display: grid;
+    place-items: center;
     color: var(--color-text-muted);
   }
 
   .product-info {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    gap: var(--space-xs);
+    position: relative;
+    z-index: 1;
+    min-width: 0;
+    display: grid;
+    gap: var(--space-sm);
   }
 
   .product-header {
     display: flex;
-    align-items: center;
-    gap: var(--space-sm);
-    flex-wrap: wrap;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: var(--space-md);
+  }
+
+  .product-type {
+    display: block;
+    margin-bottom: 0.25rem;
+    font-size: 0.68rem;
+    font-weight: 900;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--color-green-bright);
   }
 
   .product-name {
-    font-family: var(--font-display);
-    font-size: 1rem;
+    font-size: clamp(1.3rem, 2.4vw, 1.9rem);
   }
 
   .product-star {
-    color: var(--color-gold);
-    display: inline-flex;
-    align-items: center;
+    flex: 0 0 auto;
+    width: 2.2rem;
+    height: 2.2rem;
+    display: grid;
+    place-items: center;
+    color: #050608;
+    border-radius: 50%;
+    background: var(--color-gold);
+    box-shadow: 0 0 30px rgba(240, 202, 123, 0.22);
   }
 
   .product-description {
-    font-size: 0.875rem;
     color: var(--color-text-secondary);
-    line-height: 1.6;
+    font-size: 0.94rem;
+    line-height: 1.65;
   }
 
-  .product-scent {
-    font-size: 0.8125rem;
-    color: var(--color-text-muted);
-    font-style: italic;
+  .product-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.45rem;
   }
 
   .product-nostalgia {
-    background: rgba(196, 162, 101, 0.06);
-    backdrop-filter: blur(8px);
-    -webkit-backdrop-filter: blur(8px);
-    border: 1px solid var(--glass-border);
-    border-radius: var(--radius-md);
-    padding: var(--space-sm) var(--space-md);
+    display: flex;
+    align-items: flex-start;
+    gap: var(--space-sm);
     margin-top: var(--space-xs);
+    padding: var(--space-sm) var(--space-md);
+    border: 1px solid rgba(240, 202, 123, 0.16);
+    border-radius: var(--radius-lg);
+    background: rgba(240, 202, 123, 0.07);
+    color: var(--color-cream);
   }
 
   .product-nostalgia p {
-    font-size: 0.8125rem;
-    color: var(--color-cream);
-    line-height: 1.5;
+    font-size: 0.84rem;
+    line-height: 1.55;
   }
 
-  @media (max-width: 640px) {
+  .nostalgia-icon {
+    flex: 0 0 auto;
+    margin-top: 0.15rem;
+  }
+
+  @media (max-width: 720px) {
     .product-item {
-      flex-direction: column;
+      grid-template-columns: 1fr;
+      gap: var(--space-md);
+      padding: var(--space-md);
+    }
+
+    .product-index {
+      width: auto;
     }
 
     .product-image {
       width: 100%;
-      height: 160px;
+      height: auto;
+      aspect-ratio: 4 / 3;
     }
   }
 </style>

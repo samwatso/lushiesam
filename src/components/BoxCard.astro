@@ -1,4 +1,10 @@
 ---
+interface Product {
+  name: string;
+  type?: string;
+  scent?: string;
+}
+
 interface Props {
   title: string;
   slug: string;
@@ -7,12 +13,26 @@ interface Props {
   summary: string;
   heroImage?: string;
   productCount?: number;
+  products?: Product[];
+  featured?: boolean;
 }
 
-const { title, slug, month, year, summary, heroImage, productCount } = Astro.props;
+const { title, slug, month, year, summary, heroImage, productCount, products = [], featured = false } = Astro.props;
+const previewProducts = products.slice(0, 3);
+const scentPreview = [...new Set(products.map((p) => p.scent).filter(Boolean))].slice(0, 2);
+const accentPool = ['var(--scent-rose)', 'var(--scent-citrus)', 'var(--scent-violet)', 'var(--scent-mint)', 'var(--scent-amber)', 'var(--scent-earth)', 'var(--scent-smoke)'];
+const scentText = `${products.map((p) => `${p.name} ${p.scent ?? ''}`).join(' ')} ${title}`.toLowerCase();
+const accent =
+  scentText.includes('rose') || scentText.includes('flower') || scentText.includes('floral') ? 'var(--scent-rose)' :
+  scentText.includes('citrus') || scentText.includes('lime') || scentText.includes('orange') ? 'var(--scent-citrus)' :
+  scentText.includes('violet') || scentText.includes('tuca') ? 'var(--scent-violet)' :
+  scentText.includes('grass') || scentText.includes('mint') || scentText.includes('fresh') || scentText.includes('lavender') ? 'var(--scent-mint)' :
+  scentText.includes('vanilla') || scentText.includes('honey') || scentText.includes('cream') ? 'var(--scent-amber)' :
+  scentText.includes('rosemary') || scentText.includes('earth') || scentText.includes('incense') ? 'var(--scent-smoke)' :
+  accentPool[year % accentPool.length];
 ---
 
-<a href={`/kitchen-boxes/${slug}/`} class="box-card card">
+<a href={`/kitchen-boxes/${slug}/`} class:list={['box-card', 'card', { 'box-card--featured': featured }]} style={`--card-accent: ${accent};`}>
   <div class="box-card-image" data-animate-parallax>
     {heroImage ? (
       <img src={heroImage} alt={title} loading="lazy" />
@@ -21,112 +41,267 @@ const { title, slug, month, year, summary, heroImage, productCount } = Astro.pro
         <span class="placeholder-month">{month} '{String(year).slice(2)}</span>
       </div>
     )}
+    <div class="box-card-glass">
+      <span>{month}</span>
+      <strong>{year}</strong>
+    </div>
+    <div class="artifact-mark" aria-hidden="true">{String(month).slice(0, 3)}</div>
   </div>
+
   <div class="box-card-body">
-    <span class="box-card-date">{month} {year}</span>
+    <div class="box-card-topline">
+      <span class="box-card-date">{month} {year}</span>
+      {productCount && <span class="box-card-count">{productCount} items</span>}
+    </div>
+
     <h3 class="box-card-title">{title}</h3>
     <p class="box-card-summary">{summary}</p>
-    {productCount && (
-      <span class="box-card-meta">{productCount} products →</span>
+
+    {(previewProducts.length > 0 || scentPreview.length > 0) && (
+      <div class="box-card-discovery">
+        {previewProducts.map((product) => (
+          <span class="chip">{product.name}</span>
+        ))}
+        {scentPreview.map((scent) => (
+          <span class="chip chip--scent" style="--chip-color: var(--color-pink);">{scent}</span>
+        ))}
+      </div>
     )}
+
+    <span class="box-card-link">Open archive record</span>
   </div>
 </a>
 
 <style>
   .box-card {
-    display: flex;
-    flex-direction: column;
-    text-decoration: none;
+    display: grid;
+    min-height: 100%;
     color: inherit;
+    isolation: isolate;
+    background:
+      linear-gradient(145deg, color-mix(in srgb, var(--card-accent) 18%, transparent), rgba(255,255,255,0.04)),
+      var(--glass-bg);
+  }
+
+  .box-card::after {
+    content: '';
+    position: absolute;
+    inset: auto -18% -22% 18%;
+    height: 42%;
+    border-radius: 50%;
+    background: radial-gradient(ellipse, color-mix(in srgb, var(--card-accent) 30%, transparent), transparent 68%);
+    filter: blur(26px);
+    opacity: 0.75;
+    pointer-events: none;
+    transition: transform 0.45s ease, opacity 0.45s ease;
   }
 
   .box-card:hover {
     color: inherit;
   }
 
-  .box-card {
-    background: var(--glass-bg);
-    backdrop-filter: blur(var(--glass-blur));
-    -webkit-backdrop-filter: blur(var(--glass-blur));
-    border: 1px solid var(--glass-border);
-    border-top: 1px solid var(--glass-highlight);
-    box-shadow: var(--glass-shadow);
-    transition: border-color 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease;
+  .box-card:hover::after {
+    transform: translateY(-14px) scale(1.08);
+    opacity: 1;
   }
 
-  .box-card:hover {
-    border-color: var(--glass-border-hover);
-    box-shadow: var(--glass-shadow), 0 0 20px rgba(90, 138, 106, 0.06);
+  .box-card--featured {
+    grid-template-columns: minmax(0, 1.08fr) minmax(320px, 0.92fr);
+    min-height: 520px;
   }
 
   .box-card-image {
     position: relative;
+    min-height: 280px;
     aspect-ratio: 4 / 3;
     overflow: hidden;
-    background: var(--color-surface);
+    background: var(--gradient-cool);
+  }
+
+  .box-card--featured .box-card-image {
+    aspect-ratio: auto;
+    min-height: 100%;
+  }
+
+  .box-card-image::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background:
+      linear-gradient(180deg, transparent 40%, rgba(5, 6, 8, 0.55)),
+      radial-gradient(circle at 70% 20%, color-mix(in srgb, var(--card-accent) 24%, white 0%), transparent 34%);
+    pointer-events: none;
   }
 
   .box-card-image img {
     width: 100%;
     height: 100%;
     object-fit: cover;
-    transition: transform 0.5s ease, opacity 0.3s ease;
-    opacity: 0.9;
+    transform: scale(1.02);
+    transition: transform 0.75s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.35s ease;
+    opacity: 0.92;
   }
 
   .box-card:hover .box-card-image img {
-    transform: scale(1.04);
+    transform: scale(1.085) rotate(0.35deg);
     opacity: 1;
   }
 
   .box-card-placeholder {
     width: 100%;
     height: 100%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    min-height: 280px;
+    display: grid;
+    place-items: center;
     background: var(--gradient-warm);
   }
 
   .placeholder-month {
     font-family: var(--font-display);
-    font-size: 1.75rem;
-    color: var(--color-text-muted);
+    font-size: 2rem;
+    color: var(--color-text-secondary);
+  }
+
+  .box-card-glass {
+    position: absolute;
+    left: var(--space-md);
+    bottom: var(--space-md);
+    z-index: 2;
+    display: flex;
+    align-items: baseline;
+    gap: 0.45rem;
+    padding: 0.55rem 0.75rem;
+    border-radius: var(--radius-full);
+    border: 1px solid rgba(255, 255, 255, 0.16);
+    background: rgba(5, 6, 8, 0.5);
+    backdrop-filter: blur(18px);
+    -webkit-backdrop-filter: blur(18px);
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.1);
+  }
+
+  .artifact-mark {
+    position: absolute;
+    right: var(--space-md);
+    top: var(--space-md);
+    z-index: 2;
+    width: 4.2rem;
+    height: 4.2rem;
+    display: grid;
+    place-items: center;
+    border: 1px solid color-mix(in srgb, var(--card-accent) 45%, white 0%);
+    border-radius: 50%;
+    color: color-mix(in srgb, var(--card-accent) 80%, white 20%);
+    font-size: 0.72rem;
+    font-weight: 900;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    background:
+      linear-gradient(135deg, color-mix(in srgb, var(--card-accent) 18%, transparent), rgba(5, 6, 8, 0.36)),
+      rgba(5, 6, 8, 0.34);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+    transform: rotate(-10deg);
+  }
+
+  .box-card-glass span {
+    font-size: 0.72rem;
+    font-weight: 800;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--color-text-secondary);
+  }
+
+  .box-card-glass strong {
+    font-size: 0.92rem;
+    color: var(--color-white);
   }
 
   .box-card-body {
-    padding: var(--space-lg) 0;
+    position: relative;
+    z-index: 1;
     display: flex;
     flex-direction: column;
-    gap: var(--space-xs);
-    flex: 1;
+    gap: var(--space-sm);
+    padding: clamp(1.25rem, 3vw, 2rem);
   }
 
-  .box-card-date {
-    font-size: 0.6875rem;
-    text-transform: uppercase;
-    letter-spacing: 0.08em;
+  .box-card-topline {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-sm);
     color: var(--color-text-muted);
-    font-weight: 500;
+    font-size: 0.72rem;
+    font-weight: 800;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+  }
+
+  .box-card-count {
+    color: var(--card-accent);
   }
 
   .box-card-title {
-    font-size: 1.25rem;
-    line-height: 1.3;
+    font-size: clamp(1.6rem, 3vw, 2.45rem);
+    line-height: 1.02;
+    letter-spacing: -0.05em;
   }
 
   .box-card-summary {
-    font-size: 0.875rem;
     color: var(--color-text-secondary);
-    line-height: 1.6;
+    font-size: 0.94rem;
+    line-height: 1.7;
   }
 
-  .box-card-meta {
+  .box-card-discovery {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.45rem;
+    margin-top: var(--space-sm);
+  }
+
+  .box-card-discovery .chip {
+    max-width: 100%;
+  }
+
+  .chip--scent {
+    color: rgba(255, 255, 255, 0.78);
+  }
+
+  .box-card-link {
     margin-top: auto;
-    padding-top: var(--space-sm);
-    font-size: 0.75rem;
-    color: var(--color-pink);
-    font-weight: 500;
-    letter-spacing: 0.02em;
+    padding-top: var(--space-md);
+    color: var(--color-white);
+    font-size: 0.82rem;
+    font-weight: 800;
+    transition: color 0.24s ease, transform 0.24s ease;
+  }
+
+  .box-card-link::after {
+    content: ' ->';
+    color: var(--card-accent);
+  }
+
+  .box-card:hover .box-card-link {
+    color: color-mix(in srgb, var(--card-accent) 82%, var(--color-white));
+    transform: translateX(2px);
+  }
+
+  @media (max-width: 900px) {
+    .box-card--featured {
+      grid-template-columns: 1fr;
+      min-height: auto;
+    }
+  }
+
+  @media (max-width: 560px) {
+    .box-card-image {
+      min-height: 240px;
+    }
+
+    .box-card-topline {
+      align-items: flex-start;
+      flex-direction: column;
+    }
   }
 </style>

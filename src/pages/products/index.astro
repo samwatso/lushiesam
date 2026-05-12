@@ -1,162 +1,586 @@
 ---
-import { getAllProducts } from '@/lib/content';
-import { Droplets } from '@lucide/astro';
+import { getAllBoxes, getAllProducts } from '@/lib/content';
+import { Droplets, Search } from '@lucide/astro';
+import fs from 'node:fs';
+import path from 'node:path';
 import BaseLayout from '@/layouts/BaseLayout.astro';
-import Hero from '@/components/Hero.astro';
 import CTABlock from '@/components/CTABlock.astro';
 
-const allProducts = (await getAllProducts())
-  .filter((p) => !p.data.draft)
-  .sort((a, b) => a.data.name.localeCompare(b.data.name));
+const slugify = (value: string) => value.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
 
-const productTypes = [...new Set(allProducts.map((p) => p.data.type))].sort();
+function usableImage(image?: string): string | undefined {
+  if (!image) return undefined;
+  if (image.startsWith('http')) return image;
+  if (!image.startsWith('/')) return image;
+  return fs.existsSync(path.join(process.cwd(), 'public', image)) ? image : undefined;
+}
+
+const familyKeywords: Record<string, string[]> = {
+  floral: ['flower', 'floral', 'rose', 'jasmine', 'violet', 'ylang', 'garden', 'bloom', 'petal', 'tuca tuca', 'cottongrass'],
+  fresh: ['grass', 'lavender', 'mint', 'eucalyptus', 'fresh', 'green', 'sleepy', 'oat milk', 'clean'],
+  citrus: ['citrus', 'orange', 'lemon', 'lime', 'bergamot', 'grapefruit', 'energising'],
+  sweet: ['sweet', 'peachy', 'cream', 'candy', 'vanilla', 'tonka', 'honey'],
+  earthy: ['earthy', 'rosemary', 'incense', 'wood', 'sandalwood', 'patchouli', '29 high street'],
+};
+
+const familyColors: Record<string, string> = {
+  floral: 'var(--scent-rose)',
+  fresh: 'var(--scent-mint)',
+  citrus: 'var(--scent-citrus)',
+  sweet: 'var(--scent-amber)',
+  earthy: 'var(--scent-smoke)',
+  unclassified: 'rgba(255,255,255,0.45)',
+};
+
+function detectFamily(scent?: string, name?: string, type?: string): string {
+  const text = `${scent ?? ''} ${name ?? ''}`.toLowerCase();
+  if (type && ['notebook', 'bag', 'wrap', 'accessory', 'sticker', 'card'].some((item) => type.toLowerCase().includes(item))) {
+    return 'unclassified';
+  }
+  for (const [family, keywords] of Object.entries(familyKeywords)) {
+    if (keywords.some((keyword) => text.includes(keyword))) return family;
+  }
+  return 'unclassified';
+}
+
+const allBoxes = (await getAllBoxes())
+  .filter((box) => !box.data.draft)
+  .sort((a, b) => {
+    const dateA = a.data.publishedDate?.getTime() ?? 0;
+    const dateB = b.data.publishedDate?.getTime() ?? 0;
+    return dateB - dateA;
+  });
+
+const contentProducts = (await getAllProducts())
+  .filter((p) => !p.data.draft);
+
+const records = new Map<string, {
+  id: string;
+  name: string;
+  type: string;
+  description?: string;
+  image?: string;
+  scent?: string;
+  family: string;
+  familyColor: string;
+  kitchenExclusive?: boolean;
+  discontinued?: boolean;
+  nostalgiaNotes: string[];
+  appearances: { slug: string; title: string; month: string; year: number }[];
+}>();
+
+for (const product of contentProducts) {
+  const id = product.id || slugify(product.data.name);
+  const family = detectFamily(product.data.scent, product.data.name, product.data.type);
+  records.set(id, {
+    id,
+    name: product.data.name,
+    type: product.data.type,
+    description: product.data.description,
+    image: usableImage(product.data.image),
+    scent: product.data.scent,
+    family,
+    familyColor: familyColors[family],
+    kitchenExclusive: product.data.kitchenExclusive,
+    discontinued: product.data.discontinued,
+    nostalgiaNotes: [],
+    appearances: [],
+  });
+}
+
+for (const box of allBoxes) {
+  for (const product of box.data.products ?? []) {
+    const id = slugify(product.name);
+    const family = detectFamily(product.scent, product.name, product.type);
+    const existing = records.get(id);
+    const appearance = { slug: box.id, title: box.data.title, month: box.data.month, year: box.data.year };
+
+    if (existing) {
+      existing.type = existing.type || product.type || 'Unknown';
+      existing.description = existing.description || product.description;
+      existing.image = existing.image || usableImage(product.image);
+      existing.scent = existing.scent || product.scent;
+      existing.family = existing.family === 'unclassified' ? family : existing.family;
+      existing.familyColor = familyColors[existing.family];
+      if (product.nostalgiaNote) existing.nostalgiaNotes.push(product.nostalgiaNote);
+      if (!existing.appearances.some((item) => item.slug === box.id)) existing.appearances.push(appearance);
+    } else {
+      records.set(id, {
+        id,
+        name: product.name,
+        type: product.type || 'Unknown',
+        description: product.description,
+        image: usableImage(product.image),
+        scent: product.scent,
+        family,
+        familyColor: familyColors[family],
+        nostalgiaNotes: product.nostalgiaNote ? [product.nostalgiaNote] : [],
+        appearances: [appearance],
+      });
+    }
+  }
+}
+
+const products = [...records.values()].sort((a, b) => a.name.localeCompare(b.name));
+const productTypes = [...new Set(products.map((product) => product.type).filter(Boolean))].sort();
+const families = [...new Set(products.map((product) => product.family).filter((family) => family !== 'unclassified'))].sort();
+const latestProducts = products.filter((product) => product.appearances.some((appearance) => appearance.slug === allBoxes[0]?.id)).slice(0, 4);
 ---
 
 <BaseLayout
   title="Products"
   description="A growing archive of Lush products from Kitchen boxes and beyond."
 >
-  <Hero
-    title="Product Catalogue"
-    subtitle="A growing archive of products from the Kitchen boxes. More added as new boxes arrive."
-    tag="Coming soon"
-    minimal
-  />
+  <section class="products-hero">
+    <div class="container container--wide products-hero-inner">
+      <div data-animate="fade-up">
+        <span class="eyebrow">Product and scent index</span>
+        <h1>Every product becomes a trail.</h1>
+        <p class="lede">
+          Search the Kitchen archive by product, format, scent signal and box appearance. Built from the existing box records and product entries.
+        </p>
+      </div>
+      <aside class="catalogue-stats liquid-panel" aria-label="Product catalogue stats">
+        <div><strong>{products.length}</strong><span>products</span></div>
+        <div><strong>{productTypes.length}</strong><span>types</span></div>
+        <div><strong>{families.length}</strong><span>scent groups</span></div>
+      </aside>
+    </div>
+  </section>
 
-  <section class="section">
-    <div class="container">
-      {allProducts.length > 0 ? (
-        <div class="products-preview">
-          {productTypes.map((type) => (
-            <div class="product-type-group">
-              <h3 class="type-heading">{type}</h3>
-              <div class="product-grid">
-                {allProducts
-                  .filter((p) => p.data.type === type)
-                  .map((product) => (
-                    <div class="product-card">
-                      <div class="product-card-image">
-                        {product.data.image ? (
-                          <img src={product.data.image} alt={product.data.name} loading="lazy" />
-                        ) : (
-                          <div class="product-card-placeholder">
-                            <Droplets size={32} />
-                          </div>
-                        )}
-                      </div>
-                      <div class="product-card-body">
-                        <h4>{product.data.name}</h4>
-                        {product.data.scent && (
-                          <p class="product-card-scent">{product.data.scent}</p>
-                        )}
-                        {product.data.kitchenExclusive && (
-                          <span class="tag">Kitchen Exclusive</span>
-                        )}
-                      </div>
-                    </div>
-                  ))}
-              </div>
-            </div>
+  <section class="section product-browser">
+    <div class="container container--wide">
+      <div class="product-controls liquid-panel" data-animate="fade-up">
+        <label class="search-field">
+          <Search size={18} aria-hidden="true" />
+          <span class="visually-hidden">Search products</span>
+          <input id="product-search" type="search" placeholder="Search product, scent, box..." autocomplete="off" />
+        </label>
+        <select id="type-filter" aria-label="Filter by product type">
+          <option value="all">All product types</option>
+          {productTypes.map((type) => <option value={type}>{type}</option>)}
+        </select>
+        <select id="family-filter" aria-label="Filter by scent family">
+          <option value="all">All scent groups</option>
+          {families.map((family) => <option value={family}>{family.charAt(0).toUpperCase() + family.slice(1)}</option>)}
+        </select>
+        <button id="clear-product-filters" class="btn btn--secondary" type="button">Clear</button>
+      </div>
+
+      <div class="result-line" aria-live="polite">
+        <span id="product-count">{products.length}</span> products in the visible catalogue
+      </div>
+
+      {latestProducts.length > 0 && (
+        <div class="featured-strip" data-animate="stagger-children" data-stagger="0.08">
+          {latestProducts.map((product) => (
+            <a href={`/kitchen-boxes/${product.appearances[0]?.slug}/`} class="featured-product liquid-panel">
+              <span class="chip" style={`--chip-color: ${product.familyColor};`}>{product.family}</span>
+              <strong>{product.name}</strong>
+              <small>{product.appearances[0]?.month} {product.appearances[0]?.year}</small>
+            </a>
           ))}
         </div>
-      ) : (
-        <div class="coming-soon">
-          <p class="text-muted">
-            Product catalogue is being built. In the meantime, find products in each Kitchen box review.
-          </p>
-        </div>
       )}
+
+      <div class="product-grid" id="product-grid" data-animate="stagger-children" data-stagger="0.06">
+        {products.map((product) => (
+          <article
+            class="catalogue-card card"
+            data-product-card
+            data-name={product.name.toLowerCase()}
+            data-type={product.type}
+            data-family={product.family}
+            data-search={`${product.name} ${product.type} ${product.scent ?? ''} ${product.description ?? ''} ${product.appearances.map((item) => `${item.title} ${item.month} ${item.year}`).join(' ')}`.toLowerCase()}
+            style={`--card-accent: ${product.familyColor};`}
+          >
+            <div class="catalogue-image">
+              {product.image ? (
+                <img src={product.image} alt={product.name} loading="lazy" />
+              ) : (
+                <div class="catalogue-placeholder"><Droplets size={30} /></div>
+              )}
+            </div>
+            <div class="catalogue-body">
+              <div class="catalogue-meta">
+                <span>{product.type}</span>
+                {product.appearances.length > 0 && <span>{product.appearances.length} box{product.appearances.length === 1 ? '' : 'es'}</span>}
+              </div>
+              <h2>{product.name}</h2>
+              {product.description && <p>{product.description}</p>}
+              <div class="catalogue-chips">
+                {product.scent && <span class="chip" style={`--chip-color: ${product.familyColor};`}>{product.scent}</span>}
+                {product.nostalgiaNotes.length > 0 && <span class="chip" style="--chip-color: var(--color-gold);">Nostalgia</span>}
+                {product.kitchenExclusive && <span class="chip">Kitchen exclusive</span>}
+              </div>
+              {product.appearances.length > 0 && (
+                <div class="appearance-list">
+                  {product.appearances.slice(0, 3).map((appearance) => (
+                    <a href={`/kitchen-boxes/${appearance.slug}/`}>{appearance.month} {appearance.year}</a>
+                  ))}
+                </div>
+              )}
+            </div>
+          </article>
+        ))}
+      </div>
+
+      <div id="product-empty" class="empty-state liquid-panel" hidden>
+        <h2>No products found</h2>
+        <p>Try a different product name, scent note, box month or product type.</p>
+      </div>
     </div>
   </section>
 
   <CTABlock
     title="Browse by box"
-    description="Products are featured in their original Kitchen box entry with scent notes and full details."
+    description="Products are still anchored to their original Kitchen box records, with scent notes and archive context preserved."
     primaryLink="/kitchen-boxes/"
     primaryLabel="Kitchen Box Archive"
   />
 </BaseLayout>
 
-<style>
-  .products-preview {
-    display: flex;
-    flex-direction: column;
-    gap: var(--space-4xl);
+<script>
+  const search = document.getElementById('product-search') as HTMLInputElement | null;
+  const typeFilter = document.getElementById('type-filter') as HTMLSelectElement | null;
+  const familyFilter = document.getElementById('family-filter') as HTMLSelectElement | null;
+  const clearButton = document.getElementById('clear-product-filters');
+  const cards = Array.from(document.querySelectorAll<HTMLElement>('[data-product-card]'));
+  const count = document.getElementById('product-count');
+  const empty = document.getElementById('product-empty');
+
+  function syncUrl() {
+    const params = new URLSearchParams();
+    if (search?.value.trim()) params.set('q', search.value.trim());
+    if (typeFilter && typeFilter.value !== 'all') params.set('type', typeFilter.value);
+    if (familyFilter && familyFilter.value !== 'all') params.set('family', familyFilter.value);
+    const next = params.toString() ? `${location.pathname}?${params}` : location.pathname;
+    history.replaceState(null, '', next);
   }
 
-  .type-heading {
+  function applyFilters() {
+    const query = search?.value.trim().toLowerCase() ?? '';
+    const type = typeFilter?.value ?? 'all';
+    const family = familyFilter?.value ?? 'all';
+    let visible = 0;
+
+    cards.forEach((card) => {
+      const matchesQuery = !query || (card.dataset.search ?? '').includes(query);
+      const matchesType = type === 'all' || card.dataset.type === type;
+      const matchesFamily = family === 'all' || card.dataset.family === family;
+      const show = matchesQuery && matchesType && matchesFamily;
+      card.hidden = !show;
+      if (show) visible += 1;
+    });
+
+    if (count) count.textContent = String(visible);
+    if (empty) empty.hidden = visible !== 0;
+    syncUrl();
+  }
+
+  function hydrateFromUrl() {
+    const params = new URLSearchParams(location.search);
+    if (search && params.has('q')) search.value = params.get('q') ?? '';
+    if (typeFilter && params.has('type')) typeFilter.value = params.get('type') ?? 'all';
+    if (familyFilter && params.has('family')) familyFilter.value = params.get('family') ?? 'all';
+    applyFilters();
+  }
+
+  search?.addEventListener('input', applyFilters);
+  typeFilter?.addEventListener('change', applyFilters);
+  familyFilter?.addEventListener('change', applyFilters);
+  clearButton?.addEventListener('click', () => {
+    if (search) search.value = '';
+    if (typeFilter) typeFilter.value = 'all';
+    if (familyFilter) familyFilter.value = 'all';
+    applyFilters();
+    search?.focus();
+  });
+
+  hydrateFromUrl();
+</script>
+
+<style>
+  .products-hero {
+    position: relative;
+    min-height: 62svh;
+    display: flex;
+    align-items: end;
+    padding: 8rem 0 var(--space-3xl);
+    overflow: hidden;
+  }
+
+  .products-hero::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background:
+      radial-gradient(circle at 22% 18%, rgba(255, 141, 184, 0.24), transparent 28rem),
+      radial-gradient(circle at 76% 18%, rgba(169, 140, 255, 0.18), transparent 26rem),
+      radial-gradient(circle at 54% 76%, rgba(143, 245, 210, 0.12), transparent 28rem),
+      conic-gradient(from 140deg at 50% 48%, transparent 0deg, rgba(255, 230, 111, 0.12) 48deg, transparent 100deg),
+      linear-gradient(180deg, rgba(255,255,255,0.04), transparent 70%);
+  }
+
+  .products-hero-inner {
+    position: relative;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 380px;
+    gap: var(--space-2xl);
+    align-items: end;
+  }
+
+  .products-hero h1 {
+    max-width: 920px;
+    margin: var(--space-sm) 0 var(--space-lg);
+  }
+
+  .catalogue-stats {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: var(--space-sm);
+    border-radius: var(--radius-2xl);
+    padding: var(--space-lg);
+  }
+
+  .catalogue-stats div {
+    padding: var(--space-md);
+    border-radius: var(--radius-lg);
+    background:
+      linear-gradient(135deg, rgba(255, 141, 184, 0.08), transparent 44%),
+      rgba(255,255,255,0.06);
+  }
+
+  .catalogue-stats strong {
+    display: block;
+    font-size: 1.7rem;
+  }
+
+  .catalogue-stats span,
+  .catalogue-meta {
+    color: var(--color-text-muted);
+    font-size: 0.68rem;
+    font-weight: 900;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+
+  .product-controls {
+    position: sticky;
+    top: 6.25rem;
+    z-index: 9;
+    display: grid;
+    grid-template-columns: minmax(240px, 1fr) 220px 220px auto;
+    gap: var(--space-sm);
+    align-items: center;
     margin-bottom: var(--space-lg);
-    padding-bottom: var(--space-sm);
-    border-bottom: 1px solid var(--color-border);
+    padding: var(--space-sm);
+    border-radius: var(--radius-2xl);
+    background:
+      linear-gradient(135deg, rgba(255, 141, 184, 0.09), transparent 40%),
+      rgba(15, 20, 24, 0.68);
+  }
+
+  .search-field,
+  .product-controls select {
+    min-height: 3rem;
+    border: 1px solid rgba(255,255,255,0.11);
+    border-radius: var(--radius-full);
+    background: rgba(255,255,255,0.065);
+    color: var(--color-white);
+  }
+
+  .search-field {
+    display: flex;
+    align-items: center;
+    gap: var(--space-sm);
+    padding: 0 var(--space-md);
+  }
+
+  .search-field input,
+  .product-controls select {
+    width: 100%;
+    border: 0;
+    outline: 0;
+    color: inherit;
+    font: inherit;
+  }
+
+  .search-field input {
+    background: transparent;
+  }
+
+  .product-controls select {
+    padding: 0 var(--space-md);
+    appearance: none;
+  }
+
+  .result-line {
+    color: var(--color-text-muted);
+    font-size: 0.82rem;
+    font-weight: 800;
+    margin-bottom: var(--space-lg);
+  }
+
+  .featured-strip {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: var(--space-md);
+    margin-bottom: var(--space-2xl);
+  }
+
+  .featured-product {
+    --card-accent: var(--scent-violet);
+    border-radius: var(--radius-xl);
+    padding: var(--space-lg);
+    overflow: hidden;
+    transition: transform 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+  }
+
+  .featured-product::after {
+    content: '';
+    position: absolute;
+    inset: auto -20% -48% 18%;
+    height: 70%;
+    border-radius: 50%;
+    background: radial-gradient(ellipse, color-mix(in srgb, var(--chip-color, var(--card-accent)) 26%, transparent), transparent 68%);
+    filter: blur(22px);
+    pointer-events: none;
+  }
+
+  .featured-product:hover {
+    transform: translateY(-4px);
+    border-color: var(--glass-border-hover);
+    box-shadow: var(--shadow-lg);
+  }
+
+  .featured-product strong,
+  .featured-product small {
+    display: block;
+    margin-top: var(--space-sm);
+  }
+
+  .featured-product small {
+    color: var(--color-text-muted);
+    font-weight: 800;
   }
 
   .product-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    grid-template-columns: repeat(3, minmax(0, 1fr));
     gap: var(--space-lg);
   }
 
-  .product-card {
-    background: var(--glass-bg);
-    backdrop-filter: blur(var(--glass-blur));
-    -webkit-backdrop-filter: blur(var(--glass-blur));
-    border: 1px solid var(--glass-border);
-    border-radius: var(--radius-lg);
-    overflow: hidden;
-    box-shadow: var(--glass-shadow);
-    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+  .catalogue-card[hidden] {
+    display: none;
   }
 
-  .product-card:hover {
-    border-color: var(--glass-border-hover);
-    box-shadow: var(--glass-shadow), 0 0 16px rgba(90, 138, 106, 0.06);
+  .catalogue-card {
+    --card-accent: var(--scent-mint);
+    background:
+      linear-gradient(150deg, color-mix(in srgb, var(--card-accent) 12%, transparent), rgba(255, 255, 255, 0.035)),
+      var(--glass-bg);
   }
 
-  .product-card-image {
+  .catalogue-image {
+    position: relative;
     aspect-ratio: 1;
     overflow: hidden;
-    background: var(--color-surface);
+    background: var(--gradient-cool);
   }
 
-  .product-card-image img {
+  .catalogue-image::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background:
+      linear-gradient(180deg, transparent 58%, rgba(5, 6, 8, 0.36)),
+      radial-gradient(circle at 70% 18%, color-mix(in srgb, var(--card-accent) 28%, transparent), transparent 38%);
+    pointer-events: none;
+  }
+
+  .catalogue-image img {
     width: 100%;
     height: 100%;
     object-fit: cover;
-    opacity: 0.9;
+    transition: transform 0.45s ease;
   }
 
-  .product-card:hover .product-card-image img {
-    opacity: 1;
+  .catalogue-card:hover .catalogue-image img {
+    transform: scale(1.065) rotate(0.3deg);
   }
 
-  .product-card-placeholder {
+  .catalogue-placeholder {
     width: 100%;
     height: 100%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 2rem;
-  }
-
-  .product-card-body {
-    padding: var(--space-lg);
-    display: flex;
-    flex-direction: column;
-    gap: var(--space-xs);
-  }
-
-  .product-card-body h4 {
-    font-family: var(--font-display);
-    font-size: 1rem;
-  }
-
-  .product-card-scent {
-    font-size: 0.8125rem;
+    display: grid;
+    place-items: center;
     color: var(--color-text-muted);
-    font-style: italic;
   }
 
-  .coming-soon {
-    padding: var(--space-4xl) 0;
+  .catalogue-body {
+    position: relative;
+    display: grid;
+    gap: var(--space-sm);
+    padding: var(--space-lg);
+  }
+
+  .catalogue-meta {
+    display: flex;
+    justify-content: space-between;
+    gap: var(--space-sm);
+  }
+
+  .catalogue-body h2 {
+    font-size: clamp(1.45rem, 2.4vw, 2rem);
+  }
+
+  .catalogue-body p {
+    color: var(--color-text-secondary);
+    font-size: 0.92rem;
+  }
+
+  .catalogue-chips,
+  .appearance-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.45rem;
+  }
+
+  .appearance-list a {
+    color: color-mix(in srgb, var(--card-accent) 78%, var(--color-white));
+    font-size: 0.82rem;
+    font-weight: 800;
+  }
+
+  .empty-state {
+    margin-top: var(--space-xl);
+    padding: var(--space-2xl);
+    border-radius: var(--radius-2xl);
+  }
+
+  @media (max-width: 1080px) {
+    .products-hero-inner,
+    .product-controls,
+    .featured-strip,
+    .product-grid {
+      grid-template-columns: 1fr;
+    }
+
+    .product-controls {
+      position: relative;
+      top: auto;
+    }
+  }
+
+  @media (max-width: 640px) {
+    .products-hero {
+      min-height: auto;
+      padding: 7rem 0 var(--space-3xl);
+    }
+
+    .catalogue-stats {
+      grid-template-columns: 1fr;
+    }
   }
 </style>
